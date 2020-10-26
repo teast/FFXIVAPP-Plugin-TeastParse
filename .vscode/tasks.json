@@ -1,0 +1,116 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Tests/Tests.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/Tests/Tests.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "${workspaceFolder}/Tests/Tests.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "tests",
+            "type": "process",
+            "command": "dotnet",
+            "args": ["test"],
+            "group": "test"
+        },
+        {
+            "label": "install dll",
+            "type": "shell",
+            "linux": {
+                "command": "${workspaceFolder}/scripts/install.sh"
+                },
+            "args": [
+                "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.0/FFXIVAPP.Plugin.TeastParse.dll",
+                "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/TeastParse"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "install pdb",
+            "type": "shell",
+            "linux": {
+                "command": "${workspaceFolder}/scripts/install.sh"
+                },
+            "args": [
+                "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.0/FFXIVAPP.Plugin.TeastParse.pdb",
+                "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/TeastParse"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "install logo",
+            "type": "shell",
+            "linux": {
+                "command": "${workspaceFolder}/scripts/install.sh"
+            },
+            "args": [
+                "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/Logo.png",
+                "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/TeastParse"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "install plugininfo",
+            "type": "shell",
+            "linux": {
+                "command": "${workspaceFolder}/scripts/install.sh",
+            },
+            "args": [
+                "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.0/PluginInfo.xml",
+                "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/TeastParse"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "install",
+            "dependsOn": [
+                "install dll",
+                "install pdb",
+                "install logo",
+                "install plugininfo"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build and install",
+            "dependsOn": [
+                "build",
+                "install",
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        }
+    ]
+}

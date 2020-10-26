@@ -1,0 +1,72 @@
+<Window xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:svg="clr-namespace:Svg.Skia.Avalonia;assembly=Svg.Skia.Avalonia"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" MinWidth="210" MinHeight="56" SizeToContent="WidthAndHeight" x:Class="FFXIVAPP.Plugin.TeastParse.Windows.RealTimeWidget" Title="{Binding Title}" TransparencyLevelHint="Transparent" ExtendClientAreaToDecorationsHint="True" ExtendClientAreaChromeHints="NoChrome" ExtendClientAreaTitleBarHeightHint="40" Background="#44ffffff" HasSystemDecorations="True" SystemDecorations="BorderOnly" Topmost="True">
+  <Grid RowDefinitions="Auto,*">
+    <Panel x:Name="CustChrome" Grid.Row="0">
+      <Panel.Background>
+        <SolidColorBrush Color="#44ffffff" Opacity="0.7" />
+      </Panel.Background>
+      <TextBlock Margin="5 5 5 0" Text="{Binding Title}" />
+      <Border Width="20" Height="20" Padding="2,2,2,2" HorizontalAlignment="Right">
+        <Border CornerRadius="20" ClipToBounds="True" BorderThickness="1" BorderBrush="Black">
+          <Border.Background>
+            <SolidColorBrush Color="#44ffffff" Opacity="0.7" />
+          </Border.Background>
+          <Border.ContextMenu >
+            <ContextMenu>
+              <MenuItem Header="{Binding LabelName}" Command="{Binding OnSortName}" />
+              <MenuItem Header="{Binding LabelDPS}" Command="{Binding OnSortDPS}" />
+              <MenuItem Header="{Binding LabelPercent}" Command="{Binding OnSortPercent}" />
+            </ContextMenu>
+          </Border.ContextMenu>
+          <Image Stretch="UniformToFill">
+            <Image.Source>
+              <svg:SvgImage Source="/Resources/sort-solid.svg" />
+            </Image.Source>
+          </Image>
+        </Border>
+      </Border>
+    </Panel>
+
+    <ItemsControl x:Name="Party" Items="{Binding Party}" Grid.Row="1">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <StackPanel Margin="5 1">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              <Border Grid.Row="1" Margin="5 3" VerticalAlignment="Bottom" Background="WhiteSmoke" BorderBrush="Black" BorderThickness="1" CornerRadius="2">
+                <DockPanel Margin="1" LastChildFill="True">
+                  <DockPanel DockPanel.Dock="Right">
+                    <TextBlock Margin="5 0" HorizontalAlignment="Left" FontWeight="Bold" Foreground="Black" Tag="DPS" Text="{Binding DPS, StringFormat={}{0:F2}}" />
+                    <TextBlock Margin="5 0" HorizontalAlignment="Left" FontWeight="Bold" Foreground="Black" Tag="TotalDPS" Text="{Binding TotalDPS, StringFormat={}{0:F2}}" />
+                  </DockPanel>
+                  <DockPanel>
+                    <TextBlock Margin="5 0" HorizontalAlignment="Left" FontWeight="Bold" Foreground="Black" Text="{Binding Name}" />
+                  </DockPanel>
+                </DockPanel>
+              </Border>
+              <ProgressBar Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top" BorderBrush="Black" Foreground="{Binding Job}" Maximum="1" Minimum="0" Value="{Binding PercentOfTimeline}" />
+              <TextBlock Grid.Row="0" Margin="5 0" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="Black" Tag="Timeline" Text="{Binding Timeline, StringFormat={}{0:N0}}" />
+              <!-- TODO: Make it possible to choose total or timeline <TextBlock Grid.Row="0" Margin="5 0" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="Black" Tag="Total" Text="{Binding Total, StringFormat={}{0:N0}}" />-->
+              <StackPanel Grid.Row="0" Margin="5 0" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+                <TextBlock Margin="2 0" VerticalAlignment="Center" FontWeight="Bold" Foreground="Black" Text="{Binding PercentOfTimeline, StringFormat={}{0:P}}" />
+                <TextBlock Margin="3 0" VerticalAlignment="Center" FontWeight="Bold" Foreground="Black" Text="{Binding Job, StringFormat=[{0}]}" />
+              </StackPanel>
+            </Grid>
+          </StackPanel>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+    </ItemsControl>
+  </Grid>
+</Window>

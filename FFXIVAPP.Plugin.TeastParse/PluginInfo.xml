@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<PluginInfo>
+    <Main Key="Assembly">
+        <Value>System.Data.SQLite.dll</Value>
+    </Main>
+    <Main Key="Assembly">
+        <Value>Dapper.dll</Value>
+    </Main>
+    <Main Key="FileName">
+        <Value>FFXIVAPP.Plugin.TeastParse.dll</Value>
+    </Main>
+</PluginInfo>

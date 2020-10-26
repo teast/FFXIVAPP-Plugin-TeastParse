@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:teast="clr-namespace:Teast.Controls;assembly=Teast.Controls.GroupBox"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="FFXIVAPP.Plugin.TeastParse.Views.SettingsView">
+  <Grid x:Name="LayoutRoot">
+    <TabControl x:Name="SettingsViewTC">
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock Text="{Binding LabelMainSettings}" />
+        </TabItem.Header>
+        <ScrollViewer>
+          <StackPanel>
+            <teast:GroupBox Header="{Binding LabelDPSWidget}">
+              <StackPanel>
+                <DockPanel LastChildFill="True">
+                  <Button Margin="3" Command="{Binding ResetDPSWidgetCommand}" Content="{Binding LabelResetSettings}" DockPanel.Dock="Right" />
+                  <Button Margin="3" Command="{Binding OpenDPSWidgetCommand}" Content="{Binding LabelOpenNow}" />
+                </DockPanel>
+              </StackPanel>
+            </teast:GroupBox>
+            <teast:GroupBox Header="{Binding LabelDTPSWidget}">
+              <StackPanel>
+                <DockPanel LastChildFill="True">
+                  <Button Margin="3" Command="{Binding ResetDTPSWidgetCommand}" Content="{Binding LabelResetSettings}" DockPanel.Dock="Right" />
+                  <Button Margin="3" Command="{Binding OpenDTPSWidgetCommand}" Content="{Binding LabelOpenNow}" />
+                </DockPanel>
+              </StackPanel>
+            </teast:GroupBox>
+            <teast:GroupBox Header="{Binding LabelHPSWidget}">
+              <StackPanel>
+                <DockPanel LastChildFill="True">
+                  <Button Margin="3" Command="{Binding ResetHPSWidgetCommand}" Content="{Binding LabelResetSettings}" DockPanel.Dock="Right" />
+                  <Button Margin="3" Command="{Binding OpenHPSWidgetCommand}" Content="{Binding LabelOpenNow}" />
+                </DockPanel>
+              </StackPanel>
+            </teast:GroupBox>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+    </TabControl>
+  </Grid>
+</UserControl>
