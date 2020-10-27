@@ -1,0 +1,25 @@
+﻿{
+  "PluginInfo": {
+    "Name": "FFXIVAPP.Plugin.TeastParse",
+    "Version": "1.0.4",
+    "Files": [
+      {
+        "Name": "FFXIVAPP.Plugin.TeastParse.dll",
+        "Location": ""
+      },
+      {
+        "Name": "FFXIVAPP.Plugin.TeastParse.pdb",
+        "Location": ""
+      },
+      {
+        "Name": "Logo.png",
+        "Location": ""
+      },
+      {
+        "Name": "PluginInfo.xml",
+        "Location": ""
+      }
+    ],
+    "SourceURI": "https://github.com/teast/ffxivapp-plugin-teastparse/releases/download/1.0.4/"
+  }
+}
