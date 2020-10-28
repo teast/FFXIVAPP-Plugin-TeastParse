@@ -101,7 +101,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             Match match = null;
             foreach (var regex in _matcher[activeCode.Type][group.Subject])
             {
-                match = regex[Constants.Language].Match(item.Line);
+                match = regex[Constants.GameLanguage].Match(item.Line);
                 if (!match.Success)
                     continue;
 
@@ -109,7 +109,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 break;
             }
 
-            if (!isMatch && (!_toIgnore.Subjects.ContainsKey(Constants.Language) || !_toIgnore.Subjects[Constants.Language].Any(r => r.IsMatch(item.Line))))
+            if (!isMatch && (!_toIgnore.Subjects.ContainsKey(Constants.GameLanguage) || !_toIgnore.Subjects[Constants.GameLanguage].Any(r => r.IsMatch(item.Line))))
             {
                 Logging.Log(Logger, $"No match for Action in {nameof(BattleParse)} and chat line \"{item.Line}\"");
                 return;
@@ -133,7 +133,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             Match match = null;
             foreach (var regex in _matcher[activeCode.Type][group.Subject])
             {
-                match = regex[Constants.Language].Match(item.Line);
+                match = regex[Constants.GameLanguage].Match(item.Line);
                 if (!match.Success)
                     continue;
 
@@ -218,11 +218,11 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             if (string.IsNullOrEmpty(name))
                 return name;
 
-            if (Constants.The.ContainsKey(Constants.Language))
+            if (Constants.The.ContainsKey(Constants.GameLanguage))
             {
                 // Some pets (like The Automaton Queen) has The at start of their name.. so lets try
                 // and filter that away... condition are: multiple spaces and starts with "The"
-                foreach (var t in Constants.The[Constants.Language])
+                foreach (var t in Constants.The[Constants.GameLanguage])
                 {
                     if (!name.StartsWith(t, StringComparison.InvariantCultureIgnoreCase))
                         continue;
@@ -252,12 +252,12 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         /// an specific pattern.
         /// </remarks>
         private readonly RegExDictionary _toIgnore = new RegExDictionary(
-            new RegExTypePair(null, null, Tuple.Create(GameLanguage.English, @"^(?<source>You|.+) readies (?<action>.+)\.$")),
-            new RegExTypePair(null, null, Tuple.Create(GameLanguage.English, @"^(?<source>You|.+) (begin)s? casting (?<action>.+)\.$")),
-            new RegExTypePair(null, null, Tuple.Create(GameLanguage.English, @"^(?<source>You|.+) (cancel)s? (?<action>.+)\.$")),
-            new RegExTypePair(null, null, Tuple.Create(GameLanguage.English, @"^(?<source>You|.+)('s|rs) (?<action>.+) is interrupted\.$")),
-            new RegExTypePair(null, null, Tuple.Create(GameLanguage.English, @"^ ⇒ (?<source>You|.+)('s|rs) enmity increases\.$")),
-            new RegExTypePair(null, null, Tuple.Create(GameLanguage.English, @"^(?<source>You|.+) ready Teleport.$"))
+            new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) readies (?<action>.+)\.$")),
+            new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) (begin)s? casting (?<action>.+)\.$")),
+            new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) (cancel)s? (?<action>.+)\.$")),
+            new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+)('s|rs) (?<action>.+) is interrupted\.$")),
+            new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^ ⇒ (?<source>You|.+)('s|rs) enmity increases\.$")),
+            new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) ready Teleport.$"))
         );
 
         /// <summary>
@@ -268,52 +268,52 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             {ChatcodeType.Actions, new RegExDictionary(
                 // Player actions
                 new RegExTypePair(_playerSubject, null,
-                    Tuple.Create(GameLanguage.German, @"^(?<source>Du|.+) (setzt (?<action>.+) ein|wirks?t (?<action>.+))\.$"),
-                    Tuple.Create(GameLanguage.English, @"^(?<source>You|.+) (use|cast)s? (?<action>.+)\.$"),
-                    Tuple.Create(GameLanguage.France, @"^(?<source>Vous|.+) (utilise|lance)z? (?<action>.+)\.$"),
-                    Tuple.Create(GameLanguage.Japanese, @"^(?<source>.+)の「(?<action>.+)」$"),
-                    Tuple.Create(GameLanguage.Chinese, @"^:(?<source>You|.+)(发动了|咏唱了|正在咏唱|正在发动)“(?<action>.+)”。$")),
+                    Tuple.Create(GameLanguageEnum.German, @"^(?<source>Du|.+) (setzt (?<action>.+) ein|wirks?t (?<action>.+))\.$"),
+                    Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) (use|cast)s? (?<action>.+)\.$"),
+                    Tuple.Create(GameLanguageEnum.France, @"^(?<source>Vous|.+) (utilise|lance)z? (?<action>.+)\.$"),
+                    Tuple.Create(GameLanguageEnum.Japanese, @"^(?<source>.+)の「(?<action>.+)」$"),
+                    Tuple.Create(GameLanguageEnum.Chinese, @"^:(?<source>You|.+)(发动了|咏唱了|正在咏唱|正在发动)“(?<action>.+)”。$")),
 
                 // Monster actions
                 new RegExTypePair(_monsterSubject, null,
-                    Tuple.Create(GameLanguage.German, @"^(D(u|einer|(i|e)r|ich|as|ie|en) )?(?<source>.+) (setzt (?<action>.+) ein|wirks?t (?<action>.+))\.$"),
-                    Tuple.Create(GameLanguage.English, @"^((T|t)he )?(?<source>.+) (use|cast)s? (?<action>.+)\.$"),
-                    Tuple.Create(GameLanguage.France, @"^(L[aes] |[LEAD]')?(?<source>.+) (utilise|lance)z? (?<action>.+)\.$"),
-                    Tuple.Create(GameLanguage.Japanese, @"^(?<source>.+)の「(?<action>.+)」$"),
-                    Tuple.Create(GameLanguage.Chinese, @"^:(?<source>.+)(发动了|咏唱了|正在咏唱|正在发动)“(?<action>.+)”。$"))
+                    Tuple.Create(GameLanguageEnum.German, @"^(D(u|einer|(i|e)r|ich|as|ie|en) )?(?<source>.+) (setzt (?<action>.+) ein|wirks?t (?<action>.+))\.$"),
+                    Tuple.Create(GameLanguageEnum.English, @"^((T|t)he )?(?<source>.+) (use|cast)s? (?<action>.+)\.$"),
+                    Tuple.Create(GameLanguageEnum.France, @"^(L[aes] |[LEAD]')?(?<source>.+) (utilise|lance)z? (?<action>.+)\.$"),
+                    Tuple.Create(GameLanguageEnum.Japanese, @"^(?<source>.+)の「(?<action>.+)」$"),
+                    Tuple.Create(GameLanguageEnum.Chinese, @"^:(?<source>.+)(发动了|咏唱了|正在咏唱|正在发动)“(?<action>.+)”。$"))
             )},
             {ChatcodeType.Damage, new RegExDictionary(
                 // Damage from actions
                 new RegExTypePair(_playerSubject, null,
-                    Tuple.Create(GameLanguage.German, @"^ ⇒ (?<block>Geblockt! ?)?(?<parry>Pariert! ?)?(?<crit>Kritischer Treffer! ?)?(D(u|einer|(i|e)r|ich|as|ie|en) )?(?<target>.+) erleides?t (nur )?(?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?Punkte? (Schaden|reduziert)\.$"),
-                    Tuple.Create(GameLanguage.English, @"^ ⇒ (?<block>Blocked! )?(?<parry>Parried! )?(?<crit>Critical(?<direct> direct hit)?! )?(?<direct>Direct hit! )?((T|t)he )?(?<target>.+) takes? (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?damage\.$"),
-                    Tuple.Create(GameLanguage.France, @"^ ⇒ (?<parry>Parade ?! )?(?<block>Blocage ?! )?(?<crit>Critique ?! )?(L[aes] |[LEAD]')?(?<target>.+) subit (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?points? de dégâts?\.$"),
-                    Tuple.Create(GameLanguage.Japanese, @"^ ⇒ (?<crit>クリティカル！ )?(?<target>.+)((に|は)、?)(?<block>ブロックした！ )?(?<parry>受け流した！ )?(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?ダメージ。$"),
-                    Tuple.Create(GameLanguage.Chinese, @"^: ⇒ (?<crit>暴击！ )?(?<target>.+?)(?<block>招架住了！ )?(?<parry>格挡住了！ )?(受到(了)?)(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?点伤害。$")),
+                    Tuple.Create(GameLanguageEnum.German, @"^ ⇒ (?<block>Geblockt! ?)?(?<parry>Pariert! ?)?(?<crit>Kritischer Treffer! ?)?(D(u|einer|(i|e)r|ich|as|ie|en) )?(?<target>.+) erleides?t (nur )?(?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?Punkte? (Schaden|reduziert)\.$"),
+                    Tuple.Create(GameLanguageEnum.English, @"^ ⇒ (?<block>Blocked! )?(?<parry>Parried! )?(?<crit>Critical(?<direct> direct hit)?! )?(?<direct>Direct hit! )?((T|t)he )?(?<target>.+) takes? (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?damage\.$"),
+                    Tuple.Create(GameLanguageEnum.France, @"^ ⇒ (?<parry>Parade ?! )?(?<block>Blocage ?! )?(?<crit>Critique ?! )?(L[aes] |[LEAD]')?(?<target>.+) subit (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?points? de dégâts?\.$"),
+                    Tuple.Create(GameLanguageEnum.Japanese, @"^ ⇒ (?<crit>クリティカル！ )?(?<target>.+)((に|は)、?)(?<block>ブロックした！ )?(?<parry>受け流した！ )?(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?ダメージ。$"),
+                    Tuple.Create(GameLanguageEnum.Chinese, @"^: ⇒ (?<crit>暴击！ )?(?<target>.+?)(?<block>招架住了！ )?(?<parry>格挡住了！ )?(受到(了)?)(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?点伤害。$")),
 
                 // "DamageAuto"
                 new RegExTypePair(_playerSubject, null,
-                    Tuple.Create(GameLanguage.German, @"^(?! ⇒)(?<block>Geblockt! ?)?(?<parry>Pariert! ?)?(?<crit>Kritischer Treffer! ?)?(?<source>Du|.+) triffs?t (d(u|einer|(i|e)r|ich|as|ie|en) )?(?<target>.+) und verursachs?t (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?Punkte? (Schaden|reduziert)\.$"),
-                    Tuple.Create(GameLanguage.English, @"^(?! ⇒)(?<block>Blocked! )?(?<parry>Parried! )?(?<crit>Critical(?<direct> direct hit)?! )?(?<direct>Direct hit! )?(?<source>You|.+) hits? ((T|t)he )?(?<target>.+) for (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?damage\.$"),
-                    Tuple.Create(GameLanguage.France, @"^(?! ⇒)(?<parry>Parade ?! )?(?<block>Blocage ?! )?(?<crit>Critique ?! )?(?<source>Vous|.+) infligez? \w+ (l[aes] |[lead]')?(?<target>.+) (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?points? de dégâts?\.$"),
-                    Tuple.Create(GameLanguage.Japanese, @"^(?<source>.+)の攻撃( ⇒ )?(?<crit>クリティカル！ )?(?<target>.+)((に|は)、?)(?<block>ブロックした！ )?(?<parry>受け流した！ )?(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?ダメージ。$"),
-                    Tuple.Create(GameLanguage.Chinese, @"^:(?<source>.+)发动攻击( ⇒ )?(?<crit>暴击！ )?(?<target>.+?)(?<block>招架住了！ )?(?<parry>格挡住了！ )?(受到(了)?)(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?点伤害。$")),
+                    Tuple.Create(GameLanguageEnum.German, @"^(?! ⇒)(?<block>Geblockt! ?)?(?<parry>Pariert! ?)?(?<crit>Kritischer Treffer! ?)?(?<source>Du|.+) triffs?t (d(u|einer|(i|e)r|ich|as|ie|en) )?(?<target>.+) und verursachs?t (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?Punkte? (Schaden|reduziert)\.$"),
+                    Tuple.Create(GameLanguageEnum.English, @"^(?! ⇒)(?<block>Blocked! )?(?<parry>Parried! )?(?<crit>Critical(?<direct> direct hit)?! )?(?<direct>Direct hit! )?(?<source>You|.+) hits? ((T|t)he )?(?<target>.+) for (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?damage\.$"),
+                    Tuple.Create(GameLanguageEnum.France, @"^(?! ⇒)(?<parry>Parade ?! )?(?<block>Blocage ?! )?(?<crit>Critique ?! )?(?<source>Vous|.+) infligez? \w+ (l[aes] |[lead]')?(?<target>.+) (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?points? de dégâts?\.$"),
+                    Tuple.Create(GameLanguageEnum.Japanese, @"^(?<source>.+)の攻撃( ⇒ )?(?<crit>クリティカル！ )?(?<target>.+)((に|は)、?)(?<block>ブロックした！ )?(?<parry>受け流した！ )?(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?ダメージ。$"),
+                    Tuple.Create(GameLanguageEnum.Chinese, @"^:(?<source>.+)发动攻击( ⇒ )?(?<crit>暴击！ )?(?<target>.+?)(?<block>招架住了！ )?(?<parry>格挡住了！ )?(受到(了)?)(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?点伤害。$")),
 
                 // Monster damage from actions
                 new RegExTypePair(_monsterSubject, null,
-                    Tuple.Create(GameLanguage.German, @"^ ⇒ (?<block>Geblockt! ?)?(?<parry>Pariert! ?)?(?<crit>Kritischer Treffer! ?)?(?<target>dich|.+)( erleides?t (nur )?|, aber der Schaden wird auf )(?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?Punkte? (Schaden|reduziert)\.$"),
-                    Tuple.Create(GameLanguage.English, @"^ ⇒ (?<block>Blocked! )?(?<parry>Parried! )?(?<crit>Critical! )?(?<target>You|.+) takes? (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?damage\.$"),
-                    Tuple.Create(GameLanguage.France, @"^ ⇒ (?<parry>Parade ?! )?(?<block>Blocage ?! )?(?<crit>Critique ?! )?(?<target>Vous|.+) subi(t|ssez?)? (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?points? de dégâts?\.$"),
-                    Tuple.Create(GameLanguage.Japanese, @"^ ⇒ (?<crit>クリティカル！ )?(?<target>.+)((に|は)、?)(?<block>ブロックした！ )?(?<parry>受け流した！ )?(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?ダメージ。$"),
-                    Tuple.Create(GameLanguage.Chinese, @"^: ⇒ (?<crit>暴击！ )?(?<target>.+?)(?<block>招架住了！ )?(?<parry>格挡住了！ )?(受到(了)?)(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?点伤害。$")),
+                    Tuple.Create(GameLanguageEnum.German, @"^ ⇒ (?<block>Geblockt! ?)?(?<parry>Pariert! ?)?(?<crit>Kritischer Treffer! ?)?(?<target>dich|.+)( erleides?t (nur )?|, aber der Schaden wird auf )(?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?Punkte? (Schaden|reduziert)\.$"),
+                    Tuple.Create(GameLanguageEnum.English, @"^ ⇒ (?<block>Blocked! )?(?<parry>Parried! )?(?<crit>Critical! )?(?<target>You|.+) takes? (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?damage\.$"),
+                    Tuple.Create(GameLanguageEnum.France, @"^ ⇒ (?<parry>Parade ?! )?(?<block>Blocage ?! )?(?<crit>Critique ?! )?(?<target>Vous|.+) subi(t|ssez?)? (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?points? de dégâts?\.$"),
+                    Tuple.Create(GameLanguageEnum.Japanese, @"^ ⇒ (?<crit>クリティカル！ )?(?<target>.+)((に|は)、?)(?<block>ブロックした！ )?(?<parry>受け流した！ )?(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?ダメージ。$"),
+                    Tuple.Create(GameLanguageEnum.Chinese, @"^: ⇒ (?<crit>暴击！ )?(?<target>.+?)(?<block>招架住了！ )?(?<parry>格挡住了！ )?(受到(了)?)(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?点伤害。$")),
 
                 // "DamageAuto" for monster
                 new RegExTypePair(_monsterSubject, null,
-                    Tuple.Create(GameLanguage.German, @"^(?! ⇒)(?<block>Geblockt! ?)?(?<parry>Pariert! ?)?(?<crit>Kritischer Treffer! ?)?(D(u|einer|(i|e)r|ich|as|ie|en) )?(?<source>.+) triffs?t (?<target>dich|.+)( und verursachs?t |, aber der Schaden wird auf )(?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?Punkte? (Schaden|reduziert)\.$"),
-                    Tuple.Create(GameLanguage.English, @"^(?! ⇒)(?<block>Blocked! )?(?<parry>Parried! )?(?<crit>Critical! )?((T|t)he )?(?<source>.+) hits? (?<target>you|.+) for (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?damage\.$"),
-                    Tuple.Create(GameLanguage.France, @"^(?! ⇒)(?<parry>Parade ?! )?(?<block>Blocage ?! )?(?<crit>Critique ?! )?(L[aes] |[LEAD]')?(?<source>.+) ((?<target>Vous|.+) infligez?|infligez? à (?<target>vous|.+)) (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?points? de dégâts?\.$"),
-                    Tuple.Create(GameLanguage.Japanese, @"^(?! ⇒)(?<source>.+)の攻撃( ⇒ )?(?<crit>クリティカル！ )?(?<target>.+)((に|は)、?)(?<block>ブロックした！ )?(?<parry>受け流した！ )?(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?ダメージ。$"),
-                    Tuple.Create(GameLanguage.Chinese, @"^:(?<source>.+)发动攻击( ⇒ )?(?<crit>暴击！ )?(?<target>.+?)(?<block>招架住了！ )?(?<parry>格挡住了！ )?(受到(了)?)(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?点伤害。$"))
+                    Tuple.Create(GameLanguageEnum.German, @"^(?! ⇒)(?<block>Geblockt! ?)?(?<parry>Pariert! ?)?(?<crit>Kritischer Treffer! ?)?(D(u|einer|(i|e)r|ich|as|ie|en) )?(?<source>.+) triffs?t (?<target>dich|.+)( und verursachs?t |, aber der Schaden wird auf )(?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?Punkte? (Schaden|reduziert)\.$"),
+                    Tuple.Create(GameLanguageEnum.English, @"^(?! ⇒)(?<block>Blocked! )?(?<parry>Parried! )?(?<crit>Critical! )?((T|t)he )?(?<source>.+) hits? (?<target>you|.+) for (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?damage\.$"),
+                    Tuple.Create(GameLanguageEnum.France, @"^(?! ⇒)(?<parry>Parade ?! )?(?<block>Blocage ?! )?(?<crit>Critique ?! )?(L[aes] |[LEAD]')?(?<source>.+) ((?<target>Vous|.+) infligez?|infligez? à (?<target>vous|.+)) (?<amount>\d+) ?(\((?<modifier>.\d+)%\) )?points? de dégâts?\.$"),
+                    Tuple.Create(GameLanguageEnum.Japanese, @"^(?! ⇒)(?<source>.+)の攻撃( ⇒ )?(?<crit>クリティカル！ )?(?<target>.+)((に|は)、?)(?<block>ブロックした！ )?(?<parry>受け流した！ )?(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?ダメージ。$"),
+                    Tuple.Create(GameLanguageEnum.Chinese, @"^:(?<source>.+)发动攻击( ⇒ )?(?<crit>暴击！ )?(?<target>.+?)(?<block>招架住了！ )?(?<parry>格挡住了！ )?(受到(了)?)(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?点伤害。$"))
             )}
         };
     }

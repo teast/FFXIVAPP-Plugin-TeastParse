@@ -12,7 +12,7 @@ namespace FFXIVAPP.Plugin.TeastParse.RegularExpressions
         private readonly Dictionary<ChatCodeDirection, List<RegExTypePair>> _directions;
         private readonly List<RegExTypePair> _directionsAll;
 
-        public Dictionary<GameLanguage, List<Regex>> Subjects
+        public Dictionary<GameLanguageEnum, List<Regex>> Subjects
         {
             get
             {
@@ -23,7 +23,7 @@ namespace FFXIVAPP.Plugin.TeastParse.RegularExpressions
             }
         }
 
-        public Dictionary<GameLanguage, List<Regex>> Directions
+        public Dictionary<GameLanguageEnum, List<Regex>> Directions
         {
             get
             {
@@ -69,11 +69,11 @@ namespace FFXIVAPP.Plugin.TeastParse.RegularExpressions
     {
         public ChatCodeSubject Subject { get; }
         public ChatCodeDirection Direction { get; }
-        public Dictionary<GameLanguage, Regex> Items { get; }
+        public Dictionary<GameLanguageEnum, Regex> Items { get; }
 
-        public Regex this[GameLanguage language] => Items[language];
+        public Regex this[GameLanguageEnum language] => Items[language];
 
-        public RegExTypePair(ChatCodeSubject? subject = null, ChatCodeDirection? direction = null, params System.Tuple<GameLanguage, string>[] pair)
+        public RegExTypePair(ChatCodeSubject? subject = null, ChatCodeDirection? direction = null, params System.Tuple<GameLanguageEnum, string>[] pair)
         {
             Subject = subject ?? ChatCodeSubject.DontMatter;
             Direction = direction ?? ChatCodeDirection.DontMatter;

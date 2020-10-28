@@ -22,10 +22,10 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         //private readonly Timer _criticalTimer;
 
         private readonly RegExDictionary _matcherStart = new RegExDictionary(
-                new RegExTypePair(null, null, Tuple.Create(GameLanguage.English, @"^(?<dungeon>.+) has begun\.$"))
+                new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<dungeon>.+) has begun\.$"))
         );
         private readonly RegExDictionary _matcherEnd = new RegExDictionary(
-                new RegExTypePair(null, null, Tuple.Create(GameLanguage.English, @"^(?<dungeon>.+) has ended\.$"))
+                new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<dungeon>.+) has ended\.$"))
         );
 
         /// <summary>
@@ -76,7 +76,7 @@ This is how it looks if you do not commence. it happens ~3-5minutes after the 2n
         {
             var isMatch = false;
             Match match = null;
-            foreach (var regex in _matcherStart.Subjects[Constants.Language])
+            foreach (var regex in _matcherStart.Subjects[Constants.GameLanguage])
             {
                 match = regex.Match(item.Line);
                 if (!match.Success)
@@ -104,7 +104,7 @@ This is how it looks if you do not commence. it happens ~3-5minutes after the 2n
         {
             var isMatch = false;
             Match match = null;
-            foreach (var regex in _matcherEnd.Subjects[Constants.Language])
+            foreach (var regex in _matcherEnd.Subjects[Constants.GameLanguage])
             {
                 match = regex.Match(item.Line);
                 if (!match.Success)

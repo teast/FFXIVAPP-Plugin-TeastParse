@@ -8,20 +8,20 @@ namespace FFXIVAPP.Plugin.TeastParse
 {
     public static class Constants
     {
-        public static Dictionary<GameLanguage, string> You => new Dictionary<GameLanguage, string> {
-            {GameLanguage.English, "you"},
-            {GameLanguage.German, "du"},
-            {GameLanguage.France, "vous"},
-            {GameLanguage.Chinese, "you"}
+        public static Dictionary<GameLanguageEnum, string> You => new Dictionary<GameLanguageEnum, string> {
+            {GameLanguageEnum.English, "you"},
+            {GameLanguageEnum.German, "du"},
+            {GameLanguageEnum.France, "vous"},
+            {GameLanguageEnum.Chinese, "you"}
         };
 
-        public static Dictionary<GameLanguage, string[]> The => new Dictionary<GameLanguage, string[]> {
-            {GameLanguage.English, new [] { "the" }},
-            {GameLanguage.German, new [] { "du", "deiner", "dir", "der", "dich", "das", "die", "den" }},
-            {GameLanguage.France, new [] { "las", "les", "laes" }}
+        public static Dictionary<GameLanguageEnum, string[]> The => new Dictionary<GameLanguageEnum, string[]> {
+            {GameLanguageEnum.English, new [] { "the" }},
+            {GameLanguageEnum.German, new [] { "du", "deiner", "dir", "der", "dich", "das", "die", "den" }},
+            {GameLanguageEnum.France, new [] { "las", "les", "laes" }}
         };
 
-        public static GameLanguage Language { get; set; }
+        public static GameLanguageEnum GameLanguage { get; set; }
 
         public static Dictionary<string, string> AutoTranslate { get; internal set; }
         public static Dictionary<string, string[]> Colors { get; internal set; }
@@ -56,7 +56,7 @@ namespace FFXIVAPP.Plugin.TeastParse
         {
             if (string.IsNullOrEmpty(s))
                 return false;
-            return You[Language].Equals(s, StringComparison.InvariantCultureIgnoreCase);
+            return You[GameLanguage].Equals(s, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

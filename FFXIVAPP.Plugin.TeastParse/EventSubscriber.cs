@@ -62,7 +62,7 @@ namespace FFXIVAPP.Plugin.TeastParse
             Constants.CultureInfo = constantsEntity.CultureInfo;
             Constants.CharacterName = constantsEntity.CharacterName;
             Constants.ServerName = constantsEntity.ServerName;
-            Constants.Language = (GameLanguage)Enum.Parse(typeof(GameLanguage), constantsEntity.GameLanguage);
+            Constants.GameLanguage = (GameLanguageEnum)Enum.Parse(typeof(GameLanguageEnum), constantsEntity.GameLanguage);
             Constants.EnableHelpLabels = constantsEntity.EnableHelpLabels;
         }
 

@@ -1,6 +1,6 @@
 namespace FFXIVAPP.Plugin.TeastParse
 {
-    public enum GameLanguage
+    public enum GameLanguageEnum
     {
         English,
         German,

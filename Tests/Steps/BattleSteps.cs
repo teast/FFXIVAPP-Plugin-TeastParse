@@ -23,7 +23,7 @@ namespace Tests.Steps
         private readonly ConcurrentDictionary<uint, ActorItem> _players = new ConcurrentDictionary<uint, ActorItem>();
         private readonly ConcurrentDictionary<uint, ActorItem> _monsters = new ConcurrentDictionary<uint, ActorItem>();
         private readonly ConcurrentDictionary<uint, ActorItem> _npc = new ConcurrentDictionary<uint, ActorItem>();
-        private GameLanguage _language = GameLanguage.English;
+        private GameLanguageEnum _language = GameLanguageEnum.English;
         private readonly EventSubscriber _event;
         private readonly Mock<IPluginHost> _pluginHost;
         private readonly Mock<IRepository> _db;
@@ -95,7 +95,7 @@ namespace Tests.Steps
         }
 
         [Given("(.*) chat")]
-        public void GivenChatLanguage(GameLanguage language)
+        public void GivenChatLanguage(GameLanguageEnum language)
         {
             _language = language;
         }
