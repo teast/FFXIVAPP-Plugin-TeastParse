@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using FFXIVAPP.Common.Utilities;
 using NLog;
 
@@ -18,18 +19,13 @@ namespace FFXIVAPP.Plugin.TeastParse
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private const string prefix = "ffxivapp";
-        private readonly string _directory;
+        private LocalizationObject _current;
 
-        private LocalizationFile _current;
-
-        public AppLocalization(string directory)
+        /// <summary>
+        /// Initialize a new <see cref="AppLocalization" /> for fetching translations from an json formatted file
+        /// </summary>
+        public AppLocalization()
         {
-            var absolute = Path.GetFullPath(directory);
-            if (!Directory.Exists(absolute))
-                throw new ArgumentException($"{nameof(AppLocalization)}: directory do not exist (\"{directory}\") absolute path: \"{absolute}\".");
-
-            _directory = absolute;
-
             LoadDefault();
         }
 
@@ -45,8 +41,8 @@ namespace FFXIVAPP.Plugin.TeastParse
 
         public bool SetLanguage(CultureInfo culture)
         {
-            var file = Path.Combine(_directory, prefix, $".{culture.Name.ToLowerInvariant()}.json");
-            if (!File.Exists(file))
+            var file = $"{prefix}.{culture.Name.ToLowerInvariant()}.json";
+            if (!ResourceReader.AllTranslations.Any(resource => resource.Name == file))
                 return false;
 
             var prev = _current;
@@ -68,7 +64,7 @@ namespace FFXIVAPP.Plugin.TeastParse
         {
             try
             {
-                _current = new LocalizationFile(Path.Combine(_directory, $"{prefix}.json"), "default");
+                _current = new LocalizationResource("ffxivapp.json", "default");
             }
             catch (Exception ex)
             {
@@ -77,11 +73,18 @@ namespace FFXIVAPP.Plugin.TeastParse
             }
         }
 
-        private class LocalizationFile
+        /// <summary>
+        /// Base class for handling a language.
+        /// </summary>
+        private abstract class LocalizationObject
         {
             private readonly string _language;
-            private readonly Dictionary<string, string> _strings;
+            protected Dictionary<string, string> _strings;
 
+            /// <summary>
+            /// Retrieve the translation for string <see cref="index" />.
+            /// If there is no translation the string <see cref="index" /> will be return
+            /// </summary>
             public string this[string index]
             {
                 get
@@ -96,9 +99,39 @@ namespace FFXIVAPP.Plugin.TeastParse
                 }
             }
 
-            public LocalizationFile(string file, string language)
+            /// <summary>
+            /// Initialize a new instance of <see cref="LocalizationObject" />
+            /// </summary>
+            /// <param name="json">string containing an json in the format of <see cref="Dictionary<string, string>" /></param>
+            /// <param name="language">given translated language</param>
+            public LocalizationObject(string language)
             {
                 _language = language;
+            }
+        }
+
+        /// <summary>
+        /// Uses <see cref="ResourceReader"/> to fetch translation
+        /// </summary>
+        private class LocalizationResource : LocalizationObject
+        {
+            public LocalizationResource(string resourceName, string language) : base(language)
+            {
+                var content = ResourceReader.AllTranslations.FirstOrDefault(resource => resource.Name == resourceName).Content;
+                if (string.IsNullOrEmpty(content))
+                    throw new ArgumentException($"{nameof(LocalizationResource)}: localization resource do not exist \"{resourceName}\"");
+
+                _strings = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
+            }
+        }
+
+        /// <summary>
+        /// fetches translation from given file
+        /// </summary>
+        private class LocalizationFile : LocalizationObject
+        {
+            public LocalizationFile(string file, string language) : base(language)
+            {
                 if (!File.Exists(file))
                     throw new ArgumentException($"{nameof(LocalizationFile)}: localization file do not exist \"{file}\"");
 

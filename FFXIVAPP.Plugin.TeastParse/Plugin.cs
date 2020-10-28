@@ -79,10 +79,7 @@ namespace FFXIVAPP.Plugin.TeastParse
             {
                 return new Dictionary<string, string>();
             }
-            set
-            {
-                System.Console.WriteLine("Locale should be set in Plugin.Dummy...");
-            }
+            set { }
         }
 
         public Exception Trace { get; private set; }
@@ -90,11 +87,12 @@ namespace FFXIVAPP.Plugin.TeastParse
         public IPluginHost Host { get; private set; }
         public MessageBoxResult PopupResult { get; set; }
 
+#pragma warning disable CS0067
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS0088
 
         public void Dispose(bool isUpdating = false)
         {
-            Console.WriteLine($"Parse plugin unload!!! D:");
             _ioc.Get<EventSubscriber>().UnSubscribe(Host);
         }
 

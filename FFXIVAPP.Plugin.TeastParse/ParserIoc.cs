@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using FFXIVAPP.Plugin.TeastParse.Actors;
 using FFXIVAPP.Plugin.TeastParse.ChatParse;
 using FFXIVAPP.Plugin.TeastParse.Repositories;
@@ -11,10 +12,11 @@ namespace FFXIVAPP.Plugin.TeastParse
     {
         public ParserIoc()
         {
-            var connection = $"Data Source=./parser{DateTime.Now.ToString("yyyyMMddHHmmss")}.db;Version=3;";
+            var database = Path.Combine(Constants.PluginsParsesPath, $"parser{DateTime.Now.ToString("yyyyMMddHHmmss")}.db");
+            var connection = $"Data Source={database};Version=3;";
             this.Singelton<Ioc>(() => this);
             this.Singelton<List<ChatCodes>>(() => ResourceReader.ChatCodes());
-            this.Singelton<IAppLocalization>(() => new AppLocalization("i18n"));
+            this.Singelton<IAppLocalization>(() => new AppLocalization());
             this.Singelton<IRepository>(() => new Repository(connection));
             this.Singelton<IActorItemHelper, ActorItemHelper>();
             this.Singelton<IActorModelCollection, ActorModelCollection>();

@@ -6,6 +6,7 @@ using FFXIVAPP.Plugin.TeastParse.Actors;
 using Sharlayan.Core;
 using NLog;
 using FFXIVAPP.Common.Utilities;
+using FFXIVAPP.Common.Core.Constant;
 
 namespace FFXIVAPP.Plugin.TeastParse
 {
@@ -27,7 +28,7 @@ namespace FFXIVAPP.Plugin.TeastParse
             if (plugin == null)
                 return;
 
-            //plugin.ConstantsUpdated += OnConstantsUpdated;
+            plugin.ConstantsUpdated += OnConstantsUpdated;
             plugin.ChatLogItemReceived += OnChatLogItemReceived;
             plugin.MonsterItemsUpdated += OnMonsterItemsUpdated;
             plugin.NPCItemsUpdated += OnNPCItemsUpdated;
@@ -40,12 +41,29 @@ namespace FFXIVAPP.Plugin.TeastParse
             if (plugin == null)
                 return;
 
-            //plugin.ConstantsUpdated -= OnConstantsUpdated;
+            plugin.ConstantsUpdated -= OnConstantsUpdated;
             plugin.ChatLogItemReceived -= OnChatLogItemReceived;
             plugin.MonsterItemsUpdated -= OnMonsterItemsUpdated;
             plugin.NPCItemsUpdated -= OnNPCItemsUpdated;
             plugin.PCItemsUpdated -= OnPCItemsUpdated;
             plugin.CurrentPlayerUpdated -= OnCurrentPlayerUpdated;
+        }
+
+        private static void OnConstantsUpdated(object sender, ConstantsEntityEvent constantsEntityEvent) {
+            // delegate event from constants, not required to subsribe, but recommended as it gives you app settings
+            if (sender == null) {
+                return;
+            }
+
+            ConstantsEntity constantsEntity = constantsEntityEvent.ConstantsEntity;
+            Constants.AutoTranslate = constantsEntity.AutoTranslate;
+
+            Constants.Colors = constantsEntity.Colors;
+            Constants.CultureInfo = constantsEntity.CultureInfo;
+            Constants.CharacterName = constantsEntity.CharacterName;
+            Constants.ServerName = constantsEntity.ServerName;
+            Constants.Language = (GameLanguage)Enum.Parse(typeof(GameLanguage), constantsEntity.GameLanguage);
+            Constants.EnableHelpLabels = constantsEntity.EnableHelpLabels;
         }
 
         private void OnCurrentPlayerUpdated(object sender, CurrentPlayerEvent currentPlayer)

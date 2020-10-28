@@ -31,12 +31,10 @@
     <None Update="PluginInfo.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="i18n\*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ChatCodes.xml"/>
+    <EmbeddedResource Include="Resources\i18n\**"/>
     <AvaloniaResource Include="Resources\*.svg"/>
   </ItemGroup>
 </Project>
