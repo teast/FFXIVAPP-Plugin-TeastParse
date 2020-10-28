@@ -1,7 +1,9 @@
 <UserControl xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:views="clr-namespace:FFXIVAPP.Plugin.TeastParse.Views"
-    xmlns:Resource="clr-namespace:FFXIVAPP.ResourceFiles;assembly=FFXIVAPP.ResourceFiles" x:Class="FFXIVAPP.Plugin.TeastParse.ShellView">
+    xmlns:Resource="clr-namespace:FFXIVAPP.ResourceFiles;assembly=FFXIVAPP.ResourceFiles"
+    xmlns:local="clr-namespace:FFXIVAPP.Plugin.TeastParse"
+    x:Class="FFXIVAPP.Plugin.TeastParse.ShellView">
     <Grid x:Name="LayoutRoot">
         <TabControl x:Name="ShellViewTC" TabStripPlacement="Right">
             <TabItem x:Name="MainTI">
@@ -10,7 +12,7 @@
                         <Border Padding="4" Background="White" BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="15">
                             <Image Source="{x:Static Resource:Theme.HomeIcon20}" ToolTip.Tip="{Binding LabelMain}" />
                         </Border>
-                        <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="{Binding LabelMain}" IsVisible="{Binding EnableHelpLabels}" />
+                        <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="{Binding LabelMain}" IsVisible="{Binding EnableHelpLabels, Source={x:Static local:Settings.Default}}" />
                     </StackPanel>
                 </TabItem.Header>
                 <views:MainView x:Name="MainV" DataContext="{Binding MainViewModel}" />
@@ -21,7 +23,7 @@
                         <Border Padding="4" Background="White" BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="15">
                             <Image Source="{x:Static Resource:Theme.CogIcon20}" ToolTip.Tip="{Binding LabelSettings}" />
                         </Border>
-                        <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="{Binding LabelSettings}" IsVisible="{Binding EnableHelpLabels}" />
+                        <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="{Binding LabelSettings}" IsVisible="{Binding EnableHelpLabels, Source={x:Static local:Settings.Default}}" />
                     </StackPanel>
                 </TabItem.Header>
                 <views:SettingsView x:Name="SettingsV" DataContext="{Binding SettingsViewModel}" />
@@ -32,7 +34,7 @@
                         <Border Padding="4" Background="White" BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="15">
                             <Image Source="{x:Static Resource:Theme.InfoIcon20}" ToolTip.Tip="{Binding LabelAbout}" />
                         </Border>
-                        <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="{Binding LabelAbout}" IsVisible="{Binding EnableHelpLabels}" />
+                        <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="{Binding LabelAbout}" IsVisible="{Binding EnableHelpLabels, Source={x:Static local:Settings.Default}}" />
                     </StackPanel>
                 </TabItem.Header>
                 <views:AboutView x:Name="AboutV" DataContext="{Binding AboutViewModel}" />

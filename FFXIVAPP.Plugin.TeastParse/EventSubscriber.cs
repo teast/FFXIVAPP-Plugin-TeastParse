@@ -63,7 +63,7 @@ namespace FFXIVAPP.Plugin.TeastParse
             Constants.CharacterName = constantsEntity.CharacterName;
             Constants.ServerName = constantsEntity.ServerName;
             Constants.GameLanguage = (GameLanguageEnum)Enum.Parse(typeof(GameLanguageEnum), constantsEntity.GameLanguage);
-            Constants.EnableHelpLabels = constantsEntity.EnableHelpLabels;
+            Settings.Default.EnableHelpLabels = constantsEntity.EnableHelpLabels;
         }
 
         private void OnCurrentPlayerUpdated(object sender, CurrentPlayerEvent currentPlayer)

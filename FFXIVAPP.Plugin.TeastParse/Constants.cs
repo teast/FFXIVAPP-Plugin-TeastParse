@@ -28,7 +28,6 @@ namespace FFXIVAPP.Plugin.TeastParse
         public static CultureInfo CultureInfo { get; internal set; }
         public static string CharacterName { get; internal set; }
         public static string ServerName { get; internal set; }
-        public static bool EnableHelpLabels { get; internal set; }
 
         public static string PluginsSettingsPath
         {
