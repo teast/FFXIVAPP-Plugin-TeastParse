@@ -7,8 +7,8 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Tests/Tests.csproj",
-                "/property:GenerateFullPaths=true",
+                "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/FFXIVAPP.Plugin.TeastParse.csproj",
+                "/p:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/Tests/Tests.csproj",
+                "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/FFXIVAPP.Plugin.TeastParse.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

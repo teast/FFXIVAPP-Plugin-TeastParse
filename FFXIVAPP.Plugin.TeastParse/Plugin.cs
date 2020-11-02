@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using FFXIVAPP.Common.Helpers;
 using FFXIVAPP.Common.WPF;
 using FFXIVAPP.IPluginInterface;
 using FFXIVAPP.Plugin.TeastParse.ViewModels;
@@ -16,14 +17,14 @@ namespace FFXIVAPP.Plugin.TeastParse
 
         public string Description => "Final Fantasy XIV Battle Parser";
 
-        public string FriendlyName => "Parse";
+        public string FriendlyName => "TeastParse";
 
         public string Icon => "Logo.png";
 
         public string Name => "FFXIVAPP.Plugin.TeastParse";
 
         public string Notice => "";
-        public string Version => "1.0.0.0";
+        public string Version => AssemblyHelper.Version.ToString();
 
         //private AppLocalization _localization;
         private Ioc _ioc;
