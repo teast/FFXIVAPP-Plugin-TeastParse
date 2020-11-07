@@ -53,7 +53,7 @@
                 },
             "args": [
                 "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.0/FFXIVAPP.Plugin.TeastParse.dll",
-                "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/TeastParse"
+                "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/FFXIVAPP.Plugin.TeastParse"
             ],
             "problemMatcher": []
         },
@@ -65,7 +65,7 @@
                 },
             "args": [
                 "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.0/FFXIVAPP.Plugin.TeastParse.pdb",
-                "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/TeastParse"
+                "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/FFXIVAPP.Plugin.TeastParse"
             ],
             "problemMatcher": []
         },
@@ -77,7 +77,7 @@
             },
             "args": [
                 "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/Logo.png",
-                "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/TeastParse"
+                "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/FFXIVAPP.Plugin.TeastParse"
             ],
             "problemMatcher": []
         },
@@ -89,7 +89,7 @@
             },
             "args": [
                 "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.0/PluginInfo.xml",
-                "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/TeastParse"
+                "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/FFXIVAPP.Plugin.TeastParse"
             ],
             "problemMatcher": []
         },
