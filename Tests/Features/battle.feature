@@ -120,7 +120,7 @@ Scenario: Two party members doing an action each on single monster [English]
 Scenario: Monster has an "The" in the chat log. Make sure to handle it correctly
     Given Monster with name Zonure
     When chat with code: 28A9 and line: The zonure hits you for 1241 damage.
-    Then Damage of 1241 should be stored for monster Zonure against You.
+    Then Damage of 1241 should be stored for Zonure against You.
 
 Scenario: Monster do an delayed action attack. Make sure to bind the damage to that action
     Given Monster with name Ifrit
@@ -136,7 +136,7 @@ Scenario: Monster do an delayed action attack. Make sure to bind the damage to t
         | 12A9 | "Ryu YunRagnarok hits Ifrit for 173 damage."   |
         | 102B | "Dylune EclipseMoogle begins casting Verfire." |
         | 3129 | " ⇒ Mark KeroRagnarok takes 1537 damage."      |
-    Then Damage of 1537 should be stored for monster Ifrit against Mark KeroRagnarok.
+    Then Damage of 1537 should be stored for Ifrit against Mark KeroRagnarok.
 
 Scenario: Player absorbs hp with Energy Drain.
     Given Player with name Player One

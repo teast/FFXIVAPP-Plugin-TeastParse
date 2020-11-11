@@ -174,8 +174,9 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             var direct = r.Groups["direct"].Value;
             var action = "";
             var code = item.Code;
+            var selfInflictedDamage = group.Subject == ChatCodeSubject.You && group.Direction == ChatCodeDirection.Self;
 
-            if (string.IsNullOrWhiteSpace(source))
+            if (string.IsNullOrWhiteSpace(source) && !selfInflictedDamage)
             {
                 var la = _lastAction[group.Subject];
                 if (!string.IsNullOrEmpty(la.Name) && !string.IsNullOrEmpty(la.Action))
@@ -188,8 +189,8 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             source = CleanName(source);
             target = CleanName(target);
 
-            var actorSource = _actors.GetModel(source, group.Subject);
-            var actorTarget = _actors.GetModel(target, group.Direction, group.Subject);
+            var actorSource = string.IsNullOrEmpty(source) ? null : _actors.GetModel(source, group.Subject);
+            var actorTarget = string.IsNullOrEmpty(target) ? null : _actors.GetModel(target, group.Direction, group.Subject);
 
             var model = new DamageModel
             {

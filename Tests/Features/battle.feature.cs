@@ -737,7 +737,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.When("chat with code: 28A9 and line: The zonure hits you for 1241 damage.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 123
-    testRunner.Then("Damage of 1241 should be stored for monster Zonure against You.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("Damage of 1241 should be stored for Zonure against You.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -811,7 +811,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.When("multiple chat lines", ((string)(null)), table10, "When ");
 #line hidden
 #line 139
-    testRunner.Then("Damage of 1537 should be stored for monster Ifrit against Mark KeroRagnarok.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("Damage of 1537 should be stored for Ifrit against Mark KeroRagnarok.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

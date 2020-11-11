@@ -157,9 +157,17 @@ namespace Tests.Steps
                         m.Target == target)), Times.Once);
         }
 
-        [Then("Damage of (.*) should be stored for monster (.*) against (.*).")]
+        [Then("No damage made by (.*).")]
+        public void ThenCheckMonsterDamage(string source)
+        {
+            if (source == "[none]") source = "";
+            _db.Verify(_ => _.AddDamage(It.Is<DamageModel>(m => m.Source == source)), Times.Never);
+        }
+
+        [Then("Damage of (.*) should be stored for (.*) against (.*).")]
         public void ThenCheckMonsterDamage(ulong damage, string source, string target)
         {
+            if (source == "[none]") source = "";
             _db.Verify(_ => _.AddDamage(It.Is<DamageModel>(m =>
                         DateTime.Parse(m.OccurredUtc) >= DateTime.UtcNow.AddMinutes(-5) && DateTime.Parse(m.OccurredUtc) <= DateTime.UtcNow &&
                         m.Damage == damage &&
