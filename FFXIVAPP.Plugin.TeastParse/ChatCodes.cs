@@ -98,7 +98,6 @@ namespace FFXIVAPP.Plugin.TeastParse
         }
     }
 
-    [Flags]
     public enum ChatcodeType
     {
         Actions,
