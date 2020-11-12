@@ -2,6 +2,16 @@
 
 <Codes>
   <Group Name="Chat" Type="Chat">
+    <Group Name="0038" Subject="You" Direction="Self">
+      <Code Key="0038">
+        <Description>echo</Description>
+      </Code>
+    </Group>
+    <Group Name="FC" Subject="Unknown" Direction="Multi">
+      <Code Key="0245">
+        <Description>FC Welcome message</Description>
+      </Code>
+    </Group>
     <Group Name="You" Subject="You" Direction="Multi">
       <Code Key="000A">
         <Description>Say</Description>
@@ -93,10 +103,23 @@
       <Code Key="133A">
         <Description>Defeats (Party -> Engaged)</Description>
       </Code>
+      <Code Key="12BA">
+        <Description>[Player] is defeated by [Enemy].</Description>
+      </Code>
     </Group>
     <Group Name="0B3A" Subject="Party" Direction="UnEngaged">
       <Code Key="0B3A">
         <Description>Defeats (Party -> UnEngaged)</Description>
+      </Code>
+    </Group>
+    <Group Name="433A" Subject="Pet" Direction="Engaged">
+      <Code Key="433A">
+        <Description>Companion or Esteem defeats engaged</Description>
+      </Code>
+    </Group>
+    <Group Name="1B3A" Subject="Alliance" Direction="Engaged">
+      <Code Key="133A">
+        <Description>Defeats (Alliance -> Engaged)</Description>
       </Code>
     </Group>
   </Group>
@@ -124,6 +147,14 @@
     <Group Name="1041" Subject="Party" Direction="Self">
       <Code Key="1041">
         <Description>Party Member Cast lot</Description>
+      </Code>
+    </Group>
+    <Group Name="08BE" Subject="You" Direction="Self">
+      <Code Key="08BE">
+        <Description>
+          You obtain a sheaf of field notes on Hernais.
+          You obtain a southern front lockbox.
+        </Description>
       </Code>
     </Group>
   </Group>
@@ -4453,6 +4484,11 @@
         <Description>The rook autoturret loses the effect of X</Description>
       </Code>
     </Group>
+    <Group Name="2AB0" Subject="Engaged" Direction="Self">
+      <Code Key="2AB0">
+        <Description>??? loses the effect of ???.</Description>
+      </Code>
+    </Group>
     <Group Name="2AB1" Subject="Engaged" Direction="Self">
       <Code Key="2AB1">
         <Description>Effect wears</Description>
@@ -6212,9 +6248,30 @@
     </Group>
   </Group>
   <Group Name="System" Type="System">
+    <Group Name="0003" Subject="You" Direction="Unknown">
+      <Code Key="0003">
+        <Description>Welcome to FFXIV message</Description>
+      </Code>
+    </Group>
     <Group Name="0039" Subject="You" Direction="Unknown">
       <Code Key="0039">
-        <Description>Enter/Leave sanctuary</Description>
+        <Description>
+        Enter/Leave sanctuary
+        Duty registration complete.
+        Resistance forces have initiated a critical engagement nearby. You have been granted permission to engage the enemy.
+        The Resistance has requested you deploy for combat. Access the Resistance Recruitment window to join the fray.
+        You have joined the critical engagement, [name of engagement]. Access the Resistance Recruitment menu to join the fray!
+        “ The Telltale Axles” objective fulfilled!
+        x minutes have elapsed since your last activity. If you are inactive for 10 minutes, you will be expelled from the duty.
+        </Description>
+      </Code>
+    </Group>
+    <Group Name="0BB9" Subject="You" Direction="Unknown">
+      <Code Key="0BB9">
+        <Description>
+        “ Power to the Vegetables” accepted.
+        “ The Telltale Axles” complete!
+        </Description>
       </Code>
     </Group>
     <Group Name="0839" Subject="You" Direction="Unknown">
@@ -6237,6 +6294,16 @@
         <Description>FC person logged in/out</Description>
       </Code>
     </Group>
+    <Group Name="4439" Subject="Pet" Direction="Unknown">
+      <Code Key="4439">
+        <Description>Companion withdraws from battle.</Description>
+      </Code>
+    </Group>
+    <Group Name="0C3A" Subject="You" Direction="Self">
+      <Code Key="0C3A">
+        <Description>The order for withdraw is given to Companion.</Description>
+      </Code>
+    </Group>
     <Group Name="0048" Subject="Unknown" Direction="Unknown">
       <Code Key="0048">
         <Description>parties currently recruiting info</Description>
@@ -6250,6 +6317,57 @@
     <Group Name="0139" Subject="Party" Direction="Unknown">
       <Code Key="0139">
         <Description>Battle commencing in x seconds!(subject)</Description>
+      </Code>
+    </Group>
+    <Group Name="0839" Subject="Unknown" Direction="You">
+      <Code Key="0839">
+        <Description>Your Reputation with ... has risen by 60.</Description>
+      </Code>
+    </Group>
+    <Group Name="0040" Subject="You" Direction="Self">
+      <Code Key="0040">
+        <Description>You attain Resistance rank ??!</Description>
+      </Code>
+    </Group>
+    <Group Name="1040" Subject="Unknown" Direction="Self">
+      <Code Key="1040">
+        <Description>[Player] attains level ??!</Description>
+      </Code>
+    </Group>
+    <Group Name="2040" Subject="Other" Direction="Self">
+      <Code Key="2040">
+        <Description>
+          [Player] earns the achievement “[name]”!
+          [Player] attains level ??!
+          </Description>
+      </Code>
+    </Group>
+    <Group Name="4040" Subject="NPC" Direction="Self">
+      <Code Key="4040">
+        <Description>
+          [Retainer] gains xxx experience points.
+          </Description>
+      </Code>
+    </Group>
+    <Group Name="Party" Subject="Unknown" Direction="Unknown">
+      <Code Key="2039">
+        <Description>
+          [Player] invites you to a party.
+          [Player] has left the party.
+          You lave [Player]'s party.
+        </Description>
+      </Code>
+      <Code Key="1039">
+        <Description>
+          You joins [Player]'s party.
+          [Player] has gone offline. (party)
+          [Player] has returned to the party. (party)
+        </Description>
+      </Code>
+    </Group>
+    <Group Name="1249" Subject="Unknown" Direction="Unknown">
+      <Code Key="1249">
+        <Description>[Player1] marks [Player2] as “Square.”</Description>
       </Code>
     </Group>
   </Group>
@@ -6269,6 +6387,29 @@
     <Group Name="Synthesizes" Subject="Other" Direction="Self">
       <Code Key="2042">
         <Description>Synthesizes</Description>
+      </Code>
+    </Group>
+    <Group Name="Synthesizes" Subject="You" Direction="Self">
+      <Code Key="0842">
+        <Description>Crafting</Description>
+      </Code>
+      <Code Key="08C2">
+        <Description>Synthesize complete</Description>
+      </Code>
+
+    </Group>
+  </Group>
+  <Group Name="Mining" Type="Mining">
+    <Group Name="Mining" Subject="You" Direction="Self">
+      <Code Key="0843">
+        <Description>
+          You begin mining.
+          You begin quarrying.
+          You obtain 3 pieces of splendid amber.
+          You obtain a splendid scorpion.
+          You finish mining.
+          You finish quarrying.
+        </Description>
       </Code>
     </Group>
   </Group>

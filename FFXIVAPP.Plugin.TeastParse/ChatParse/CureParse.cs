@@ -126,7 +126,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             if (!isMatch)
             {
                 if (!_toIgnore.Subjects.ContainsKey(Constants.GameLanguage) || !_toIgnore.Subjects[Constants.GameLanguage].Any(r => r.IsMatch(item.Line)))
-                    Logging.Log(Logger, $"No match for Action in {nameof(CureParse)} and chat line \"{item.Line}\"");
+                    Logging.Log(Logger, $"No match for Action in {nameof(CureParse)} and chat line \"{item.Line}\" [{item.Code}]");
                 return;
             }
 
@@ -221,6 +221,8 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+)('s|rs) (?<action>.+) is interrupted\.$")),
             new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^ ⇒ (?<source>You|.+)('s|rs) enmity increases\.$")),
             new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) ready Teleport.$")),
+            new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) mount the (?<target>.+)\.$")),
+            new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^Target out of range. (?<source>You|.+)'s (?<action>.+) was canceled\.$")),
             // This one can show up from enemies and therefore I have it here too.
             new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) (use|cast)s? (?<action>.+)\.$"))
         );

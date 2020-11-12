@@ -113,7 +113,8 @@ namespace FFXIVAPP.Plugin.TeastParse
         Loot,
         System,
         Revived,
-        Crafting
+        Crafting,
+        Mining
     }
 
     [Flags]

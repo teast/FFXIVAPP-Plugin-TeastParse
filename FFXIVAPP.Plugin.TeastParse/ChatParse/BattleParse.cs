@@ -111,7 +111,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
             if (!isMatch && (!_toIgnore.Subjects.ContainsKey(Constants.GameLanguage) || !_toIgnore.Subjects[Constants.GameLanguage].Any(r => r.IsMatch(item.Line))))
             {
-                Logging.Log(Logger, $"No match for Action in {nameof(BattleParse)} and chat line \"{item.Line}\"");
+                Logging.Log(Logger, $"No match for Action in {nameof(BattleParse)} and chat line \"{item.Line}\" [{item.Code}]");
                 return;
             }
 
@@ -258,7 +258,9 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) (cancel)s? (?<action>.+)\.$")),
             new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+)('s|rs) (?<action>.+) is interrupted\.$")),
             new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^ ⇒ (?<source>You|.+)('s|rs) enmity increases\.$")),
-            new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) ready Teleport.$"))
+            new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) ready Teleport.$")),
+            new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) mount the (?<target>.+)\.$")),
+            new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^Target out of range. (?<source>You|.+)'s (?<action>.+) was canceled\.$"))
         );
 
         /// <summary>
