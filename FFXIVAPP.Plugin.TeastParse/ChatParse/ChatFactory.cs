@@ -47,7 +47,8 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 //ioc.Instantiate<Timeline>() //new Timeline(_repository)
                 new BattleParse(_codes, actors, timeline, _repository),
                 new Timeline(timeline, _repository),
-                new CureParse(_codes, actors, timeline, _repository)
+                new CureParse(_codes, actors, timeline, _repository),
+                new DetrimentalParse(_codes, actors, timeline, _repository)
             };
         }
 

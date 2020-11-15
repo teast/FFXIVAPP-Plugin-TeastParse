@@ -33,6 +33,16 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         public bool Parried { get; set; }
 
         /// <summary>
+        /// This is used to determ what initial damage an detrimental attack had
+        /// </summary>
+        public ulong? InitDmg { get; set; }
+
+        /// <summary>
+        /// This is used to determ when an detrimental attack was ended
+        /// </summary>
+        public string EndTimeUtc { get; set; }
+
+        /// <summary>
         /// Chat codes group <see ref="ChatCodeSubject" /> as string
         /// </summary>
         public string Subject { get; set; }

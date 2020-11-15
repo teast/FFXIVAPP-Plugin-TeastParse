@@ -11,11 +11,12 @@ using Sharlayan.Core;
 
 namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 {
-    /// <summary>
-    /// Handles all parsing regarding actions and damage
-    /// </summary>
-    internal class BattleParse : BaseChatParse
+    internal class DetrimentalParse : BaseChatParse
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly IActorModelCollection _actors;
+        private readonly ITimelineCollection _timeline;
+
         /// <summary>
         /// A list of actions that have been used.
         /// </summary>
@@ -24,61 +25,24 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         /// </remarks>
         private ActionCollection _lastAction = new ActionCollection();
 
-        /// <summary>
-        /// All known actors.
-        /// </summary>
-        private readonly IActorModelCollection _actors;
-        private readonly ITimelineCollection _timelines;
-
-        /// <summary>
-        /// Contains all chat codes that relates to action and damage
-        /// </summary>
-        protected override List<ChatCodes> Codes { get; }
-
-        /// <summary>
-        /// All known chat patterns to find
-        /// </summary>
         protected override Dictionary<ChatcodeType, ChatcodeTypeHandler> Handlers { get; }
 
-        /// <summary>
-        /// Initialize a new instance of <see ref="BattleParse" />.
-        /// </summary>
-        /// <param name="codes">all known chat codes</param>
-        /// <param name="actors">actor handler</param>
-        /// <param name="repository">database repository</param>
-        public BattleParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timelines, IRepository repository) : base(repository)
+        protected override List<ChatCodes> Codes { get; }
+
+        public DetrimentalParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IRepository repository) : base(repository)
         {
             _actors = actors;
-            _timelines = timelines;
-            Codes = codes.Where(c => c.Type == ChatcodeType.Actions || c.Type == ChatcodeType.Damage).ToList();
+            _timeline = timeline;
+            
+            Codes = codes.Where(c => c.Type == ChatcodeType.Actions || c.Type == ChatcodeType.Detrimental).ToList();
             Handlers = new Dictionary<ChatcodeType, ChatcodeTypeHandler>
             {
-                {ChatcodeType.Actions, _handleActions },
-                {ChatcodeType.Damage, _handleDamage}
+                {ChatcodeType.Actions, _handleActions},
+                {ChatcodeType.Detrimental, _handleDetrimental}
             };
         }
 
-        /// <summary>
-        /// Handle chat lines that are for an action
-        /// </summary>
-        /// <param name="activeCode">chat code</param>
-        /// <param name="group">the chat codes group entity (good for source/direction enum)</param>
-        /// <param name="item">the actual chat log item</param>
-        private void HandleAction(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
-        {
-            var source = match.Groups["source"].Value;
-            var action = match.Groups["action"].Value;
-
-            _lastAction[group.Subject] = new ActionSubject(group.Subject, source, action);
-        }
-
-        /// <summary>
-        /// Handle chat lines that are for an damage
-        /// </summary>
-        /// <param name="activeCode">chat code</param>
-        /// <param name="group">the chat codes group entity (good for source/direction enum)</param>
-        /// <param name="item">the actual chat log item</param>
-        private void HandleDamage(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
+        private void HandleDetrimental(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
         {
             var (model, source, target) = ToModel(match, item, group);
             source?.UpdateStat(model);
@@ -132,7 +96,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 Source = source,
                 Target = target,
                 Action = action,
-                Damage = string.IsNullOrWhiteSpace(amount) ? 0 : Convert.ToUInt64(amount),
+                Damage = 0,
                 Modifier = modifier,
                 Critical = !string.IsNullOrWhiteSpace(crit),
                 Blocked = !string.IsNullOrWhiteSpace(block),
@@ -140,11 +104,26 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 DirectHit = !string.IsNullOrWhiteSpace(direct),
                 Subject = group.Subject.ToString(),
                 Direction = group.Direction.ToString(),
-                ChatCode = code
+                ChatCode = code,
+                InitDmg = string.IsNullOrWhiteSpace(amount) ? 0 : Convert.ToUInt64(amount)
                 // TODO: Uncomment this to see what actions have been recored at this time: Actions = Newtonsoft.Json.JsonConvert.SerializeObject(_lastAction._actions)
             };
 
             return (model, actorSource, actorTarget);
+        }
+
+        /// <summary>
+        /// Handle chat lines that are for an action
+        /// </summary>
+        /// <param name="activeCode">chat code</param>
+        /// <param name="group">the chat codes group entity (good for source/direction enum)</param>
+        /// <param name="item">the actual chat log item</param>
+        private void HandleAction(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
+        {
+            var source = match.Groups["source"].Value;
+            var action = match.Groups["action"].Value;
+
+            _lastAction[group.Subject] = new ActionSubject(group.Subject, source, action);
         }
 
         private ChatcodeTypeHandler _handleActions => new ChatcodeTypeHandler(
@@ -165,15 +144,13 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 RegExDictionary.MiscTargetOutOfRange
             )
         );
-
-        private ChatcodeTypeHandler _handleDamage => new ChatcodeTypeHandler(
-            ChatcodeType.Damage,
+        private ChatcodeTypeHandler _handleDetrimental => new ChatcodeTypeHandler(
+            ChatcodeType.Detrimental,
             new RegExDictionary(
                 RegExDictionary.DamagePlayerAction,
-                RegExDictionary.DamagePlayerAutoAttack,
-                RegExDictionary.DamageMonsterAction,
-                RegExDictionary.DamageMonsterAutoAttack
+                RegExDictionary.DetrimentalPlayer
             ),
-            HandleDamage);
+            HandleDetrimental
+        );
     }
 }

@@ -19,7 +19,7 @@ namespace Tests.Features
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class MiscEventsThatCanEndUpAsDamageFeature : object, Xunit.IClassFixture<MiscEventsThatCanEndUpAsDamageFeature.FixtureData>, System.IDisposable
+    public partial class VariousChatlogsThatCanOccureRegardingHealingFeature : object, Xunit.IClassFixture<VariousChatlogsThatCanOccureRegardingHealingFeature.FixtureData>, System.IDisposable
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -28,10 +28,10 @@ namespace Tests.Features
         
         private Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "misc.feature"
+#line 1 "healing.feature"
 #line hidden
         
-        public MiscEventsThatCanEndUpAsDamageFeature(MiscEventsThatCanEndUpAsDamageFeature.FixtureData fixtureData, Tests_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public VariousChatlogsThatCanOccureRegardingHealingFeature(VariousChatlogsThatCanOccureRegardingHealingFeature.FixtureData fixtureData, Tests_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
             this.TestInitialize();
@@ -40,7 +40,7 @@ namespace Tests.Features
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Misc events that can end up as damage", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Various chatlogs that can occure regarding healing", null, ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -80,14 +80,14 @@ namespace Tests.Features
             this.TestTearDown();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Player fells from high ground and takes damage")]
-        [Xunit.TraitAttribute("FeatureTitle", "Misc events that can end up as damage")]
-        [Xunit.TraitAttribute("Description", "Player fells from high ground and takes damage")]
-        public virtual void PlayerFellsFromHighGroundAndTakesDamage()
+        [Xunit.SkippableFactAttribute(DisplayName="You recover hp with Souleater.")]
+        [Xunit.TraitAttribute("FeatureTitle", "Various chatlogs that can occure regarding healing")]
+        [Xunit.TraitAttribute("Description", "You recover hp with Souleater.")]
+        public virtual void YouRecoverHpWithSouleater_()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Player fells from high ground and takes damage", null, tagsOfScenario, argumentsOfScenario);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("You recover hp with Souleater.", null, tagsOfScenario, argumentsOfScenario);
 #line 3
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -114,26 +114,26 @@ this.ScenarioInitialize(scenarioInfo);
 #line 5
     testRunner.And("Player One is you", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
+#line 6
+    testRunner.And("Monster with name Spirulina", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table14.AddRow(new string[] {
-                            "08AB",
-                            "\"You ready Teleport.\""});
-                table14.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "082B",
-                            "\"You use Teleport.\""});
-                table14.AddRow(new string[] {
-                            "08A9",
-                            "\" ⇒ You take 137 damage.\""});
-#line 6
-    testRunner.When("multiple chat lines", ((string)(null)), table14, "When ");
-#line hidden
-#line 11
-    testRunner.Then("No damage made by You.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+                            "\"You use Souleater.\""});
+                table13.AddRow(new string[] {
+                            "0AA9",
+                            "\" ⇒ The spirulina takes 8175 (+75%) damage.\""});
+                table13.AddRow(new string[] {
+                            "08AD",
+                            "\" ⇒ You recover 5405 HP.\""});
+#line 7
+    testRunner.When("multiple chat lines", ((string)(null)), table13, "When ");
 #line hidden
 #line 12
-    testRunner.And("Damage of 137 should be stored for [none] against You.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.Then("Cure of 5405 should be stored for You on You.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -146,12 +146,12 @@ this.ScenarioInitialize(scenarioInfo);
             
             public FixtureData()
             {
-                MiscEventsThatCanEndUpAsDamageFeature.FeatureSetup();
+                VariousChatlogsThatCanOccureRegardingHealingFeature.FeatureSetup();
             }
             
             void System.IDisposable.Dispose()
             {
-                MiscEventsThatCanEndUpAsDamageFeature.FeatureTearDown();
+                VariousChatlogsThatCanOccureRegardingHealingFeature.FeatureTearDown();
             }
         }
     }

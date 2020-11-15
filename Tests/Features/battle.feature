@@ -147,14 +147,3 @@ Scenario: Player absorbs hp with Energy Drain.
         | 12A9 | " ⇒ Critical! The 4th Legion signifer takes 7701 damage."  |
         | 112D | " ⇒ Player One absorbs 2609 HP."                           |
     Then Cure of 2609 should be stored for Player One on Player One.
-
-Scenario: You recover hp with Souleater.
-    Given Player with name Player One
-    And Player One is you
-    And Monster with name Spirulina
-    When multiple chat lines
-        | code | line                                           |
-        | 082B | "You use Souleater."                           |
-        | 0AA9 | " ⇒ The spirulina takes 8175 (+75%) damage."   |
-        | 08AD | " ⇒ You recover 5405 HP."                      |
-    Then Cure of 5405 should be stored for You on You.

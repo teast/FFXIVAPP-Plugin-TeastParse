@@ -79,6 +79,23 @@ namespace Tests.Steps
             }));
         }
 
+        [Given("(.*) is he")]
+        public void PlayerIsHe(string name)
+        {
+            var fullName = string.Join(" ", name.Split(' ').Select(s => s.First().ToString().ToUpper() + s.Substring(1)));
+
+            var player = _players.First(p => p.Value.Name == fullName);
+            player.Value.Sex = Sharlayan.Core.Enums.Actor.Sex.Male;
+        }
+
+        [Given("(.*) is she")]
+        public void PlayerIsShe(string name)
+        {
+            var fullName = string.Join(" ", name.Split(' ').Select(s => s.First().ToString().ToUpper() + s.Substring(1)));
+            var player = _players.First(p => p.Value.Name == fullName);
+            player.Value.Sex = Sharlayan.Core.Enums.Actor.Sex.Female;
+        }
+
         [Given("Monster with name (.*)")]
         public void GivenMonsterWithName(string name)
         {

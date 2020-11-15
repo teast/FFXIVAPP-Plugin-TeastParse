@@ -151,6 +151,17 @@ namespace FFXIVAPP.Plugin.TeastParse.RegularExpressions
                     Tuple.Create(GameLanguageEnum.Japanese, @"^( ⇒ )?(?<crit>クリティカル！ )?(?<target>.+)((に|は)、?)(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?(?<type>\w+)回復。$"),
                     Tuple.Create(GameLanguageEnum.Chinese, @"^:( ⇒ )?(?<crit>暴击！ )?(?<target>You|.+)恢复了?(?<amount>\d+)?(\((?<modifier>.\d+)%\))?点(?<type>\w+)。$"));
 
+        public readonly static RegExTypePair CurePlayeraction = new RegExTypePair(SubjectPlayer, null,
+            Tuple.Create(GameLanguageEnum.English, @"^(?<source>.+)('s|r) (?<action>.*) restores (?<amount>\d+) of (her|his|your) HP\.$"));
+
+        public readonly static RegExTypePair DetrimentalPlayer = new RegExTypePair(SubjectPlayer, null,
+            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?((T|t)he )?(?<target>You|.*) suffers the effect of (?<action>.*)\.$")
+            );
+
+        public readonly static RegExTypePair DetrimentalPlayerRecovers = new RegExTypePair(SubjectPlayer, null,
+            Tuple.Create(GameLanguageEnum.English, @"^ ⇒ ((T|t)he )?(?<target>You|.*) recovers from the effect of (?<action>.*)\.$")
+            );
+
         #region Misc chat lines
         public readonly static RegExTypePair MiscReadiesAction = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) readies (?<action>.+)\.$"));
         public readonly static RegExTypePair MiscBeginCasting = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) (begin)s? casting (?<action>.+)\.$"));
