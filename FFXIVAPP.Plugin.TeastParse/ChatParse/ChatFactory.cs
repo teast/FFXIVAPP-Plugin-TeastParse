@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FFXIVAPP.Common.Utilities;
+using FFXIVAPP.Plugin.TeastParse.Factories;
 using FFXIVAPP.Plugin.TeastParse.Repositories;
 using NLog;
 using Sharlayan.Core;
@@ -30,7 +31,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         private readonly List<BaseParse> _parsers;
 
         //public ChatFactory(Ioc ioc) // List<ChatCodes> codes, IActorFactory entities, IRepository repository)
-        public ChatFactory(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IRepository repository)
+        public ChatFactory(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IRepository repository, IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory)
         {
             //_codes = ioc.Get<List<ChatCodes>>();
             //_repository = ioc.Get<IRepository>();
@@ -48,7 +49,8 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 new BattleParse(_codes, actors, timeline, _repository),
                 new Timeline(timeline, _repository),
                 new CureParse(_codes, actors, timeline, _repository),
-                new DetrimentalParse(_codes, actors, timeline, _repository)
+                new DetrimentalParse(_codes, actors, timeline, detrimentalFactory, _repository),
+                new BeneficialParse(_codes, actors, timeline, beneficialFactory, _repository)
             };
         }
 

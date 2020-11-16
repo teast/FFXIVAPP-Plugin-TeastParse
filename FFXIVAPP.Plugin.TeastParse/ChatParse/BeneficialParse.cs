@@ -12,12 +12,12 @@ using Sharlayan.Core;
 
 namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 {
-    internal class DetrimentalParse : BaseChatParse
+    internal class BeneficialParse : BaseChatParse
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IActorModelCollection _actors;
         private readonly ITimelineCollection _timeline;
-        private readonly IDetrimentalFactory _detrimentalFactory;
+        private readonly IBeneficialFactory _BeneficialFactory;
 
         /// <summary>
         /// A list of actions that have been used.
@@ -31,24 +31,23 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
         protected override List<ChatCodes> Codes { get; }
 
-        public DetrimentalParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IDetrimentalFactory detrimentalFactory, IRepository repository) : base(repository)
+        public BeneficialParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IBeneficialFactory BeneficialFactory, IRepository repository) : base(repository)
         {
             _actors = actors;
             _timeline = timeline;
-            _detrimentalFactory = detrimentalFactory;
-            Codes = codes.Where(c => c.Type == ChatcodeType.Actions || c.Type == ChatcodeType.Detrimental).ToList();
+            _BeneficialFactory = BeneficialFactory;
+            Codes = codes.Where(c => c.Type == ChatcodeType.Actions || c.Type == ChatcodeType.Beneficial).ToList();
             Handlers = new Dictionary<ChatcodeType, ChatcodeTypeHandler>
             {
                 {ChatcodeType.Actions, _handleActions},
-                {ChatcodeType.Detrimental, _handleDetrimental}
+                {ChatcodeType.Beneficial, _handleBeneficial}
             };
         }
 
-        private void HandleDetrimental(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
+        private void HandleBeneficial(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
         {
             var (model, target) = ToModel(match, item, group);
-            target?.Detrimentals?.Add(model);
-            StoreDamage(model);
+            target?.Beneficials?.Add(model);
         }
 
         /// <summary>
@@ -58,13 +57,13 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         /// <param name="item">the actual chat log item</param>
         /// <param name="group">chatcodes group</param>
         /// <returns>an <see ref="DamaModel" /> based on input parameters</returns>
-        private (DetrimentalModel model, ActorModel target) ToModel(Match r, ChatLogItem item, Group group)
+        private (BeneficialModel model, ActorModel target) ToModel(Match r, ChatLogItem item, Group group)
         {
             var target = r.Groups["target"].Value;
             var status = r.Groups["status"].Value;
+            var action = "";
+            var source = "";
             var code = item.Code;
-            var source = string.Empty;
-            var action = string.Empty;
 
             var la = _lastAction[group.Subject];
             if (!string.IsNullOrEmpty(la.Name) && !string.IsNullOrEmpty(la.Action))
@@ -73,12 +72,13 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 action = la.Action;
             }
 
+            source = CleanName(source);
             target = CleanName(target);
 
             //var actorSource = string.IsNullOrEmpty(source) ? null : _actors.GetModel(source, group.Subject);
             var actorTarget = string.IsNullOrEmpty(target) ? null : _actors.GetModel(target, group.Direction, group.Subject);
 
-            var model = _detrimentalFactory.GetModel(status, item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow,
+            var model = _BeneficialFactory.GetModel(status, item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow,
                                                     source, target, code, group.Direction.ToString(), group.Subject.ToString());
 
             return (model, actorTarget);
@@ -116,13 +116,13 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 RegExDictionary.MiscTargetOutOfRange
             )
         );
-        private ChatcodeTypeHandler _handleDetrimental => new ChatcodeTypeHandler(
-            ChatcodeType.Detrimental,
+        private ChatcodeTypeHandler _handleBeneficial => new ChatcodeTypeHandler(
+            ChatcodeType.Beneficial,
             new RegExDictionary(
                 RegExDictionary.DamagePlayerAction,
-                RegExDictionary.DetrimentalPlayer
+                RegExDictionary.BeneficialPlayer
             ),
-            HandleDetrimental
+            HandleBeneficial
         );
     }
 }

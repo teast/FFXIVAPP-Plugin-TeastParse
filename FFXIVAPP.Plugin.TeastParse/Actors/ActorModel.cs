@@ -1,6 +1,5 @@
 using System;
-using System.Linq;
-using FFXIVAPP.Common;
+using System.Collections.Generic;
 using FFXIVAPP.Plugin.TeastParse.Events;
 using FFXIVAPP.Plugin.TeastParse.Models;
 using Newtonsoft.Json;
@@ -71,6 +70,10 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         public bool NeedUpdateInDatabase => _needUpdateInDatabase;
         public Coordinate Coordinate { get; set; }
 
+        
+        public List<ActorStatusModel> Beneficials { get; set; }
+        public List<ActorStatusModel> Detrimentals { get; set; }
+        
         #region Damage Made
         /// <summary>
         /// Damage per second during current timeline
@@ -168,6 +171,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
 
         public ActorModel(string name, string server, int level, Job job, ITimelineCollection timeline, bool isParty, bool isAlliance)
         {
+            Beneficials = new List<ActorStatusModel>();
+            Detrimentals = new List<ActorStatusModel>();
             Name = name;
             Server = server;
             Level = level;

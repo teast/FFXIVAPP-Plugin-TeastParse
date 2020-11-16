@@ -58,7 +58,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     Subject,
                     Direction,
                     ChatCode,
-                    Actions
+                    Actions,
+                    IsDetrimental
                 )
                 VALUES
                 (
@@ -78,7 +79,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     @Subject,
                     @Direction,
                     @ChatCode,
-                    @Actions
+                    @Actions,
+                    @IsDetrimental
                 );
             ";
 
@@ -246,24 +248,25 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
             const string tblDamage = @"
                 CREATE TABLE Damage
                 (
-                    Id          INTEGER PRIMARY KEY AUTOINCREMENT,
-                    OccurredUtc TEXT NOT NULL,
-                    Timestamp   TEXT,
-                    Source      TEXT,
-                    Target      TEXT,
-                    Damage      INT,
-                    Modifier    TEXT,
-                    Action      TEXT,
-                    Critical    INT,
-                    DirectHit   INT,
-                    Blocked     INT,
-                    Parried     INT,
-                    InitDmg     INT,
-                    EndTimeUtc  TEXT,
-                    Subject     TEXT,
-                    Direction   TEXT,
-                    ChatCode    TEXT,
-                    Actions     TEXT
+                    Id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                    OccurredUtc     TEXT NOT NULL,
+                    Timestamp       TEXT,
+                    Source          TEXT,
+                    Target          TEXT,
+                    Damage          INT,
+                    Modifier        TEXT,
+                    Action          TEXT,
+                    Critical        INT,
+                    DirectHit       INT,
+                    Blocked         INT,
+                    Parried         INT,
+                    InitDmg         INT,
+                    EndTimeUtc      TEXT,
+                    Subject         TEXT,
+                    Direction       TEXT,
+                    ChatCode        TEXT,
+                    Actions         TEXT,
+                    IsDetrimental   INT
                 );
             ";
 

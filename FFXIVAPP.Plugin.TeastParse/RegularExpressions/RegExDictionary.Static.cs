@@ -151,16 +151,42 @@ namespace FFXIVAPP.Plugin.TeastParse.RegularExpressions
                     Tuple.Create(GameLanguageEnum.Japanese, @"^( ⇒ )?(?<crit>クリティカル！ )?(?<target>.+)((に|は)、?)(?<amount>\d+) ?(\((?<modifier>.\d+)%\) ?)?(?<type>\w+)回復。$"),
                     Tuple.Create(GameLanguageEnum.Chinese, @"^:( ⇒ )?(?<crit>暴击！ )?(?<target>You|.+)恢复了?(?<amount>\d+)?(\((?<modifier>.\d+)%\))?点(?<type>\w+)。$"));
 
-        public readonly static RegExTypePair CurePlayeraction = new RegExTypePair(SubjectPlayer, null,
-            Tuple.Create(GameLanguageEnum.English, @"^(?<source>.+)('s|r) (?<action>.*) restores (?<amount>\d+) of (her|his|your) HP\.$"));
+        public readonly static RegExTypePair CurePlayerAction = new RegExTypePair(SubjectPlayer, null,
+            Tuple.Create(GameLanguageEnum.English, @"^(?<target>.+)('s|r) (?<action>.*) restores (?<amount>\d+) of (her|his|your) HP\.$")
+        );
 
         public readonly static RegExTypePair DetrimentalPlayer = new RegExTypePair(SubjectPlayer, null,
-            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?((T|t)he )?(?<target>You|.*) suffers the effect of (?<action>.*)\.$")
-            );
+            // TODO: Find german translation Tuple.Create(GameLanguageEnum.German, @"^\.$"),
+            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?((T|t)he )?(?<target>You|.+) suffers? the effect of (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.France, @"^( ⇒ )?(?<target>Vous|.+) subi(t|ssez?) l'effet (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.Japanese, @"^( ⇒ )?(?<target>.+)((に|は)、?)「(?<status>.+)」の効果。$"),
+            Tuple.Create(GameLanguageEnum.Chinese, @"^:( ⇒ )?对(?<target>.+)附加了“?(?<status>.+)”的效果。$")
+        );
 
         public readonly static RegExTypePair DetrimentalPlayerRecovers = new RegExTypePair(SubjectPlayer, null,
-            Tuple.Create(GameLanguageEnum.English, @"^ ⇒ ((T|t)he )?(?<target>You|.*) recovers from the effect of (?<action>.*)\.$")
-            );
+            // TODO: Find german translation Tuple.Create(GameLanguageEnum.German, @"^\.$"),
+            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?((T|t)he )?(?<target>You|.+) recovers? from the effect of (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.France, @"^( ⇒ )?(?<target>Vous|.+) (perd(ez?)?|ne subi(t|ssez?)) plus l'effet (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.Japanese, @"^( ⇒ )?(?<target>.+)((に|は)、?)「(?<status>.+)」が切れた。$"),
+            Tuple.Create(GameLanguageEnum.Chinese, @"^:( ⇒ )?(?<target>.+)的“(?<status>.+)”状态效果消失了。$")
+        );
+
+        public readonly static RegExTypePair BeneficialPlayer = new RegExTypePair(SubjectPlayer, null,
+            Tuple.Create(GameLanguageEnum.German, @"^( ⇒ )?(D(u|einer|(i|e)r|ich|as|ie|en) )?(?<target>.+) erh lt(st| den) Effekt von (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?(?<target>You|.+) gains? the effect of (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.France, @"^( ⇒ )?(?<target>Vous|.+) bénéficiez? de l'effet (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.Japanese, @"^( ⇒ )?(?<target>.+)((に|は)、?)「(?<status>.+)」の効果。$"),
+            Tuple.Create(GameLanguageEnum.Chinese, @"^:( ⇒ )?对(?<target>You|.+)附加了“?(?<status>.+)”的效果。$")
+        );
+
+        public readonly static RegExTypePair BeneficialLosePlayer = new RegExTypePair(SubjectPlayer, null,
+            // TODO: Find german translation for this, Tuple.Create(GameLanguageEnum.German, @"^\.$"),
+            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?(?<target>You|.+) loses? the effect of (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.France, @"^( ⇒ )?(?<target>Vous|.+) perd(ez?)? l'effet (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.Japanese, @"^( ⇒ )?(?<target>.+)((に|は)、?)「(?<status>.+)」が切れた。$"),
+            Tuple.Create(GameLanguageEnum.Chinese, @"^:( ⇒ )?(?<target>You|.+)的“(?<status>.+)”状态效果消失了。$")
+        );
+
 
         #region Misc chat lines
         public readonly static RegExTypePair MiscReadiesAction = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) readies (?<action>.+)\.$"));

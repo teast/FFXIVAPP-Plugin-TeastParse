@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using FFXIVAPP.Plugin.TeastParse.Actors;
 using FFXIVAPP.Plugin.TeastParse.ChatParse;
+using FFXIVAPP.Plugin.TeastParse.Factories;
 using FFXIVAPP.Plugin.TeastParse.Repositories;
 using FFXIVAPP.Plugin.TeastParse.ViewModels;
 
@@ -26,6 +27,8 @@ namespace FFXIVAPP.Plugin.TeastParse
             this.Singelton<MainViewModel>();
             this.Singelton<SettingsViewModel>();
             this.Singelton<AboutViewModel>();
+            this.Singelton<IDetrimentalFactory, DetrimentalFactory>();
+            this.Singelton<IBeneficialFactory, BeneficialFactory>();
         }
     }
 }

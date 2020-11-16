@@ -139,6 +139,178 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
+        [Xunit.SkippableFactAttribute(DisplayName="White mage uses Plenary Indulgence to recover hp on party.")]
+        [Xunit.TraitAttribute("FeatureTitle", "Various chatlogs that can occure regarding healing")]
+        [Xunit.TraitAttribute("Description", "White mage uses Plenary Indulgence to recover hp on party.")]
+        public virtual void WhiteMageUsesPlenaryIndulgenceToRecoverHpOnParty_()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("White mage uses Plenary Indulgence to recover hp on party.", null, tagsOfScenario, argumentsOfScenario);
+#line 14
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 15
+    testRunner.Given("Player with name Player Whm1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 16
+    testRunner.And("Player Whm1 is you", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 17
+    testRunner.And("Player with name Player Brd1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 18
+    testRunner.And("Player Brd1 is he", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 19
+    testRunner.And("Player with name Player Brd2", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 20
+    testRunner.And("Player Brd2 is she", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
+                            "code",
+                            "line"});
+                table14.AddRow(new string[] {
+                            "082B",
+                            "\"You uses Plenary Indulgence.\""});
+                table14.AddRow(new string[] {
+                            "08AE",
+                            "\" ⇒ You gains the effect of Confession.\""});
+                table14.AddRow(new string[] {
+                            "092E",
+                            "\" ⇒ Player Brd1 gains the effect of Confession.\""});
+                table14.AddRow(new string[] {
+                            "092E",
+                            "\" ⇒ Player Brd2 gains the effect of Confession.\""});
+                table14.AddRow(new string[] {
+                            "19AD",
+                            "\"Your Plenary Indulgence restores 11400 of your HP.\""});
+                table14.AddRow(new string[] {
+                            "19AD",
+                            "\"Player Brd1\'s Plenary Indulgence restores 11422 of his HP.\""});
+                table14.AddRow(new string[] {
+                            "19AD",
+                            "\"Player Brd2\'s Plenary Indulgence restores 11433 of her HP.\""});
+#line 21
+    testRunner.When("multiple chat lines", ((string)(null)), table14, "When ");
+#line hidden
+#line 30
+    testRunner.Then("Cure of 11400 should be stored for You on You.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 31
+    testRunner.And("Cure of 11422 should be stored for You on Player Brd1.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 32
+    testRunner.And("Cure of 11433 should be stored for You on Player Brd2.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="Scholar uses Horoscope to recover hp on party.")]
+        [Xunit.TraitAttribute("FeatureTitle", "Various chatlogs that can occure regarding healing")]
+        [Xunit.TraitAttribute("Description", "Scholar uses Horoscope to recover hp on party.")]
+        public virtual void ScholarUsesHoroscopeToRecoverHpOnParty_()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Scholar uses Horoscope to recover hp on party.", null, tagsOfScenario, argumentsOfScenario);
+#line 34
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 35
+    testRunner.Given("Player with name Player Sch1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 36
+    testRunner.And("Player Sch1 is you", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 37
+    testRunner.And("Player with name Player Brd1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 38
+    testRunner.And("Player Brd1 is he", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 39
+    testRunner.And("Player with name Player Brd2", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 40
+    testRunner.And("Player Brd2 is she", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
+                            "code",
+                            "line"});
+                table15.AddRow(new string[] {
+                            "082B",
+                            "\"You uses Horoscope.\""});
+                table15.AddRow(new string[] {
+                            "08AE",
+                            "\" ⇒ You gains the effect of Horoscope.\""});
+                table15.AddRow(new string[] {
+                            "092E",
+                            "\" ⇒ Player Brd1 gains the effect of Horoscope.\""});
+                table15.AddRow(new string[] {
+                            "092E",
+                            "\" ⇒ Player Brd2 gains the effect of Horoscope.\""});
+                table15.AddRow(new string[] {
+                            "19AD",
+                            "\"Your Horoscope restores 11400 of your HP.\""});
+                table15.AddRow(new string[] {
+                            "19AD",
+                            "\"Player Brd1\'s Horoscope restores 11422 of his HP.\""});
+                table15.AddRow(new string[] {
+                            "19AD",
+                            "\"Player Brd2\'s Horoscope restores 11433 of her HP.\""});
+#line 41
+    testRunner.When("multiple chat lines", ((string)(null)), table15, "When ");
+#line hidden
+#line 50
+    testRunner.Then("Cure of 11400 should be stored for You on You.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 51
+    testRunner.And("Cure of 11422 should be stored for You on Player Brd1.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 52
+    testRunner.And("Cure of 11433 should be stored for You on Player Brd2.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
         [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.4.0.0")]
         [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : System.IDisposable

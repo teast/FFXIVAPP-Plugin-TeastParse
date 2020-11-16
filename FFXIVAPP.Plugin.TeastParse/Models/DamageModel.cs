@@ -54,6 +54,15 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         public string ChatCode { get; set; }
 
         /// <summary>
+        /// True if this damage line is an detrimental damage.
+        /// </summary>
+        /// <remarks>
+        /// Detrimental damage gets calculated different because it
+        /// is more dynamic calculated due to no damage in logs
+        /// </remarks>
+        public bool IsDetrimental { get; set; }
+
+        /// <summary>
         /// Name of action. If null then an auto-attack damage
         /// </summary>
         public string Actions { get; set; }
