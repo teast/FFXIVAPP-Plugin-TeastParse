@@ -14,10 +14,10 @@ namespace FFXIVAPP.Plugin.TeastParse
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
-        private readonly IChatFactory _factory;
+        private readonly IChatFacade _factory;
         private readonly IActorItemHelper _actors;
 
-        public EventSubscriber(IChatFactory factory, IActorItemHelper actors)
+        public EventSubscriber(IChatFacade factory, IActorItemHelper actors)
         {
             _factory = factory;
             _actors = actors;

@@ -12,7 +12,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
     /// <summary>
     /// Handle everything related to chat log item parsing
     /// </summary>
-    public interface IChatFactory
+    public interface IChatFacade
     {
         /// <summary>
         /// Parse given line
@@ -21,7 +21,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         void HandleLine(ChatLogItem line);
     }
 
-    internal class ChatFactory : IChatFactory
+    internal class ChatFacade : IChatFacade
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly List<ChatCodes> _codes;
@@ -30,8 +30,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
         private readonly List<BaseParse> _parsers;
 
-        //public ChatFactory(Ioc ioc) // List<ChatCodes> codes, IActorFactory entities, IRepository repository)
-        public ChatFactory(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IRepository repository, IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory)
+        public ChatFacade(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IRepository repository, IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory)
         {
             //_codes = ioc.Get<List<ChatCodes>>();
             //_repository = ioc.Get<IRepository>();
@@ -42,15 +41,17 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                             .SelectMany(g => g.Codes)
                             .Select(cc => cc.Key)
                             .ToList();
+            var actionParse = new ActionParse(_codes, _repository);
             _parsers = new List<BaseParse>
             {
                 //ioc.Instantiate<BattleParse>(), // new BattleParse(_codes, entities, _repository),
                 //ioc.Instantiate<Timeline>() //new Timeline(_repository)
-                new BattleParse(_codes, actors, timeline, _repository),
                 new Timeline(timeline, _repository),
-                new CureParse(_codes, actors, timeline, _repository),
-                new DetrimentalParse(_codes, actors, timeline, detrimentalFactory, _repository),
-                new BeneficialParse(_codes, actors, timeline, beneficialFactory, _repository)
+                actionParse,
+                new BattleParse(_codes, actors, timeline, actionParse, _repository),
+                new CureParse(_codes, actors, timeline, actionParse, _repository),
+                new DetrimentalParse(_codes, actors, timeline, detrimentalFactory, actionParse, _repository),
+                new BeneficialParse(_codes, actors, timeline, beneficialFactory, actionParse, _repository)
             };
         }
 

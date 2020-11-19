@@ -44,7 +44,7 @@ namespace Tests.Steps
             _db = new Mock<IRepository>();
             ioc.Singelton<IRepository>(() => _db.Object);
             _pluginHost = new Mock<IPluginHost>();
-            _event = new EventSubscriber(ioc.Get<IChatFactory>(), ioc.Get<IActorItemHelper>());
+            _event = new EventSubscriber(ioc.Get<IChatFacade>(), ioc.Get<IActorItemHelper>());
             _event.Subscribe(_pluginHost.Object);
 
             // Make sure we bind our Actor collection to the parser

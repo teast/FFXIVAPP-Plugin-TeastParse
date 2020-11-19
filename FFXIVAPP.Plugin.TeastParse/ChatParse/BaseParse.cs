@@ -38,14 +38,14 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             .ToArray());
 
         /// <summary>
-        /// Check if this instance of <see ref="BaseParse" /> Can handle given chat code
+        /// Check if this instance of <see cref="BaseParse" /> Can handle given chat code
         /// </summary>
         /// <param name="code">chat code</param>
         /// <returns>true if this instance can handle the code</returns>
         public bool CanHandle(ulong code) => CodeIds.Contains(code);
 
         /// <summary>
-        /// Initialize a new instance of <see ref="BaseParse" />
+        /// Initialize a new instance of <see cref="BaseParse" />
         /// </summary>
         /// <param name="repository">Database repository to use</param>
         public BaseParse(IRepository repository)
@@ -54,14 +54,14 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         }
 
         /// <summary>
-        /// Will be called on each code that <see ref="CanHandle" /> approves
+        /// Will be called on each code that <see cref="CanHandle" /> approves
         /// </summary>
         /// <param name="code">chat code</param>
         /// <param name="item">the given chatlog item</param>
         public abstract void Handle(ulong code, ChatLogItem item);
 
         /// <summary>
-        /// Store given <see ref="DamageModel" /> in database
+        /// Store given <see cref="DamageModel" /> in database
         /// </summary>
         /// <param name="model">model to store</param>
         protected void StoreDamage(DamageModel model) => _repository.AddDamage(model);
@@ -80,7 +80,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         protected void CloseTimeline(string name, DateTime endUtc) => _repository.CloseTimeline(name, endUtc);
  
         /// <summary>
-        /// Store given <see ref="CureModel" /> in database
+        /// Store given <see cref="CureModel" /> in database
         /// </summary>
         /// <param name="model">model to store</param>
         protected void StoreCure(CureModel model) => _repository.AddCure(model);

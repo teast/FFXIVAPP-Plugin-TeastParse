@@ -43,12 +43,12 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         public string EndTimeUtc { get; set; }
 
         /// <summary>
-        /// Chat codes group <see ref="ChatCodeSubject" /> as string
+        /// Chat codes group <see cref="ChatCodeSubject" /> as string
         /// </summary>
         public string Subject { get; set; }
 
         /// <summary>
-        /// Chat codes group <see ref="ChatCodeDirection" /> as string
+        /// Chat codes group <see cref="ChatCodeDirection" /> as string
         /// </summary>
         public string Direction { get; set; }
         public string ChatCode { get; set; }

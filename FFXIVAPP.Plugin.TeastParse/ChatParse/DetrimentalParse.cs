@@ -20,26 +20,23 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         private readonly IDetrimentalFactory _detrimentalFactory;
 
         /// <summary>
-        /// A list of actions that have been used.
+        /// Contains latest found actions (<see cref="ActionParse" /> for actual parsing of actions)
         /// </summary>
-        /// <remarks>
-        /// This list is used to fetch last action based on source/direction
-        /// </remarks>
-        private ActionCollection _lastAction = new ActionCollection();
+        private readonly IActionCollection _actions;
 
         protected override Dictionary<ChatcodeType, ChatcodeTypeHandler> Handlers { get; }
 
         protected override List<ChatCodes> Codes { get; }
 
-        public DetrimentalParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IDetrimentalFactory detrimentalFactory, IRepository repository) : base(repository)
+        public DetrimentalParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IDetrimentalFactory detrimentalFactory, IActionCollection actions, IRepository repository) : base(repository)
         {
             _actors = actors;
             _timeline = timeline;
+            _actions = actions;
             _detrimentalFactory = detrimentalFactory;
-            Codes = codes.Where(c => c.Type == ChatcodeType.Actions || c.Type == ChatcodeType.Detrimental).ToList();
+            Codes = codes.Where(c => c.Type == ChatcodeType.Detrimental).ToList();
             Handlers = new Dictionary<ChatcodeType, ChatcodeTypeHandler>
             {
-                {ChatcodeType.Actions, _handleActions},
                 {ChatcodeType.Detrimental, _handleDetrimental}
             };
         }
@@ -52,12 +49,12 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         }
 
         /// <summary>
-        /// Converts given regex match to an <see ref="DamageModel" />
+        /// Converts given regex match to an <see cref="DamageModel" />
         /// </summary>
         /// <param name="r">regex match</param>
         /// <param name="item">the actual chat log item</param>
         /// <param name="group">chatcodes group</param>
-        /// <returns>an <see ref="DamaModel" /> based on input parameters</returns>
+        /// <returns>an <see cref="DamaModel" /> based on input parameters</returns>
         private (DetrimentalModel model, ActorModel target) ToModel(Match r, ChatLogItem item, Group group)
         {
             var target = r.Groups["target"].Value;
@@ -66,8 +63,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             var source = string.Empty;
             var action = string.Empty;
 
-            var la = _lastAction[group.Subject];
-            if (!string.IsNullOrEmpty(la.Name) && !string.IsNullOrEmpty(la.Action))
+            if (_actions.TryGet(group.Subject, out var la))
             {
                 source = la.Name;
                 action = la.Action;
@@ -84,38 +80,6 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             return (model, actorTarget);
         }
 
-        /// <summary>
-        /// Handle chat lines that are for an action
-        /// </summary>
-        /// <param name="activeCode">chat code</param>
-        /// <param name="group">the chat codes group entity (good for source/direction enum)</param>
-        /// <param name="item">the actual chat log item</param>
-        private void HandleAction(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
-        {
-            var source = match.Groups["source"].Value;
-            var action = match.Groups["action"].Value;
-
-            _lastAction[group.Subject] = new ActionSubject(group.Subject, source, action);
-        }
-
-        private ChatcodeTypeHandler _handleActions => new ChatcodeTypeHandler(
-            ChatcodeType.Actions,
-            new RegExDictionary(
-                RegExDictionary.ActionsPlayer,
-                RegExDictionary.ActionsMonster
-            ),
-            HandleAction,
-            new RegExDictionary(
-                RegExDictionary.MiscReadiesAction,
-                RegExDictionary.MiscBeginCasting,
-                RegExDictionary.MiscCancelAction,
-                RegExDictionary.MiscInterruptedAction,
-                RegExDictionary.MiscEnmityIncrease,
-                RegExDictionary.MiscReadyTeleport,
-                RegExDictionary.MiscMount,
-                RegExDictionary.MiscTargetOutOfRange
-            )
-        );
         private ChatcodeTypeHandler _handleDetrimental => new ChatcodeTypeHandler(
             ChatcodeType.Detrimental,
             new RegExDictionary(

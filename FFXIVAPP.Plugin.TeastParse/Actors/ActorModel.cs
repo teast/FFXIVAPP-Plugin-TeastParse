@@ -10,15 +10,16 @@ using static Sharlayan.Core.Enums.Actor;
 namespace FFXIVAPP.Plugin.TeastParse.Actors
 {
     /// <summary>
-    /// <see ref="ActorModel" /> is an representation of an <see ref="ActorItem" />.
+    /// <see cref="ActorModel" /> is an representation of an <see cref="ActorItem" />.
     /// </summary>
     /// <remarks>
-    /// Main purpose of <see ref="ActorModel" /> is to keep track of an <see ref="ActorItem" />
+    /// Main purpose of <see cref="ActorModel" /> is to keep track of an <see cref="ActorItem" />
     /// that has been notice in any of the tracking events.
     /// This class will keep track of the total damage and other parser related data.
     /// </remarks>
     public class ActorModel : ViewModelBase
     {
+        #region Fields
         private bool _needUpdateInDatabase = false;
         private bool _isParty;
         private bool _storedInDatabase = false;
@@ -27,12 +28,20 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         private string _timeline;
         private bool _isAlliance;
 
-        private ulong _partyTotalDamage = 0;
-        private ulong _allianceTotalDamage = 0;
-        private ulong _partyTotalHeal = 0;
-        private ulong _allianceTotalHeal = 0;
-        private ulong _partyTotalDamageTaken = 0;
-        private ulong _allianceTotalDamageTaken = 0;
+        /// <summary>
+        /// Contains weaponskill that was used before <see cref="_weaponskill" />
+        /// </summary>
+        private string _lastWeaponskill;
+
+        /// <summary>
+        /// Contains current weaponskill
+        /// </summary>
+        private string _weaponskill;
+
+        /// <summary>
+        /// Keep track on total dmg/heal/taken for party/alliance
+        /// </summary>
+        private readonly ITotalStats _totalStats;
 
         private ulong _totalDamage = 0;
         private ulong _timelineDamage = 0;
@@ -52,28 +61,40 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         private int _totalHPS;
         private double _percentOfTimelineHeal;
 
+        #endregion
 
+        #region Read-only Properties
         [JsonConverter(typeof(StringEnumConverter))]
-        public ActorType ActorType { get; set; }
+        public ActorType ActorType { get; }
         public string Name { get; }
         public string Server { get; }
         public int Level { get; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public Job Job { get; }
-        public bool StoredInDatabase
-        {
-            get => _storedInDatabase;
-            set { _needUpdateInDatabase = value ? false : _needUpdateInDatabase; _storedInDatabase = value; }
-        }
+        public Coordinate Coordinate { get; }
 
-        public bool NeedUpdateInDatabase => _needUpdateInDatabase;
-        public Coordinate Coordinate { get; set; }
+        #endregion
 
-        
+        #region Properties
         public List<ActorStatusModel> Beneficials { get; set; }
         public List<ActorStatusModel> Detrimentals { get; set; }
-        
+
+        public bool IsParty
+        {
+            get => _isParty;
+            set { _needUpdateInDatabase = true; _isParty = value; }
+        }
+
+        public bool IsAlliance
+        {
+            get => _isAlliance;
+            set { _needUpdateInDatabase = true; _isAlliance = value; }
+        }
+
+        public bool IsYou { get; set; }
+        #endregion
+
         #region Damage Made
         /// <summary>
         /// Damage per second during current timeline
@@ -155,21 +176,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         public double PercentOfTimelineHeal { get => _percentOfTimelineHeal; set => Set(() => _percentOfTimelineHeal = value); }
         #endregion
 
-        public bool IsParty
-        {
-            get => _isParty;
-            set { _needUpdateInDatabase = true; _isParty = value; }
-        }
-
-        public bool IsAlliance
-        {
-            get => _isAlliance;
-            set { _needUpdateInDatabase = true; _isAlliance = value; }
-        }
-
-        public bool IsYou { get; set; }
-
-        public ActorModel(string name, string server, int level, Job job, ITimelineCollection timeline, bool isParty, bool isAlliance)
+        public ActorModel(string name, string server, int level, Job job, ITimelineCollection timeline, bool isParty, bool isAlliance, ActorType actorType, ITotalStats totalStats, Coordinate coordinate)
         {
             Beneficials = new List<ActorStatusModel>();
             Detrimentals = new List<ActorStatusModel>();
@@ -177,12 +184,14 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
             Server = server;
             Level = level;
             Job = job;
+            ActorType = actorType;
+            Coordinate = coordinate;
             _timeline = timeline.Current.Name;
             _firstStart = timeline.Current.StartUtc;
             _timelineStart = timeline.Current.StartUtc;
             _isParty = isParty;
             _isAlliance = isAlliance;
-
+            _totalStats = totalStats;
             timeline.CurrentTimelineChange += OnTimelineChange;
         }
 
@@ -249,46 +258,30 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
             PercentOfTimelineDamage = 0;
             PercentOfTimelineDamageTaken = 0;
             PercentOfTimelineHeal = 0;
-
-            _partyTotalDamage = 0;
-            _allianceTotalDamage = 0;
-            _partyTotalDamageTaken = 0;
-            _allianceTotalDamageTaken = 0;
-            _partyTotalHeal = 0;
-            _allianceTotalHeal = 0;
         }
 
-        internal void TotalDmgUpdated(ulong partyDmg, ulong allianceDmg)
+        internal void TotalDmgUpdated()
         {
-            _partyTotalDamage = partyDmg;
-            _allianceTotalDamage = allianceDmg;
-
             if (_isParty)
-                PercentOfTimelineDamage = (double)TimelineDamage / _partyTotalDamage;
+                PercentOfTimelineDamage = (double)TimelineDamage / _totalStats.PartyTotalDamage;
             else
-                PercentOfTimelineDamage = (double)TimelineDamage / _allianceTotalDamage;
+                PercentOfTimelineDamage = (double)TimelineDamage / _totalStats.AllianceTotalDamage;
         }
 
-        internal void TotalDmgTakenUpdated(ulong partyDmg, ulong allianceDmg)
+        internal void TotalDmgTakenUpdated()
         {
-            _partyTotalDamageTaken = partyDmg;
-            _allianceTotalDamageTaken = allianceDmg;
-
             if (_isParty)
-                PercentOfTimelineDamageTaken = (double)TimelineDamageTaken / _partyTotalDamageTaken;
+                PercentOfTimelineDamageTaken = (double)TimelineDamageTaken / _totalStats.PartyTotalDamageTaken;
             else
-                PercentOfTimelineDamageTaken = (double)TimelineDamageTaken / _allianceTotalDamageTaken;
+                PercentOfTimelineDamageTaken = (double)TimelineDamageTaken / _totalStats.AllianceTotalDamageTaken;
         }
 
-        internal void TotalCureUpdated(ulong partyCure, ulong allianceCure)
+        internal void TotalCureUpdated()
         {
-            _partyTotalHeal = partyCure;
-            _allianceTotalHeal = allianceCure;
-
             if (_isParty)
-                PercentOfTimelineHeal = (double)TimelineHeal / _partyTotalHeal;
+                PercentOfTimelineHeal = (double)TimelineHeal / _totalStats.PartyTotalHeal;
             else
-                PercentOfTimelineHeal = (double)TimelineHeal / _allianceTotalHeal;
+                PercentOfTimelineHeal = (double)TimelineHeal / _totalStats.AllianceTotalHeal;
         }
     }
 

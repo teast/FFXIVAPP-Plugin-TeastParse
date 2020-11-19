@@ -21,7 +21,7 @@ namespace FFXIVAPP.Plugin.TeastParse
             this.Singelton<IRepository>(() => new Repository(connection));
             this.Singelton<IActorItemHelper, ActorItemHelper>();
             this.Singelton<IActorModelCollection, ActorModelCollection>();
-            this.Singelton<IChatFactory, ChatFactory>();
+            this.Singelton<IChatFacade, ChatFacade>();
             this.Singelton<ITimelineCollection, TimelineCollection>();
             this.Singelton<EventSubscriber>();
             this.Singelton<MainViewModel>();

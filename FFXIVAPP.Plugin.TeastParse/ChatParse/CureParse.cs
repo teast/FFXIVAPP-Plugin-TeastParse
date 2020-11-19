@@ -16,12 +16,9 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         /// <summary>
-        /// A list of actions that have been used.
+        /// Contains latest found actions (<see cref="ActionParse" /> for actual parsing of actions)
         /// </summary>
-        /// <remarks>
-        /// This list is used to fetch last action based on source/direction
-        /// </remarks>
-        private readonly ActionCollection _lastAction = new ActionCollection();
+        private readonly IActionCollection _actions;
 
         private readonly IActorModelCollection _actors;
         private readonly ITimelineCollection _timelines;
@@ -31,16 +28,16 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
         protected override Dictionary<ChatcodeType, ChatcodeTypeHandler> Handlers { get; }
 
-        public CureParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timelines, IRepository repository) : base(repository)
+        public CureParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timelines, IActionCollection actions, IRepository repository) : base(repository)
         {
             _actors = actors;
             _timelines = timelines;
+            _actions = actions;
             _repository = repository;
 
-            Codes = codes.Where(code => code.Type == ChatcodeType.Cure || code.Type == ChatcodeType.Actions).ToList();
+            Codes = codes.Where(code => code.Type == ChatcodeType.Cure).ToList();
             Handlers = new Dictionary<ChatcodeType, ChatcodeTypeHandler>
             {
-                { ChatcodeType.Actions, _handlerActions },
                 { ChatcodeType.Cure, _handlerCures },
             };
         }
@@ -67,20 +64,6 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             StoreCure(model);
         }
 
-        /// <summary>
-        /// Handle chat lines that are for an action
-        /// </summary>
-        /// <param name="activeCode">chat code</param>
-        /// <param name="group">the chat codes group entity (good for source/direction enum)</param>
-        /// <param name="item">the actual chat log item</param>
-        private void HandleAction(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
-        {
-            var source = match.Groups["source"].Value;
-            var action = match.Groups["action"].Value;
-
-            _lastAction[group.Subject] = new ActionSubject(group.Subject, source, action);
-        }
-
         private (CureModel model, ActorModel source, ActorModel target) ToModelFromBeneficial(Match match, ChatLogItem item, Group group)
         {
             var action = match.Groups["action"].Value;
@@ -100,7 +83,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 Logging.Log(Logger, $"Could not find beneficial that generates action \"{action}\" on actor target \"{target}\" so cannot get who casted the beneficial status for: [{code}] \"{item.Line}\"");
                 return (null, null, null);
             }
-            
+
             actorTarget.Beneficials.Remove(beneficial);
             var actorSource = _actors.GetModel(beneficial.Source, group.Subject);
 
@@ -137,8 +120,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             if (type != "HP")
                 return (null, null, null);
 
-            var la = _lastAction[group.Subject];
-            if (!string.IsNullOrEmpty(la.Name) && !string.IsNullOrEmpty(la.Action))
+            if (_actions.TryGet(group.Subject, out var la))
             {
                 source = la.Name;
                 action = la.Action;
@@ -168,24 +150,6 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
             return (model, actorSource, actorTarget);
         }
-
-        private ChatcodeTypeHandler _handlerActions => new ChatcodeTypeHandler(
-            ChatcodeType.Actions,
-            new RegExDictionary(RegExDictionary.ActionsPlayer),
-            HandleAction,
-            new RegExDictionary(
-            RegExDictionary.MiscReadiesAction,
-            RegExDictionary.MiscBeginCasting,
-            RegExDictionary.MiscCancelAction,
-            RegExDictionary.MiscInterruptedAction,
-            RegExDictionary.MiscEnmityIncrease,
-            RegExDictionary.MiscReadyTeleport,
-            RegExDictionary.MiscMount,
-            RegExDictionary.MiscTargetOutOfRange,
-            // This one can show up from enemies and therefore I have it here too.
-            RegExDictionary.ActionsMonster
-            )
-        );
 
         private ChatcodeTypeHandler _handlerCures => new ChatcodeTypeHandler(
             ChatcodeType.Cure,

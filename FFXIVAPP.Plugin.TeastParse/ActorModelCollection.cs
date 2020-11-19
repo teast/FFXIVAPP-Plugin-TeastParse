@@ -19,8 +19,8 @@ namespace FFXIVAPP.Plugin.TeastParse
     {
         event EventHandler<ActorAddedEvent> PartyActorAdded;
         event EventHandler<ActorAddedEvent> AllianceActorAdded;
-        ulong TotalPartyDamage { get; }
-        ulong TotalAllianceDamage { get; }
+        ulong PartyTotalDamage { get; }
+        ulong AllianceTotalDamage { get; }
 
         List<ActorModel> GetParty();
         List<ActorModel> GetAlliance();
@@ -32,7 +32,23 @@ namespace FFXIVAPP.Plugin.TeastParse
         void AddToTotalCure(ActorModel source, CureModel model);
     }
 
-    internal class ActorModelCollection : IActorModelCollection
+    /// <summary>
+    /// Keep tracks on total damage/heal/etc for party/alliance
+    /// </summary>
+    public interface ITotalStats
+    {
+        ulong PartyTotalDamage { get; }
+        ulong PartyTotalDamageTaken { get; }
+        ulong PartyTotalHeal { get; }
+        ulong AllianceTotalDamage { get; }
+        ulong AllianceTotalDamageTaken { get; }
+        ulong AllianceTotalHeal { get; }
+    }
+
+    /// <summary>
+    /// Concrete implementation of <see cref="IActorModelCollection" /> and <see cref="ITotalStats" />
+    /// </summary>
+    internal class ActorModelCollection : IActorModelCollection, ITotalStats
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ITimelineCollection _timeline;
@@ -54,36 +70,36 @@ namespace FFXIVAPP.Plugin.TeastParse
         public event EventHandler<ActorAddedEvent> PartyActorAdded;
         public event EventHandler<ActorAddedEvent> AllianceActorAdded;
 
-        public ulong TotalPartyDamage { get; private set; }
-        public ulong TotalAllianceDamage { get; private set; }
-        public ulong TotalPartyDamageTaken { get; private set; }
-        public ulong TotalAllianceDamageTaken { get; private set; }
-        public ulong TotalAllianceCure { get; private set; }
-        public ulong TotalPartyCure { get; private set; }
+        public ulong PartyTotalDamage { get; private set; }
+        public ulong AllianceTotalDamage { get; private set; }
+        public ulong PartyTotalDamageTaken { get; private set; }
+        public ulong AllianceTotalDamageTaken { get; private set; }
+        public ulong AllianceTotalHeal { get; private set; }
+        public ulong PartyTotalHeal { get; private set; }
 
         public ActorModelCollection(ITimelineCollection timeline, IActorItemHelper actors, IRepository repository)
         {
             _timeline = timeline;
             _actors = actors;
             _repository = repository;
-            TotalAllianceCure = 0;
-            TotalAllianceDamage = 0;
-            TotalAllianceDamageTaken = 0;
-            TotalPartyCure = 0;
-            TotalPartyDamage = 0;
-            TotalPartyDamageTaken = 0;
+            AllianceTotalHeal = 0;
+            AllianceTotalDamage = 0;
+            AllianceTotalDamageTaken = 0;
+            PartyTotalHeal = 0;
+            PartyTotalDamage = 0;
+            PartyTotalDamageTaken = 0;
             _localActors = new List<ActorModel>();
             _timeline.CurrentTimelineChange += OnTimelineChange;
         }
 
         private void OnTimelineChange(object sender, TimelineChangeEvent args)
         {
-            TotalAllianceCure = 0;
-            TotalAllianceDamage = 0;
-            TotalAllianceDamageTaken = 0;
-            TotalPartyCure = 0;
-            TotalPartyDamage = 0;
-            TotalPartyDamageTaken = 0;
+            AllianceTotalHeal = 0;
+            AllianceTotalDamage = 0;
+            AllianceTotalDamageTaken = 0;
+            PartyTotalHeal = 0;
+            PartyTotalDamage = 0;
+            PartyTotalDamageTaken = 0;
         }
 
         public List<ActorModel> GetParty()
@@ -118,12 +134,8 @@ namespace FFXIVAPP.Plugin.TeastParse
 
             actor = new ActorModel(name, ExtractServerName(name, item.actor.Name), item.actor.Level,
                     item.actor.Job, _timeline,
-                    _partyDirection.Contains(direction), _allianceDirection.Contains(direction))
-            {
-                ActorType = item.type,
-                Coordinate = item.actor.Coordinate,
-                StoredInDatabase = true
-            };
+                    _partyDirection.Contains(direction), _allianceDirection.Contains(direction),
+                    item.type, this, item.actor.Coordinate);
 
             if (actor.Name == _actors.CurrentPlayer?.Name)
             {
@@ -162,12 +174,8 @@ namespace FFXIVAPP.Plugin.TeastParse
 
             actor = new ActorModel(name, ExtractServerName(name, item.actor.Name), item.actor.Level,
                     item.actor.Job, _timeline,
-                    _partySubjects.Contains(subject), _allianceSubjects.Contains(subject))
-            {
-                ActorType = item.type,
-                Coordinate = item.actor.Coordinate,
-                StoredInDatabase = true
-            };
+                    _partySubjects.Contains(subject), _allianceSubjects.Contains(subject),
+                    item.type, this, item.actor.Coordinate);
 
             if (actor.Name == _actors.CurrentPlayer?.Name)
             {
@@ -200,11 +208,11 @@ namespace FFXIVAPP.Plugin.TeastParse
             if (actor == null || (!actor.IsParty && !actor.IsAlliance))
                 return;
             if (actor.IsParty)
-                TotalPartyDamage += damage.Damage;
+                PartyTotalDamage += damage.Damage;
             if (actor.IsAlliance)
-                TotalAllianceDamage += damage.Damage;
+                AllianceTotalDamage += damage.Damage;
 
-            _localActors.ForEach(a => a.TotalDmgUpdated(TotalPartyDamage, TotalAllianceDamage));
+            _localActors.ForEach(a => a.TotalDmgUpdated());
         }
 
         public void AddToTotalDamageTaken(ActorModel actor, DamageModel damage)
@@ -212,11 +220,11 @@ namespace FFXIVAPP.Plugin.TeastParse
             if (actor == null || (!actor.IsParty && !actor.IsAlliance))
                 return;
             if (actor.IsParty)
-                TotalPartyDamageTaken += damage.Damage;
+                PartyTotalDamageTaken += damage.Damage;
             if (actor.IsAlliance)
-                TotalAllianceDamageTaken += damage.Damage;
+                AllianceTotalDamageTaken += damage.Damage;
 
-            _localActors.ForEach(a => a.TotalDmgTakenUpdated(TotalPartyDamageTaken, TotalAllianceDamageTaken));
+            _localActors.ForEach(a => a.TotalDmgTakenUpdated());
         }
 
         public void AddToTotalCure(ActorModel actor, CureModel model)
@@ -224,11 +232,11 @@ namespace FFXIVAPP.Plugin.TeastParse
             if (actor == null || (!actor.IsParty && !actor.IsAlliance))
                 return;
             if (actor.IsParty)
-                TotalPartyCure += model.Cure;
+                PartyTotalHeal += model.Cure;
             if (actor.IsAlliance)
-                TotalAllianceCure += model.Cure;
+                AllianceTotalHeal += model.Cure;
 
-            _localActors.ForEach(a => a.TotalCureUpdated(TotalPartyCure, TotalAllianceCure));
+            _localActors.ForEach(a => a.TotalCureUpdated());
         }
 
         /// <summary>
@@ -308,7 +316,7 @@ namespace FFXIVAPP.Plugin.TeastParse
         }
 
         /// <summary>
-        /// All <see ref="ChatCodeSubject" /> that an party member can have
+        /// All <see cref="ChatCodeSubject" /> that an party member can have
         /// </summary>
         private readonly static ChatCodeSubject[] _partySubjects = new ChatCodeSubject[]
         {
@@ -316,7 +324,7 @@ namespace FFXIVAPP.Plugin.TeastParse
         };
 
         /// <summary>
-        /// All <see ref="ChatCodeSubject" /> that an alliance member can have
+        /// All <see cref="ChatCodeSubject" /> that an alliance member can have
         /// </summary>
         private readonly static ChatCodeSubject[] _allianceSubjects = new ChatCodeSubject[]
         {
@@ -324,7 +332,7 @@ namespace FFXIVAPP.Plugin.TeastParse
         };
 
         /// <summary>
-        /// All <see ref="ChatCodeDirection" /> that an party member can have
+        /// All <see cref="ChatCodeDirection" /> that an party member can have
         /// </summary>
         private readonly static ChatCodeDirection[] _partyDirection = new ChatCodeDirection[]
         {
@@ -332,7 +340,7 @@ namespace FFXIVAPP.Plugin.TeastParse
         };
 
         /// <summary>
-        /// All <see ref="ChatCodeDirection" /> that an alliance member can have
+        /// All <see cref="ChatCodeDirection" /> that an alliance member can have
         /// </summary>
         private readonly static ChatCodeDirection[] _allianceDirection = new ChatCodeDirection[]
         {

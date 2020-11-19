@@ -3,7 +3,18 @@ using System.Linq;
 
 namespace FFXIVAPP.Plugin.TeastParse.Models
 {
-    public class ActionCollection
+    /// <summary>
+    /// Interface to fetching last used action for given <see cref="ChatCodeSubject" />
+    /// </summary>
+    internal interface IActionCollection
+    {
+        bool TryGet(ChatCodeSubject subject, out ActionSubject action);
+    }
+
+    /// <summary>
+    /// Collection of last used action based on <see cref="ChatCodeSubject" />
+    /// </summary>
+    public class ActionCollection: IActionCollection
     {
         internal SortedList<ulong, ActionSubject> _actions = new SortedList<ulong, ActionSubject>();
         private ulong _actionIndex = ulong.MaxValue;
@@ -16,6 +27,12 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
             if (subject == ChatCodeSubject.UnEngaged)
                 return ChatCodeSubject.Engaged;
             return subject;
+        }
+
+        public bool TryGet(ChatCodeSubject subject, out ActionSubject action)
+        {
+            action = this[subject];
+            return (!string.IsNullOrEmpty(action.Name) && !string.IsNullOrEmpty(action.Action));
         }
 
         public ActionSubject this[ChatCodeSubject subject]

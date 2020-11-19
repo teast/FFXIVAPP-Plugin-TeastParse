@@ -78,7 +78,7 @@ namespace FFXIVAPP.Plugin.TeastParse
         public void Singelton<I, T>() where T : I => AddSingleLoader(new LazyLoader<I>(() => Instantiate<T>()));
 
         /// <summary>
-        /// Make sure only one loader for type T exists in <see ref="_objects" />.
+        /// Make sure only one loader for type T exists in <see cref="_objects" />.
         /// </summary>
         private void AddSingleLoader<T>(LazyLoader<T> loader)
         {

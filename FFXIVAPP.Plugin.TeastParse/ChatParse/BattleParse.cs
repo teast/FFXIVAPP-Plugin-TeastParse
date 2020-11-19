@@ -17,18 +17,15 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
     internal class BattleParse : BaseChatParse
     {
         /// <summary>
-        /// A list of actions that have been used.
-        /// </summary>
-        /// <remarks>
-        /// This list is used to fetch last action based on source/direction
-        /// </remarks>
-        private ActionCollection _lastAction = new ActionCollection();
-
-        /// <summary>
         /// All known actors.
         /// </summary>
         private readonly IActorModelCollection _actors;
         private readonly ITimelineCollection _timelines;
+
+        /// <summary>
+        /// Contains latest found actions (<see cref="ActionParse" /> for actual parsing of actions)
+        /// </summary>
+        private readonly IActionCollection _actions;
 
         /// <summary>
         /// Contains all chat codes that relates to action and damage
@@ -41,35 +38,21 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         protected override Dictionary<ChatcodeType, ChatcodeTypeHandler> Handlers { get; }
 
         /// <summary>
-        /// Initialize a new instance of <see ref="BattleParse" />.
+        /// Initialize a new instance of <see cref="BattleParse" />.
         /// </summary>
         /// <param name="codes">all known chat codes</param>
         /// <param name="actors">actor handler</param>
         /// <param name="repository">database repository</param>
-        public BattleParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timelines, IRepository repository) : base(repository)
+        public BattleParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timelines, IActionCollection actions, IRepository repository) : base(repository)
         {
             _actors = actors;
             _timelines = timelines;
-            Codes = codes.Where(c => c.Type == ChatcodeType.Actions || c.Type == ChatcodeType.Damage).ToList();
+            _actions = actions;
+            Codes = codes.Where(c => c.Type == ChatcodeType.Damage).ToList();
             Handlers = new Dictionary<ChatcodeType, ChatcodeTypeHandler>
             {
-                {ChatcodeType.Actions, _handleActions },
                 {ChatcodeType.Damage, _handleDamage}
             };
-        }
-
-        /// <summary>
-        /// Handle chat lines that are for an action
-        /// </summary>
-        /// <param name="activeCode">chat code</param>
-        /// <param name="group">the chat codes group entity (good for source/direction enum)</param>
-        /// <param name="item">the actual chat log item</param>
-        private void HandleAction(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
-        {
-            var source = match.Groups["source"].Value;
-            var action = match.Groups["action"].Value;
-
-            _lastAction[group.Subject] = new ActionSubject(group.Subject, source, action);
         }
 
         /// <summary>
@@ -89,12 +72,12 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         }
 
         /// <summary>
-        /// Converts given regex match to an <see ref="DamageModel" />
+        /// Converts given regex match to an <see cref="DamageModel" />
         /// </summary>
         /// <param name="r">regex match</param>
         /// <param name="item">the actual chat log item</param>
         /// <param name="group">chatcodes group</param>
-        /// <returns>an <see ref="DamaModel" /> based on input parameters</returns>
+        /// <returns>an <see cref="DamaModel" /> based on input parameters</returns>
         private (DamageModel model, ActorModel source, ActorModel target) ToModel(Match r, ChatLogItem item, Group group)
         {
             var source = r.Groups["source"].Value;
@@ -111,8 +94,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
             if (string.IsNullOrWhiteSpace(source) && !selfInflictedDamage)
             {
-                var la = _lastAction[group.Subject];
-                if (!string.IsNullOrEmpty(la.Name) && !string.IsNullOrEmpty(la.Action))
+                if (_actions.TryGet(group.Subject, out var la))
                 {
                     source = la.Name;
                     action = la.Action;
@@ -146,25 +128,6 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
             return (model, actorSource, actorTarget);
         }
-
-        private ChatcodeTypeHandler _handleActions => new ChatcodeTypeHandler(
-            ChatcodeType.Actions,
-            new RegExDictionary(
-                RegExDictionary.ActionsPlayer,
-                RegExDictionary.ActionsMonster
-            ),
-            HandleAction,
-            new RegExDictionary(
-                RegExDictionary.MiscReadiesAction,
-                RegExDictionary.MiscBeginCasting,
-                RegExDictionary.MiscCancelAction,
-                RegExDictionary.MiscInterruptedAction,
-                RegExDictionary.MiscEnmityIncrease,
-                RegExDictionary.MiscReadyTeleport,
-                RegExDictionary.MiscMount,
-                RegExDictionary.MiscTargetOutOfRange
-            )
-        );
 
         private ChatcodeTypeHandler _handleDamage => new ChatcodeTypeHandler(
             ChatcodeType.Damage,
