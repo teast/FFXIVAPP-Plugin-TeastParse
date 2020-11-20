@@ -1,5 +1,3 @@
-using FFXIVAPP.Plugin.TeastParse.Actors;
-
 namespace FFXIVAPP.Plugin.TeastParse.Models
 {
     /// <summary>
@@ -10,48 +8,48 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         /// <summary>
         /// Timestamp when it occurred (in UTC)
         /// </summary>
-        public string OccurredUtc { get; set; }
+        public string OccurredUtc { get; }
         /// <summary>
         /// Timestamp from Shalayan
         /// </summary>
-        public string Timestamp { get; set; }
+        public string Timestamp { get; }
 
         /// <summary>
         /// Name of the actor that did the damage
         /// </summary>
-        public string Source { get; set; }
+        public string Source { get; }
         /// <summary>
         /// Name of the actor that received the damage
         /// </summary>
-        public string Target { get; set; }
-        public ulong Damage { get; set; }
-        public string Modifier { get; set; }
-        public string Action { get; set; }
-        public bool Critical { get; set; }
-        public bool DirectHit { get; set; }
-        public bool Blocked { get; set; }
-        public bool Parried { get; set; }
+        public string Target { get; }
+        public ulong Damage { get; }
+        public string Modifier { get; }
+        public ActionModel Action { get; }
+        public bool Critical { get; }
+        public bool DirectHit { get; }
+        public bool Blocked { get; }
+        public bool Parried { get; }
 
         /// <summary>
         /// This is used to determ what initial damage an detrimental attack had
         /// </summary>
-        public ulong? InitDmg { get; set; }
+        public ulong? InitDmg { get; }
 
         /// <summary>
         /// This is used to determ when an detrimental attack was ended
         /// </summary>
-        public string EndTimeUtc { get; set; }
+        public string EndTimeUtc { get; }
 
         /// <summary>
         /// Chat codes group <see cref="ChatCodeSubject" /> as string
         /// </summary>
-        public string Subject { get; set; }
+        public string Subject { get; }
 
         /// <summary>
         /// Chat codes group <see cref="ChatCodeDirection" /> as string
         /// </summary>
-        public string Direction { get; set; }
-        public string ChatCode { get; set; }
+        public string Direction { get; }
+        public string ChatCode { get; }
 
         /// <summary>
         /// True if this damage line is an detrimental damage.
@@ -60,11 +58,45 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         /// Detrimental damage gets calculated different because it
         /// is more dynamic calculated due to no damage in logs
         /// </remarks>
-        public bool IsDetrimental { get; set; }
+        public bool IsDetrimental { get; }
 
-        /// <summary>
-        /// Name of action. If null then an auto-attack damage
-        /// </summary>
-        public string Actions { get; set; }
+        public DamageModel(
+            string occurredUtc,
+            string timestamp,
+            string source,
+            string target,
+            ulong damage,
+            string modifier,
+            ActionModel action,
+            bool critical,
+            bool directHit,
+            bool blocked,
+            bool parried,
+            ulong? initDmg,
+            string endTimeUtc,
+            string subject,
+            string direction,
+            string chatCode,
+            bool isDetrimental
+        )
+        {
+            OccurredUtc = occurredUtc;
+            Timestamp = timestamp;
+            Source = source;
+            Target = target;
+            Damage = damage;
+            Modifier = modifier;
+            Action = action;
+            Critical = critical;
+            DirectHit = directHit;
+            Blocked = blocked;
+            Parried = parried;
+            InitDmg = initDmg;
+            EndTimeUtc = endTimeUtc;
+            Subject = subject;
+            Direction = direction;
+            ChatCode = chatCode;
+            IsDetrimental = isDetrimental;
+        }
     }
 }

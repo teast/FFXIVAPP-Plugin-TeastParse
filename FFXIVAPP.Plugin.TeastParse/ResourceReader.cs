@@ -19,6 +19,14 @@ namespace FFXIVAPP.Plugin.TeastParse
             }
         }
 
+        public static string Actions()
+        {
+            using (var sr = new StreamReader(typeof(Plugin).GetTypeInfo().Assembly.GetManifestResourceStream("FFXIVAPP.Plugin.TeastParse.Resources.actions.json")))
+            {
+                return sr.ReadToEnd();
+            }
+        }
+
         private static IEnumerable<FileWithContent> _allTranslationsCache;
         public static IEnumerable<FileWithContent> AllTranslations => _allTranslationsCache ?? (_allTranslationsCache = FetchAllTranslations());
         private static IEnumerable<FileWithContent> FetchAllTranslations()

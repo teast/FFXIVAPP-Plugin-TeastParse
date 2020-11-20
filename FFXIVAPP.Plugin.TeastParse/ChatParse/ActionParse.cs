@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using FFXIVAPP.Plugin.TeastParse.Factories;
 using FFXIVAPP.Plugin.TeastParse.Models;
 using FFXIVAPP.Plugin.TeastParse.RegularExpressions;
 using FFXIVAPP.Plugin.TeastParse.Repositories;
@@ -19,7 +20,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         /// <remarks>
         /// This list is used to fetch last action based on source/direction
         /// </remarks>
-        private ActionCollection _lastAction = new ActionCollection();
+        private readonly ActionCollection _lastAction;
 
         /// <summary>
         /// Contains all chat codes that relates to action and damage
@@ -31,8 +32,9 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         /// </summary>
         protected override Dictionary<ChatcodeType, ChatcodeTypeHandler> Handlers { get; }
 
-        public ActionParse(List<ChatCodes> codes, IRepository repository) : base(repository)
+        public ActionParse(List<ChatCodes> codes, IActionFactory actionFactory, IRepository repository) : base(repository)
         {
+            _lastAction = new ActionCollection(actionFactory);
             Codes = codes.Where(c => c.Type == ChatcodeType.Actions).ToList();
             Handlers = new Dictionary<ChatcodeType, ChatcodeTypeHandler>
             {
@@ -41,6 +43,8 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         }
 
         public bool TryGet(ChatCodeSubject subject, out ActionSubject action) => _lastAction.TryGet(subject, out action);
+
+        public IActionFactory Factory => _lastAction.Factory;
 
         /// <summary>
         /// Handle chat lines that are for an action
@@ -54,7 +58,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             var action = match.Groups["action"].Value;
 
             _lastAction[group.Subject] = new ActionSubject(group.Subject, source, action);
-        
+
         }
 
         private ChatcodeTypeHandler _handleActions => new ChatcodeTypeHandler(

@@ -7,10 +7,10 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
     /// </summary>
     internal class BeneficialModel : ActorStatusModel
     {
-        public BeneficialModel(string name, string actionName, int potency, string timestamp,
+        public BeneficialModel(string name, ActionModel action, int potency, string timestamp,
             DateTime timeUtc, DateTime? lastUtc, string source, string target,
             string chatCode, string direction, string subject)
-            : base(name, actionName, potency, timestamp, timeUtc, lastUtc, source, target, chatCode, direction, subject)
+            : base(name, action, potency, timestamp, timeUtc, lastUtc, source, target, chatCode, direction, subject)
         {
 
         }

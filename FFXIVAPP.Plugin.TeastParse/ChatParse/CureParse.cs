@@ -77,7 +77,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 return (null, null, null);
             }
 
-            var beneficial = actorTarget.Beneficials.FirstOrDefault(b => b.ActionName == action);
+            var beneficial = actorTarget.Beneficials.FirstOrDefault(b => b.Action.Name == action);
             if (beneficial == null)
             {
                 Logging.Log(Logger, $"Could not find beneficial that generates action \"{action}\" on actor target \"{target}\" so cannot get who casted the beneficial status for: [{code}] \"{item.Line}\"");

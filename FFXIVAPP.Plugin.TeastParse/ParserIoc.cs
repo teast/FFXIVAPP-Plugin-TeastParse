@@ -29,6 +29,7 @@ namespace FFXIVAPP.Plugin.TeastParse
             this.Singelton<AboutViewModel>();
             this.Singelton<IDetrimentalFactory, DetrimentalFactory>();
             this.Singelton<IBeneficialFactory, BeneficialFactory>();
+            this.Singelton<IActionFactory>(() => new ActionFactory(ResourceReader.Actions()));
         }
     }
 }

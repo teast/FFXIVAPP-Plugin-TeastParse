@@ -15,7 +15,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         /// <summary>
         /// Name of action that gaved the detrimental/beneficial
         /// </summary>
-        public string ActionName { get; }
+        public ActionModel Action { get; }
 
         /// <summary>
         /// Timestamp from FFXIV when it occured
@@ -65,7 +65,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         /// </summary>
         public string Subject { get; set; }
 
-        public ActorStatusModel(string name, string actionName, int potency, string timestamp,
+        public ActorStatusModel(string name, ActionModel action, int potency, string timestamp,
             DateTime timeUtc, DateTime? lastUtc, string source, string target,
             string chatCode, string direction, string subject)
         {
@@ -74,7 +74,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
             TimeUtc = timeUtc;
             Source = source;
             Target = target;
-            ActionName = actionName;
+            Action = action;
             LastUtc = lastUtc;
             Potency = potency;
         }

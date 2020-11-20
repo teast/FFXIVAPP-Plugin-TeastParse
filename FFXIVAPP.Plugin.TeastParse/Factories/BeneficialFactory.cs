@@ -5,7 +5,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
 {
     internal interface IBeneficialFactory
     {
-        BeneficialModel GetModel(string name, string timestamp, DateTime timeUtc, string source, string target, string chatCode, string direction, string subject);
+        BeneficialModel GetModel(string name, string timestamp, DateTime timeUtc, string source, string target, string chatCode, string direction, string subject, IActionFactory actionFactory);
     }
 
     /// <summary>
@@ -14,13 +14,13 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
     /// </summary>
     internal class BeneficialFactory : IBeneficialFactory
     {
-        public BeneficialModel GetModel(string name, string timestamp, DateTime timeUtc, string source, string target, string chatCode, string direction, string subject)
+        public BeneficialModel GetModel(string name, string timestamp, DateTime timeUtc, string source, string target, string chatCode, string direction, string subject, IActionFactory actionFactory)
         {
             // TODO: Use an "database" to lookup information about an beneficial here
             var lastUtc = (DateTime?)null;
             var actionName = name == "Confession" ? "Plenary Indulgence" : name;
             var potency = 0;
-            return new BeneficialModel(name, actionName, potency, timestamp, timeUtc, lastUtc, source, target, chatCode, direction, subject);
+            return new BeneficialModel(name, actionFactory.GetAction(actionName), potency, timestamp, timeUtc, lastUtc, source, target, chatCode, direction, subject);
         }
     }
 }

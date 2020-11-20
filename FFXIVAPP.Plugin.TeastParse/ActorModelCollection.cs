@@ -4,6 +4,7 @@ using System.Linq;
 using FFXIVAPP.Common.Utilities;
 using FFXIVAPP.Plugin.TeastParse.Actors;
 using FFXIVAPP.Plugin.TeastParse.Events;
+using FFXIVAPP.Plugin.TeastParse.Factories;
 using FFXIVAPP.Plugin.TeastParse.Models;
 using FFXIVAPP.Plugin.TeastParse.Repositories;
 using NLog;
@@ -35,7 +36,7 @@ namespace FFXIVAPP.Plugin.TeastParse
     /// <summary>
     /// Keep tracks on total damage/heal/etc for party/alliance
     /// </summary>
-    public interface ITotalStats
+    internal interface ITotalStats
     {
         ulong PartyTotalDamage { get; }
         ulong PartyTotalDamageTaken { get; }
@@ -43,6 +44,7 @@ namespace FFXIVAPP.Plugin.TeastParse
         ulong AllianceTotalDamage { get; }
         ulong AllianceTotalDamageTaken { get; }
         ulong AllianceTotalHeal { get; }
+        IActionFactory ActionFactory { get; }
     }
 
     /// <summary>
@@ -77,11 +79,14 @@ namespace FFXIVAPP.Plugin.TeastParse
         public ulong AllianceTotalHeal { get; private set; }
         public ulong PartyTotalHeal { get; private set; }
 
-        public ActorModelCollection(ITimelineCollection timeline, IActorItemHelper actors, IRepository repository)
+        public IActionFactory ActionFactory { get; }
+
+        public ActorModelCollection(ITimelineCollection timeline, IActorItemHelper actors, IActionFactory actionFactory, IRepository repository)
         {
             _timeline = timeline;
             _actors = actors;
             _repository = repository;
+            ActionFactory = actionFactory;
             AllianceTotalHeal = 0;
             AllianceTotalDamage = 0;
             AllianceTotalDamageTaken = 0;

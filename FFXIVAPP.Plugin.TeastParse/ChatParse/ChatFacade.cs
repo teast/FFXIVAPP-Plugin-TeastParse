@@ -30,7 +30,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
         private readonly List<BaseParse> _parsers;
 
-        public ChatFacade(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IRepository repository, IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory)
+        public ChatFacade(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IRepository repository, IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory, IActionFactory actionFactory)
         {
             //_codes = ioc.Get<List<ChatCodes>>();
             //_repository = ioc.Get<IRepository>();
@@ -41,7 +41,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                             .SelectMany(g => g.Codes)
                             .Select(cc => cc.Key)
                             .ToList();
-            var actionParse = new ActionParse(_codes, _repository);
+            var actionParse = new ActionParse(_codes, actionFactory, _repository);
             _parsers = new List<BaseParse>
             {
                 //ioc.Instantiate<BattleParse>(), // new BattleParse(_codes, entities, _repository),

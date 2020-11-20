@@ -107,24 +107,25 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             var actorSource = string.IsNullOrEmpty(source) ? null : _actors.GetModel(source, group.Subject);
             var actorTarget = string.IsNullOrEmpty(target) ? null : _actors.GetModel(target, group.Direction, group.Subject);
 
-            var model = new DamageModel
-            {
-                OccurredUtc = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
-                Timestamp = item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
-                Source = source,
-                Target = target,
-                Action = action,
-                Damage = string.IsNullOrWhiteSpace(amount) ? 0 : Convert.ToUInt64(amount),
-                Modifier = modifier,
-                Critical = !string.IsNullOrWhiteSpace(crit),
-                Blocked = !string.IsNullOrWhiteSpace(block),
-                Parried = !string.IsNullOrWhiteSpace(parry),
-                DirectHit = !string.IsNullOrWhiteSpace(direct),
-                Subject = group.Subject.ToString(),
-                Direction = group.Direction.ToString(),
-                ChatCode = code
-                // TODO: Uncomment this to see what actions have been recored at this time: Actions = Newtonsoft.Json.JsonConvert.SerializeObject(_lastAction._actions)
-            };
+            var model = new DamageModel(
+                occurredUtc: DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                timestamp: item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
+                source: source,
+                target: target,
+                damage: string.IsNullOrWhiteSpace(amount) ? 0 : Convert.ToUInt64(amount),
+                modifier: modifier,
+                action: _actions.Factory.GetAction(action, actorSource),
+                critical: !string.IsNullOrWhiteSpace(crit),
+                directHit: !string.IsNullOrWhiteSpace(direct),
+                blocked: !string.IsNullOrWhiteSpace(block),
+                parried: !string.IsNullOrWhiteSpace(parry),
+                initDmg: null,
+                endTimeUtc: null,
+                subject: group.Subject.ToString(),
+                direction: group.Direction.ToString(),
+                chatCode: code,
+                isDetrimental: false
+            );
 
             return (model, actorSource, actorTarget);
         }

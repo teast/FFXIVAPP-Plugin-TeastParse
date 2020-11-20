@@ -29,16 +29,6 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         private bool _isAlliance;
 
         /// <summary>
-        /// Contains weaponskill that was used before <see cref="_weaponskill" />
-        /// </summary>
-        private string _lastWeaponskill;
-
-        /// <summary>
-        /// Contains current weaponskill
-        /// </summary>
-        private string _weaponskill;
-
-        /// <summary>
         /// Keep track on total dmg/heal/taken for party/alliance
         /// </summary>
         private readonly ITotalStats _totalStats;
@@ -74,6 +64,15 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         public Job Job { get; }
         public Coordinate Coordinate { get; }
 
+        /// <summary>
+        /// Contains weaponskill that was used before <see cref="_weaponskill" />
+        /// </summary>
+        public string LastWeaponskill { get; private set; }
+
+        /// <summary>
+        /// Contains current weaponskill
+        /// </summary>
+        public string Weaponskill { get; private set; }
         #endregion
 
         #region Properties
@@ -176,7 +175,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         public double PercentOfTimelineHeal { get => _percentOfTimelineHeal; set => Set(() => _percentOfTimelineHeal = value); }
         #endregion
 
-        public ActorModel(string name, string server, int level, Job job, ITimelineCollection timeline, bool isParty, bool isAlliance, ActorType actorType, ITotalStats totalStats, Coordinate coordinate)
+        internal ActorModel(string name, string server, int level, Job job, ITimelineCollection timeline, bool isParty, bool isAlliance, ActorType actorType, ITotalStats totalStats, Coordinate coordinate)
         {
             Beneficials = new List<ActorStatusModel>();
             Detrimentals = new List<ActorStatusModel>();

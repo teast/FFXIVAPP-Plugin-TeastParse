@@ -159,7 +159,7 @@ namespace Tests.Steps
                         m.Target == target &&
                         m.Critical == crit && m.Blocked == blocked && m.Parried == parry && m.DirectHit == direct &&
                         (string.IsNullOrEmpty(modifier) || m.Modifier == modifier) &&
-                        m.Action == action)), Times.Once);
+                        m.Action.Name == action)), Times.Once);
         }
 
         [Then("Damage of (.*) with critical hit: (.*), blocked: (.*), parry: (.*), direct hit: (.*), modifier: (.*), should be stored for player (.*) against (.*)")]

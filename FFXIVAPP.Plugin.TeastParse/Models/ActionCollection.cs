@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using FFXIVAPP.Plugin.TeastParse.Factories;
 
 namespace FFXIVAPP.Plugin.TeastParse.Models
 {
@@ -9,24 +10,22 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
     internal interface IActionCollection
     {
         bool TryGet(ChatCodeSubject subject, out ActionSubject action);
+        IActionFactory Factory { get; }
     }
 
     /// <summary>
     /// Collection of last used action based on <see cref="ChatCodeSubject" />
     /// </summary>
-    public class ActionCollection: IActionCollection
+    internal class ActionCollection : IActionCollection
     {
-        internal SortedList<ulong, ActionSubject> _actions = new SortedList<ulong, ActionSubject>();
+        private SortedList<ulong, ActionSubject> _actions = new SortedList<ulong, ActionSubject>();
         private ulong _actionIndex = ulong.MaxValue;
 
-        /// <summary>
-        /// Some subjects are equal to each other when it comes to actions
-        /// </summary>
-        private ChatCodeSubject TranslateSubject(ChatCodeSubject subject)
+        public IActionFactory Factory { get; }
+
+        public ActionCollection(IActionFactory factory)
         {
-            if (subject == ChatCodeSubject.UnEngaged)
-                return ChatCodeSubject.Engaged;
-            return subject;
+            Factory = factory;
         }
 
         public bool TryGet(ChatCodeSubject subject, out ActionSubject action)
@@ -83,6 +82,14 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
             }
         }
 
-
+        /// <summary>
+        /// Some subjects are equal to each other when it comes to actions
+        /// </summary>
+        private ChatCodeSubject TranslateSubject(ChatCodeSubject subject)
+        {
+            if (subject == ChatCodeSubject.UnEngaged)
+                return ChatCodeSubject.Engaged;
+            return subject;
+        }
     }
 }

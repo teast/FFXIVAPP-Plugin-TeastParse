@@ -3,7 +3,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
     /// <summary>
     /// Contains an "KeyValuePair" mapping for an action that is based on the actions subject value + name of the subject
     /// </summary>
-    public struct ActionSubject
+    internal struct ActionSubject
     {
         public ChatCodeSubject Subject { get; }
         public string Name { get; }
