@@ -58,7 +58,9 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     Subject,
                     Direction,
                     ChatCode,
-                    IsDetrimental
+                    IsDetrimental,
+                    IsCombo,
+                    Potency
                 )
                 VALUES
                 (
@@ -78,7 +80,9 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     @Subject,
                     @Direction,
                     @ChatCode,
-                    @IsDetrimental
+                    @IsDetrimental,
+                    @IsCombo,
+                    @Potency
                 );
             ";
 
@@ -271,7 +275,9 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     Subject         TEXT,
                     Direction       TEXT,
                     ChatCode        TEXT,
-                    IsDetrimental   INT
+                    IsDetrimental   INT,
+                    IsCombo         INT,
+                    Potency         INT
                 );
             ";
 

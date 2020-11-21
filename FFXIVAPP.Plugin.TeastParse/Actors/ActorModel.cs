@@ -209,6 +209,11 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
             {
                 TimelineDamage += model.Damage;
                 TotalDamage += model.Damage;
+                if (model.Action.Category == ActionCategory.Weaponskill)
+                {
+                    LastWeaponskill = Weaponskill;
+                    Weaponskill = model.Action.Name;
+                }
             }
             else if (model.Target == this.Name || (this.IsYou && model.Target.IsYou()))
             {

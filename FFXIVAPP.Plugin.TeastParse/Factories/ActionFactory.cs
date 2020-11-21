@@ -36,7 +36,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
                     return new ActionModel(name, ActionCategory.Item);
                 }
 
-                var isCombo = !string.IsNullOrEmpty(action.Combo) && action.Combo == actor.LastWeaponskill;
+                var isCombo = !string.IsNullOrEmpty(action.Combo) && action.Combo == actor.Weaponskill;
                 var potency = GetPotency(action, isCombo);
 
                 return new ActionModel(name, (ActionCategory)Enum.Parse(typeof(ActionCategory), action.Category), potency, isCombo);

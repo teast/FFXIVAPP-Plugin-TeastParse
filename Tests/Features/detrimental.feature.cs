@@ -114,20 +114,20 @@ this.ScenarioInitialize(scenarioInfo);
 #line 5
     testRunner.And("Monster with name Silkmoth", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table12.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "182B",
                             "\"Gun Master uses Bioblaster.\""});
-                table12.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "1AA9",
                             "\" ⇒ Direct hit! The silkmoth takes 3279 damage.\""});
-                table12.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "1AAF",
                             "\" ⇒ The silkmoth suffers the effect of Bioblaster.\""});
 #line 6
-    testRunner.When("multiple chat lines", ((string)(null)), table12, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table13, "When ");
 #line hidden
 #line 11
     testRunner.Then("Action Bioblaster with damage 3279, critical hit: False, blocked: False, parry: F" +

@@ -222,6 +222,20 @@ namespace Tests.Steps
                         m.Target == target);
         }
 
+        [Then("Combo action (.*) with damage (.*) should be stored for (.*) against (.*).")]
+        public void ThenCheckComboDamage(string action, ulong damage, string source, string target)
+        {
+            if (source == "[none]") source = "";
+            var data = ((SQLiteConnection)_scenarioContext["connection"]).Query<DamageModel>("SELECT * FROM Damage");
+            data.Should().ContainSingle(m =>
+                        DateTime.Parse(m.OccurredUtc) >= DateTime.UtcNow.AddMinutes(-5) && DateTime.Parse(m.OccurredUtc) <= DateTime.UtcNow &&
+                        m.IsCombo == true && 
+                        m.Action.Name == action &&
+                        m.Damage == damage &&
+                        m.Source == source &&
+                        m.Target == target);
+        }
+
         [Then("Cure of (.*) should be stored for (.*) on (.*).")]
         public void ThenCheckPlayercure(ulong cure, string source, string target)
         {

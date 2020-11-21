@@ -873,6 +873,66 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
+        [Xunit.SkippableFactAttribute(DisplayName="Player do an combo.")]
+        [Xunit.TraitAttribute("FeatureTitle", "Battle parse for single user")]
+        [Xunit.TraitAttribute("Description", "Player do an combo.")]
+        public virtual void PlayerDoAnCombo_()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Player do an combo.", null, tagsOfScenario, argumentsOfScenario);
+#line 151
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 152
+    testRunner.Given("Player with name Player One", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 153
+    testRunner.And("Monster with name Ifrit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+                            "code",
+                            "line"});
+                table12.AddRow(new string[] {
+                            "102B",
+                            "\"Player One uses Spinning Edge.\""});
+                table12.AddRow(new string[] {
+                            "12A9",
+                            "\" ⇒ Ifrit takes 1024 damage.\""});
+                table12.AddRow(new string[] {
+                            "102B",
+                            "\"Player One uses Gust Slash.\""});
+                table12.AddRow(new string[] {
+                            "12A9",
+                            "\" ⇒ Ifrit takes 1084 damage.\""});
+#line 154
+    testRunner.When("multiple chat lines", ((string)(null)), table12, "When ");
+#line hidden
+#line 160
+    testRunner.Then("Combo action Gust Slash with damage 1084 should be stored for Player One against " +
+                        "Ifrit.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
         [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.4.0.0")]
         [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : System.IDisposable

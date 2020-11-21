@@ -147,3 +147,14 @@ Scenario: Player absorbs hp with Energy Drain.
         | 12A9 | " ⇒ Critical! The 4th Legion signifer takes 7701 damage."  |
         | 112D | " ⇒ Player One absorbs 2609 HP."                           |
     Then Cure of 2609 should be stored for Player One on Player One.
+
+Scenario: Player do an combo.
+    Given Player with name Player One
+    And Monster with name Ifrit
+    When multiple chat lines
+        | code | line                                |
+        | 102B | "Player One uses Spinning Edge."    |
+        | 12A9 | " ⇒ Ifrit takes 1024 damage."       |
+        | 102B | "Player One uses Gust Slash."       |
+        | 12A9 | " ⇒ Ifrit takes 1084 damage."       |
+    Then Combo action Gust Slash with damage 1084 should be stored for Player One against Ifrit.

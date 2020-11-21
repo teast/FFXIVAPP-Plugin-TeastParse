@@ -5,6 +5,9 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
     /// </summary>
     public struct DamageModel
     {
+        private bool? _isCombo;
+        private int? _potency;
+
         /// <summary>
         /// Timestamp when it occurred (in UTC)
         /// </summary>
@@ -30,6 +33,16 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         public bool DirectHit { get; }
         public bool Blocked { get; }
         public bool Parried { get; }
+        public bool IsCombo
+        {
+            get => _isCombo ?? Action?.IsCombo ?? false;
+            set => _isCombo = value;
+        }
+        public int Potency
+        {
+            get => _potency ?? Action?.Potency ?? 0;
+            set => _potency = value;
+        }
 
         /// <summary>
         /// This is used to determ what initial damage an detrimental attack had
@@ -81,6 +94,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
             bool isDetrimental
         )
         {
+            _isCombo = null;
+            _potency = null;
             OccurredUtc = occurredUtc;
             Timestamp = timestamp;
             Source = source;
