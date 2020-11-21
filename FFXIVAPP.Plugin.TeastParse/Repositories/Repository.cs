@@ -58,7 +58,6 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     Subject,
                     Direction,
                     ChatCode,
-                    Actions,
                     IsDetrimental
                 )
                 VALUES
@@ -69,7 +68,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     @Target,
                     @Damage,
                     @Modifier,
-                    @Action,
+                    @ActionName,
                     @Critical,
                     @DirectHit,
                     @Blocked,
@@ -79,7 +78,6 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     @Subject,
                     @Direction,
                     @ChatCode,
-                    @Actions,
                     @IsDetrimental
                 );
             ";
@@ -230,6 +228,14 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
             }
         }
 
+        public void CloseConnection()
+        {
+            if (_disposed)
+                return;
+            if (_connection != null && _connection.State == ConnectionState.Open)
+                _connection.Close();
+        }
+
         public void Dispose()
         {
             if (_disposed)
@@ -265,7 +271,6 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     Subject         TEXT,
                     Direction       TEXT,
                     ChatCode        TEXT,
-                    Actions         TEXT,
                     IsDetrimental   INT
                 );
             ";

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
-using FFXIVAPP.Common.Core;
+using Dapper;
 using FFXIVAPP.IPluginInterface;
 using FFXIVAPP.IPluginInterface.Events;
 using FFXIVAPP.Plugin.TeastParse;
@@ -10,8 +10,10 @@ using FFXIVAPP.Plugin.TeastParse.Actors;
 using FFXIVAPP.Plugin.TeastParse.ChatParse;
 using FFXIVAPP.Plugin.TeastParse.Models;
 using FFXIVAPP.Plugin.TeastParse.Repositories;
+using FluentAssertions;
 using Moq;
-using Serilog;
+using NLog;
+using NLog.Targets;
 using Sharlayan.Core;
 using TechTalk.SpecFlow;
 
@@ -26,31 +28,55 @@ namespace Tests.Steps
         private GameLanguageEnum _language = GameLanguageEnum.English;
         private readonly EventSubscriber _event;
         private readonly Mock<IPluginHost> _pluginHost;
-        private readonly Mock<IRepository> _db;
 
         private readonly ScenarioContext _scenarioContext;
+        private Repository _repository;
 
         private readonly Random _random = new Random();
+        private readonly ParserIoc _ioc;
 
         public BattleSteps(ScenarioContext scenarioContext)
         {
             // Output any exception so it is easier to find probelms in a test
-            Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Warning()
-            .WriteTo.Console().CreateLogger();
+            //Log.Logger = new LoggerConfiguration()
+            //.MinimumLevel.Warning()
+            //.WriteTo.Console().CreateLogger();
+
+            // Output any exception so it is easier to find probelms in a test
+            var config = new NLog.Config.LoggingConfiguration();
+            config.AddRule(LogLevel.Info, LogLevel.Fatal, new ConsoleTarget("logconsole"));
+            NLog.LogManager.Configuration = config;
+            NLog.LogManager.ThrowExceptions = true;
 
             _scenarioContext = scenarioContext;
-            var ioc = new ParserIoc();
-            _db = new Mock<IRepository>();
-            ioc.Singelton<IRepository>(() => _db.Object);
+
+            SqlMapper.AddTypeHandler(new ActionModelHandler());
+
+            var connectionString = string.Format("FullUri=file:{0}?mode=memory&cache=shared", Guid.NewGuid().ToString("N"));
+            var connection = new SQLiteConnection(connectionString);
+            _scenarioContext["connection"] = connection;
+            connection.Open();
+            _repository = new Repository(connectionString);
+
+            _ioc = new ParserIoc();
+            _ioc.Singelton<IRepository>(() => _repository);
             _pluginHost = new Mock<IPluginHost>();
-            _event = new EventSubscriber(ioc.Get<IChatFacade>(), ioc.Get<IActorItemHelper>());
+            _event = new EventSubscriber(_ioc.Get<IChatFacade>(), _ioc.Get<IActorItemHelper>());
             _event.Subscribe(_pluginHost.Object);
 
             // Make sure we bind our Actor collection to the parser
             _pluginHost.Raise(_ => _.PCItemsUpdated += null, new ActorItemsEvent(this, _players));
             _pluginHost.Raise(_ => _.NPCItemsUpdated += null, new ActorItemsEvent(this, _npc));
             _pluginHost.Raise(_ => _.MonsterItemsUpdated += null, new ActorItemsEvent(this, _monsters));
+        }
+
+        [AfterScenario]
+        public void AfterScenario()
+        {
+            _repository.CloseConnection();
+            _repository.Dispose();
+            ((SQLiteConnection)_scenarioContext["connection"]).Close();
+            ((SQLiteConnection)_scenarioContext["connection"]).Dispose();
         }
 
         [Given("Player with name (.*)")]
@@ -152,54 +178,59 @@ namespace Tests.Steps
         [Then("Action (.*) with damage (.*), critical hit: (.*), blocked: (.*), parry: (.*), direct hit: (.*), modifier: (.*), should have been stored for player (.*) against (.*)")]
         public void ThenActionUsed(string action, ulong damage, bool crit, bool blocked, bool parry, bool direct, string modifier, string source, string target)
         {
-            _db.Verify(_ => _.AddDamage(It.Is<DamageModel>(m =>
+            var data = ((SQLiteConnection)_scenarioContext["connection"]).Query<DamageModel>("SELECT * FROM Damage");
+            data.Should().ContainSingle(m =>
                         DateTime.Parse(m.OccurredUtc) >= DateTime.UtcNow.AddMinutes(-5) && DateTime.Parse(m.OccurredUtc) <= DateTime.UtcNow &&
                         m.Damage == damage &&
                         m.Source == source &&
                         m.Target == target &&
                         m.Critical == crit && m.Blocked == blocked && m.Parried == parry && m.DirectHit == direct &&
                         (string.IsNullOrEmpty(modifier) || m.Modifier == modifier) &&
-                        m.Action.Name == action)), Times.Once);
+                        m.Action.Name == action);
         }
 
         [Then("Damage of (.*) with critical hit: (.*), blocked: (.*), parry: (.*), direct hit: (.*), modifier: (.*), should be stored for player (.*) against (.*)")]
         public void ThenCheckStoredDamage(ulong damage, bool crit, bool blocked, bool parry, bool direct, string modifier, string source, string target)
         {
-            _db.Verify(_ => _.AddDamage(It.Is<DamageModel>(m =>
+            var data = ((SQLiteConnection)_scenarioContext["connection"]).Query<DamageModel>("SELECT * FROM Damage");
+            data.Should().ContainSingle(m =>
                         DateTime.Parse(m.OccurredUtc) >= DateTime.UtcNow.AddMinutes(-5) && DateTime.Parse(m.OccurredUtc) <= DateTime.UtcNow &&
                         m.Damage == damage &&
                         m.Source == source &&
                         m.Critical == crit && m.Blocked == blocked && m.Parried == parry && m.DirectHit == direct &&
                         (string.IsNullOrEmpty(modifier) || m.Modifier == modifier) &&
-                        m.Target == target)), Times.Once);
+                        m.Target == target);
         }
 
         [Then("No damage made by (.*).")]
         public void ThenCheckMonsterDamage(string source)
         {
             if (source == "[none]") source = "";
-            _db.Verify(_ => _.AddDamage(It.Is<DamageModel>(m => m.Source == source)), Times.Never);
+            var data = ((SQLiteConnection)_scenarioContext["connection"]).Query<DamageModel>("SELECT * FROM Damage");
+            data.Should().NotContain(m => m.Source == source);
         }
 
         [Then("Damage of (.*) should be stored for (.*) against (.*).")]
         public void ThenCheckMonsterDamage(ulong damage, string source, string target)
         {
             if (source == "[none]") source = "";
-            _db.Verify(_ => _.AddDamage(It.Is<DamageModel>(m =>
+            var data = ((SQLiteConnection)_scenarioContext["connection"]).Query<DamageModel>("SELECT * FROM Damage");
+            data.Should().ContainSingle(m =>
                         DateTime.Parse(m.OccurredUtc) >= DateTime.UtcNow.AddMinutes(-5) && DateTime.Parse(m.OccurredUtc) <= DateTime.UtcNow &&
                         m.Damage == damage &&
                         m.Source == source &&
-                        m.Target == target)), Times.Once);
+                        m.Target == target);
         }
 
         [Then("Cure of (.*) should be stored for (.*) on (.*).")]
         public void ThenCheckPlayercure(ulong cure, string source, string target)
         {
-            _db.Verify(_ => _.AddCure(It.Is<CureModel>(m =>
+            var data = ((SQLiteConnection)_scenarioContext["connection"]).Query<CureModel>("SELECT * FROM Cure");
+            data.Should().ContainSingle(m =>
                         DateTime.Parse(m.OccurredUtc) >= DateTime.UtcNow.AddMinutes(-5) && DateTime.Parse(m.OccurredUtc) <= DateTime.UtcNow &&
                         m.Cure == cure &&
                         m.Source == source &&
-                        m.Target == target)), Times.Once);
+                        m.Target == target);
         }
     }
 }

@@ -25,6 +25,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         public ulong Damage { get; }
         public string Modifier { get; }
         public ActionModel Action { get; }
+        public string ActionName => Action?.Name;
         public bool Critical { get; }
         public bool DirectHit { get; }
         public bool Blocked { get; }
