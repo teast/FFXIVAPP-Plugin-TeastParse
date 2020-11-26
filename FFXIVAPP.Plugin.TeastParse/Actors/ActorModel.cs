@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FFXIVAPP.Plugin.TeastParse.Actors.Potency;
+using FFXIVAPP.Common.Utilities;
 using FFXIVAPP.Plugin.TeastParse.Events;
 using FFXIVAPP.Plugin.TeastParse.Models;
 using Newtonsoft.Json;
@@ -22,13 +22,10 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
     /// </remarks>
     public class ActorModel : ViewModelBase
     {
-        private Random _rnd = new Random();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         #region Fields
-        private bool _needUpdateInDatabase = false;
         private bool _isParty;
-        private bool _storedInDatabase = false;
         private DateTime _firstStart;
         private DateTime _timelineStart;
         private string _timeline;
@@ -56,8 +53,20 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         private int _hps;
         private int _totalHPS;
         private double _percentOfTimelineHeal;
-        private ActorPotencyFacade _potencyDamage;
+        private readonly Dictionary<Job, JobModel> _jobs;
+        private JobModel _currentJob
+        {
+            get
+            {
+                if (_jobs.TryGetValue(Job, out var model))
+                    return model;
+                model = new JobModel(Job, _actorRaw.Level);
+                _jobs.Add(model.Job, model);
+                return model;
+            }
+        }
 
+        private readonly ActorItem _actorRaw;
         #endregion
 
         #region Read-only Properties
@@ -65,33 +74,25 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         public ActorType ActorType { get; }
         public string Name { get; }
         public string Server { get; }
-        public int Level { get; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public Job Job { get; }
         public Coordinate Coordinate { get; }
 
         /// <summary>
         /// Contains current weaponskill
         /// </summary>
         public string Weaponskill { get; private set; }
+
+        public Job Job => _actorRaw.Job;
+        public int Level => _actorRaw.Level;
         #endregion
 
         #region Properties
         public List<ActorStatusModel> Beneficials { get; set; }
         public List<ActorStatusModel> Detrimentals { get; set; }
 
-        public bool IsParty
-        {
-            get => _isParty;
-            set { _needUpdateInDatabase = true; _isParty = value; }
-        }
+        public bool IsParty { get; set; }
 
-        public bool IsAlliance
-        {
-            get => _isAlliance;
-            set { _needUpdateInDatabase = true; _isAlliance = value; }
-        }
+        public bool IsAlliance { get; set; }
 
         public bool IsYou { get; set; }
         #endregion
@@ -177,17 +178,20 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         public double PercentOfTimelineHeal { get => _percentOfTimelineHeal; set => Set(() => _percentOfTimelineHeal = value); }
         #endregion
 
-        internal ActorModel(string name, string server, int level, Job job, ITimelineCollection timeline, bool isParty, bool isAlliance, ActorType actorType, ITotalStats totalStats, Coordinate coordinate)
+        internal ActorModel(string name, ActorItem actorRaw, ActorType actorType, ITimelineCollection timeline, ITotalStats totalStats, bool isParty, bool isAlliance)
         {
-            _potencyDamage = new ActorPotencyFacade();
+            _actorRaw = actorRaw;
+            _jobs = new Dictionary<Job, JobModel>
+            {
+                { Job, new JobModel(Job, actorRaw.Level) }
+            };
+
             Beneficials = new List<ActorStatusModel>();
             Detrimentals = new List<ActorStatusModel>();
             Name = name;
-            Server = server;
-            Level = level;
-            Job = job;
+            Server = ExtractServerName(name, actorRaw.Name);
             ActorType = actorType;
-            Coordinate = coordinate;
+            Coordinate = actorRaw.Coordinate;
             _timeline = timeline.Current.Name;
             _firstStart = timeline.Current.StartUtc;
             _timelineStart = timeline.Current.StartUtc;
@@ -215,10 +219,9 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
                 if (model.Action.Category == ActionCategory.Weaponskill)
                     Weaponskill = model.Action.Name;
 
-                _potencyDamage.StoreDamageDetails(model);
-
-//                if (this.IsYou)
-//                    Logging.Log(Logger, _potencyDamage.Debug());
+                _currentJob.StoreDamageDetails(model);
+                //                if (this.IsYou)
+                //                    Logging.Log(Logger, _potencyDamage.Debug());
             }
             else if (model.Target == this.Name || (this.IsYou && model.Target.IsYou()))
             {
@@ -229,8 +232,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
             UpdateDps();
         }
 
-        private readonly List<KeyValuePair<int, int>> _detrimentalDamage = new List<KeyValuePair<int, int>>();
-        private readonly List<KeyValuePair<int, int>> _detrimentalDamageTaken = new List<KeyValuePair<int, int>>();
+        private readonly List<DetrimentalDamageInfo> _detrimentalDamage = new List<DetrimentalDamageInfo>();
+        private readonly List<DetrimentalDamageInfo> _detrimentalDamageTaken = new List<DetrimentalDamageInfo>();
 
         /// <summary>
         /// Should only be called with detrimentals that have an lastUtc set and is done
@@ -241,15 +244,15 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
                 return;
 
             // TODO: Taking detrimental ticks every 3 seconds at the moment...
-            var ticks = (model.LastUtc.Value-model.TimeUtc).TotalSeconds / 3;
+            var ticks = (model.LastUtc.Value - model.TimeUtc).TotalSeconds / 3;
 
             if (model.Source == this.Name || (this.IsYou && model.Source.IsYou()))
             {
-                _detrimentalDamage.Add(new KeyValuePair<int, int>((int)ticks, model.Action.Potency));
+                _detrimentalDamage.Add(new DetrimentalDamageInfo((int)ticks, model.Action.Potency, Job));
             }
             else if (model.Target == this.Name || (this.IsYou && model.Target.IsYou()))
             {
-                _detrimentalDamageTaken.Add(new KeyValuePair<int, int>((int)ticks, model.Action.Potency));
+                _detrimentalDamageTaken.Add(new DetrimentalDamageInfo((int)ticks, model.Action.Potency, Job, model.Source));
             }
 
             UpdateDps();
@@ -268,36 +271,15 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
 
         private ulong CalculateDetrimentalDamage()
         {
-            var potency = _potencyDamage.GetDetrimentalPotency();
-            var val = (ulong)_detrimentalDamage.Select(detr => {
-                var ticks = new double[detr.Key];
-
-                return ticks.Select(t => {
-                    var chance = _potencyDamage.IsCritical();
-                    var crit = chance ? 1.4 : 1.0;
-
-                    // TODO: Just a number I camed up with to get up the dot damage...
-                    //var modif = 1.0;
-                    //var modif = _rnd.Next(0, 100) < 51 ? 1.22 : 1.24;
-                    var modif = (double)1 + ((double)_rnd.Next(10, 28) / 100);
-
-                    if (!_potencyDamage.HasAutoAttack)
-                        modif = 1.0;
-
-                    var vall = detr.Value * potency * crit * modif;
-                    return vall;
-                    });
-            }).SelectMany(_ => _).Sum();
-
-            return val;
+            return Convert.ToUInt64(_detrimentalDamage.Select(detr => _jobs[detr.Job].DetrimentalDamage(detr.Ticks, detr.Potency)).Sum());
         }
 
         private ulong CalculateDetrimentalDamageTaken()
         {
-            var potency = _potencyDamage.GetDetrimentalPotency();
-            var chance = _potencyDamage.IsCritical();
-            var crit = chance ? 1.4 : 1.0;
-            return (ulong)_detrimentalDamageTaken.Select(_ => _.Key * _.Value * potency * crit).Sum();
+            // TODO:
+            if (_detrimentalDamageTaken.Count > 0)
+                Logging.Log(Logger, $"{nameof(ActorModel)}.{nameof(CalculateDetrimentalDamageTaken)} Not sure how to do this. currently {_detrimentalDamageTaken.Count} registered detrimentals.");
+            return 0;
         }
 
         /// <summary>
@@ -359,6 +341,31 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
                 PercentOfTimelineHeal = (double)TimelineHeal / _totalStats.PartyTotalHeal;
             else
                 PercentOfTimelineHeal = (double)TimelineHeal / _totalStats.AllianceTotalHeal;
+        }
+
+        private string ExtractServerName(string chatName, string actorName)
+        {
+            // TODO: Let the user configure what server the user is from and use that here
+            if (chatName.Length == actorName.Length)
+                return "";
+
+            return chatName.Substring(actorName.Length);
+        }
+
+        private struct DetrimentalDamageInfo
+        {
+            public int Ticks { get; }
+            public int Potency { get; }
+            public Job Job { get; }
+            public string Source { get; }
+
+            public DetrimentalDamageInfo(int ticks, int potency, Job job, string source = null)
+            {
+                Ticks = ticks;
+                Potency = potency;
+                Job = job;
+                Source = source;
+            }
         }
     }
 

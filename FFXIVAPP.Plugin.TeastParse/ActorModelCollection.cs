@@ -137,10 +137,10 @@ namespace FFXIVAPP.Plugin.TeastParse
             if (item.actor == null)
                 return null;
 
-            actor = new ActorModel(name, ExtractServerName(name, item.actor.Name), item.actor.Level,
-                    item.actor.Job, _timeline,
-                    _partyDirection.Contains(direction), _allianceDirection.Contains(direction),
-                    item.type, this, item.actor.Coordinate);
+            actor = new ActorModel(name, item.actor, item.type,
+                    _timeline,
+                    this,
+                    _partySubjects.Contains(subject), _allianceSubjects.Contains(subject));
 
             if (actor.Name == _actors.CurrentPlayer?.Name)
             {
@@ -177,10 +177,10 @@ namespace FFXIVAPP.Plugin.TeastParse
                 return null;
             }
 
-            actor = new ActorModel(name, ExtractServerName(name, item.actor.Name), item.actor.Level,
-                    item.actor.Job, _timeline,
-                    _partySubjects.Contains(subject), _allianceSubjects.Contains(subject),
-                    item.type, this, item.actor.Coordinate);
+            actor = new ActorModel(name, item.actor, item.type,
+                    _timeline,
+                    this,
+                    _partySubjects.Contains(subject), _allianceSubjects.Contains(subject));
 
             if (actor.Name == _actors.CurrentPlayer?.Name)
             {
@@ -197,15 +197,6 @@ namespace FFXIVAPP.Plugin.TeastParse
                 RaiseAllianceAdded(actor);
 
             return actor;
-        }
-
-        private string ExtractServerName(string chatName, string actorName)
-        {
-            // TODO: Let the user configure what server the user is from and use that here
-            if (chatName.Length == actorName.Length)
-                return "";
-
-            return chatName.Substring(actorName.Length);
         }
 
         public void AddToTotalDamage(ActorModel actor, DamageModel damage)
