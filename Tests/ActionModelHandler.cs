@@ -8,7 +8,7 @@ namespace Tests
     {
         public override ActionModel Parse(object value)
         {
-            return new ActionModel(value.ToString(), ActionCategory.Item);
+            return new ActionModel(value.ToString(), value.ToString(), ActionCategory.Item);
         }
 
         public override void SetValue(IDbDataParameter parameter, ActionModel value)

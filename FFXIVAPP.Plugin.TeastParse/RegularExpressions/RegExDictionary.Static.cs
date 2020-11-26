@@ -181,7 +181,7 @@ namespace FFXIVAPP.Plugin.TeastParse.RegularExpressions
 
         public readonly static RegExTypePair BeneficialLosePlayer = new RegExTypePair(SubjectPlayer, null,
             // TODO: Find german translation for this, Tuple.Create(GameLanguageEnum.German, @"^\.$"),
-            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?(?<target>You|.+) loses? the effect of (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?(?<target>You|.+) lose(s)? the effect of (?<status>.+)\.$"),
             Tuple.Create(GameLanguageEnum.France, @"^( ⇒ )?(?<target>Vous|.+) perd(ez?)? l'effet (?<status>.+)\.$"),
             Tuple.Create(GameLanguageEnum.Japanese, @"^( ⇒ )?(?<target>.+)((に|は)、?)「(?<status>.+)」が切れた。$"),
             Tuple.Create(GameLanguageEnum.Chinese, @"^:( ⇒ )?(?<target>You|.+)的“(?<status>.+)”状态效果消失了。$")
@@ -189,6 +189,7 @@ namespace FFXIVAPP.Plugin.TeastParse.RegularExpressions
 
 
         #region Misc chat lines
+        public readonly static RegExTypePair MiscMonkFormChange = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) moves into (?<status>.+)\.$"));
         public readonly static RegExTypePair MiscReadiesAction = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) readies (?<action>.+)\.$"));
         public readonly static RegExTypePair MiscBeginCasting = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) (begin)s? casting (?<action>.+)\.$"));
         public readonly static RegExTypePair MiscCancelAction = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) (cancel)s? (?<action>.+)\.$"));

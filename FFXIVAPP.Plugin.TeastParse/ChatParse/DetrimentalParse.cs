@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Timers;
 using FFXIVAPP.Plugin.TeastParse.Actors;
 using FFXIVAPP.Plugin.TeastParse.Factories;
 using FFXIVAPP.Plugin.TeastParse.Models;
@@ -19,6 +20,11 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         private readonly ITimelineCollection _timeline;
         private readonly IDetrimentalFactory _detrimentalFactory;
 
+        private readonly Timer _checkDetrimentals;
+        private DateTime? _checkDetrimentalsNext;
+
+        private readonly List<KeyValuePair<ActorModel, DetrimentalModel>> _activeDetrimentals;
+
         /// <summary>
         /// Contains latest found actions (<see cref="ActionParse" /> for actual parsing of actions)
         /// </summary>
@@ -34,18 +40,62 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             _timeline = timeline;
             _actions = actions;
             _detrimentalFactory = detrimentalFactory;
+            _activeDetrimentals = new List<KeyValuePair<ActorModel, DetrimentalModel>>();
             Codes = codes.Where(c => c.Type == ChatcodeType.Detrimental).ToList();
             Handlers = new Dictionary<ChatcodeType, ChatcodeTypeHandler>
             {
                 {ChatcodeType.Detrimental, _handleDetrimental}
             };
+
+            _checkDetrimentals = new Timer();
+            _checkDetrimentals.Elapsed += CheckDetrimentals;
+        }
+
+        private void CheckDetrimentals(object sender, ElapsedEventArgs args)
+        {
+            _checkDetrimentals.Stop();
+            _checkDetrimentalsNext = null;
+            DateTime? nextCheck = null;
+            var detrimentals = _activeDetrimentals.ToList();
+            for(var i = 0; i < detrimentals.Count; i++)
+            {
+                if (detrimentals[i].Value.LastUtc.HasValue == false)
+                    continue;
+
+                if (detrimentals[i].Value.LastUtc > DateTime.UtcNow)
+                {
+                    if (nextCheck == null || detrimentals[i].Value.LastUtc < nextCheck)
+                        nextCheck = detrimentals[i].Value.LastUtc;
+                    continue;
+                }
+                
+                detrimentals[i].Key.UpdateStat((DetrimentalModel)detrimentals[i].Value);
+                _activeDetrimentals.Remove(detrimentals[i]);
+            }
+
+            if (nextCheck != null)
+            {
+                _checkDetrimentalsNext = nextCheck;
+                _checkDetrimentals.Interval = (_checkDetrimentalsNext.Value - DateTime.UtcNow).TotalMilliseconds;
+                _checkDetrimentals.Start();
+            }
         }
 
         private void HandleDetrimental(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
         {
-            var (model, target) = ToModel(match, item, group);
+            var (model, source, target) = ToModel(match, item, group);
             target?.Detrimentals?.Add(model);
             StoreDamage(model);
+            if (source != null)
+            {
+                _activeDetrimentals.Add(new KeyValuePair<ActorModel, DetrimentalModel>(source, model));
+                if (model.LastUtc.HasValue && (_checkDetrimentalsNext == null || _checkDetrimentalsNext > model.LastUtc))
+                {
+                    _checkDetrimentals.Stop();
+                    _checkDetrimentals.Interval = (model.LastUtc.Value - DateTime.UtcNow).TotalMilliseconds;
+                    _checkDetrimentals.Start();
+                }
+            }
         }
 
         /// <summary>
@@ -55,7 +105,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         /// <param name="item">the actual chat log item</param>
         /// <param name="group">chatcodes group</param>
         /// <returns>an <see cref="DamaModel" /> based on input parameters</returns>
-        private (DetrimentalModel model, ActorModel target) ToModel(Match r, ChatLogItem item, Group group)
+        private (DetrimentalModel model, ActorModel source, ActorModel target) ToModel(Match r, ChatLogItem item, Group group)
         {
             var target = r.Groups["target"].Value;
             var status = r.Groups["status"].Value;
@@ -71,14 +121,14 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
             target = CleanName(target);
 
-            //var actorSource = string.IsNullOrEmpty(source) ? null : _actors.GetModel(source, group.Subject);
+            var actorSource = string.IsNullOrEmpty(source) ? null : _actors.GetModel(source, group.Subject);
             var actorTarget = string.IsNullOrEmpty(target) ? null : _actors.GetModel(target, group.Direction, group.Subject);
 
             var model = _detrimentalFactory.GetModel(status, item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow,
                                                     source, target, code, group.Direction.ToString(), group.Subject.ToString(),
                                                     _actions.Factory);
 
-            return (model, actorTarget);
+            return (model, actorSource, actorTarget);
         }
 
         private ChatcodeTypeHandler _handleDetrimental => new ChatcodeTypeHandler(

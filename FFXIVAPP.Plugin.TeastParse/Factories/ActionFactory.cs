@@ -11,7 +11,13 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
 {
     internal interface IActionFactory
     {
-        ActionModel GetAction(string name, ActorModel actor = null);
+        ActionModel GetAction(string name, bool isDetrimental = false, ActorModel actor = null);
+
+        /// <summary>
+        /// Some Detrimentals do not have an real action bound to them.
+        /// </summary>
+        ActionModel GetFakeAction(string actionName);
+        bool ActionExist(string name);
     }
 
     internal class ActionFactory : IActionFactory
@@ -25,34 +31,62 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
             _actionDb = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ActionRaw>>(actionJson);
         }
 
-        public ActionModel GetAction(string name, ActorModel actor = null)
+        public bool ActionExist(string name) => _actionDb.Any(_ => _.IsPvp == false && _.Names[Constants.GameLanguage.ToString()] == name);
+
+        public ActionModel GetFakeAction(string actionName) => new ActionModel(actionName, actionName, ActionCategory.Special);
+
+        public ActionModel GetAction(string name, bool isDetrimental = false, ActorModel actor = null)
         {
             try
             {
-                var action = _actionDb.FirstOrDefault(_ => _.Names[Constants.GameLanguage.ToString()] == name);
+                // https://allaganstudies.akhmorning.com/
+                if (string.IsNullOrEmpty(name))
+                    return new ActionModel(name, name, ActionCategory.AutoAttack, 110);
+
+                // TODO: Handle pvp
+                var action = _actionDb.FirstOrDefault(_ => _.IsPvp == false && _.Names[Constants.GameLanguage.ToString()] == name);
                 if (action == null)
                 {
                     Logging.Log(Logger, $"Action with name {name} not found for game language {Constants.GameLanguage}.");
-                    return new ActionModel(name, ActionCategory.Item);
+                    return new ActionModel(name, name, ActionCategory.AutoAttack, 100);
                 }
 
-                var isCombo = !string.IsNullOrEmpty(action.Combo) && action.Combo == actor.Weaponskill;
-                var potency = GetPotency(action, isCombo);
-
-                return new ActionModel(name, (ActionCategory)Enum.Parse(typeof(ActionCategory), action.Category), potency, isCombo);
+                var isCombo = !string.IsNullOrEmpty(action.Combo) && MatchComboName(action.Combo, actor?.Weaponskill);
+                var potency = GetPotency(action, isCombo, isDetrimental);
+                var duration = action.Duration.FirstOrDefault().Value;
+                return new ActionModel(name, action.Names["English"], (ActionCategory)Enum.Parse(typeof(ActionCategory), action.Category), potency, isCombo, duration);
             }
             catch (Exception ex)
             {
                 Logging.Log(Logger, new LogItem($"Unhandled exception in {nameof(ActionFactory)}.{nameof(GetAction)}", ex, true));
             }
 
-            return new ActionModel(name, ActionCategory.Item);
+            return new ActionModel(name, name, ActionCategory.AutoAttack, 100);
         }
 
-        private int GetPotency(ActionRaw action, bool isCombo) => action.Potency
-                            .Where(_ => _.Combo == isCombo)
-                            .Select(_ => _.Value)
-                            .Sum() / action.Potency.Count;
+        /// <summary>
+        /// Some actions only has combo to the "non-enhanced" version. example is "Split Shot" that can also be called "Heated Split Shot"
+        /// </summary>
+        private bool MatchComboName(string actionComboName, string weaponskillName)
+        {
+            if (actionComboName == "Split Shot")
+                return weaponskillName == actionComboName || weaponskillName == "Heated Split Shot";
+            if (actionComboName == "Slug Shot")
+                return weaponskillName == actionComboName || weaponskillName == "Heated Slug Shot";
+
+            return actionComboName == weaponskillName;
+        }
+
+        private int GetPotency(ActionRaw action, bool isCombo, bool isDetrimental)
+        {
+            // Some actions do not have "IsDetrimental" set and if that is the case then do not check for detrimental
+            isDetrimental = isDetrimental && action.Potency.Any(_ => _.IsDetrimental);
+
+            return action.Potency
+                .Where(_ => _.Combo == isCombo && _.IsDetrimental == isDetrimental)
+                .Select(_ => _.Value)
+                .Sum() / Math.Max(action.Potency.Where(_ => _.Combo == isCombo && _.IsDetrimental == isDetrimental).Count(), 1);
+        }
 
         private class ActionRaw
         {
@@ -71,6 +105,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
             public string Descriptions { get; }
             public List<Potency> Potency { get; }
             public bool IsPlayer { get; set; }
+            public List<Potency> Duration { get; }
 
             public ActionRaw(
                 int id,
@@ -87,7 +122,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
                 bool isPvp,
                 string jobs,
                 List<Potency> potency,
-                bool isPlayer
+                bool isPlayer,
+                List<Potency> duration
             )
             {
                 Id = id;
@@ -105,6 +141,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
                 Jobs = jobs;
                 Potency = potency;
                 IsPlayer = isPlayer;
+                Duration = duration;
             }
         }
 
@@ -113,14 +150,21 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
             public string Text { get; }
             public int Value { get; }
             public bool Combo { get; }
+            public bool IsDetrimental { get; }
             public string Raw { get; }
 
-            public Potency(string text, int value, bool combo, string raw)
+            public Potency(string text, int value, bool combo, bool isDetrimental, string raw)
             {
                 Text = text;
                 Value = value;
                 Combo = combo;
+                IsDetrimental = isDetrimental;
                 Raw = raw;
+            }
+
+            public override string ToString()
+            {
+                return $"[{Text}: {Value}, IsDetrimental: {IsDetrimental}, Combo: {Combo}]";
             }
         }
     }

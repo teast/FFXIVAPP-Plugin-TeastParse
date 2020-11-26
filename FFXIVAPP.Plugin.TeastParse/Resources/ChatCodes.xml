@@ -156,6 +156,11 @@
           You obtain a southern front lockbox.
         </Description>
       </Code>
+      <Code Key="0BBE">
+        <Description> (from bying)
+          You obtain 4 craftsman's competence materia VII.
+        </Description>
+      </Code>
     </Group>
   </Group>
   <Group Name="Damage" Type="Damage">

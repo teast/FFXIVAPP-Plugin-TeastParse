@@ -87,7 +87,10 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 RegExDictionary.DamagePlayerAction,
                 RegExDictionary.BeneficialPlayer
             ),
-            HandleBeneficial
+            HandleBeneficial,
+            new RegExDictionary(
+                RegExDictionary.MiscMonkFormChange
+            )
         );
     }
 }

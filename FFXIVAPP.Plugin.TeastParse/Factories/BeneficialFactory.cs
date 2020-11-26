@@ -18,9 +18,58 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
         {
             // TODO: Use an "database" to lookup information about an beneficial here
             var lastUtc = (DateTime?)null;
-            var actionName = name == "Confession" ? "Plenary Indulgence" : name;
+            var actionName = GetActionName(name);
             var potency = 0;
-            return new BeneficialModel(name, actionFactory.GetAction(actionName), potency, timestamp, timeUtc, lastUtc, source, target, chatCode, direction, subject);
+            return new BeneficialModel(name, GetAction(actionName, actionFactory), potency, timestamp, timeUtc, lastUtc, source, target, chatCode, direction, subject);
+        }
+
+        private ActionModel GetAction(string actionName, IActionFactory actionFactory)
+        {
+            if (actionFactory.ActionExist(actionName))
+                return actionFactory.GetAction(actionName);
+            else
+                return actionFactory.GetFakeAction(actionName);
+            /*
+            switch(actionName)
+            {
+                case "Weakness":
+                case "Transcendent":
+                case "Raiden Thrust Ready":
+                case "Sharper Fang and Claw":
+                case "Dance Partner":
+                case "Nascent Chaos":
+                case "Dualcast":
+                case "Verfire Ready":
+                case "Verstone Ready":
+                case "Straight Shot Ready":
+                case "The Wanderer's Minuet":
+                case "Esprit":
+                case "Left Eye":
+                case "Right Eye":
+                case "Arrow Drawn":
+                case "Dive Ready":
+                case "Flourishing Cascade":
+                case "Flourishing Fountain":
+                case "Flourishing Windmill":
+                case "Flourishing Shower":
+                case "Flourishing Fan Dance":
+                case "Meditative Brotherhood":
+                    return actionFactory.GetFakeAction(actionName);
+                default:
+                    return actionFactory.GetAction(actionName);
+            }
+            */
+        }
+
+        private string GetActionName(string name)
+        {
+            switch (name)
+            {
+                case "Confession":
+                    return "Plenary Indulgence";
+                default:
+                    return name;
+            }
         }
     }
 }

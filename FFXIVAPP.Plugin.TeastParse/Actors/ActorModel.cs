@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using FFXIVAPP.Plugin.TeastParse.Actors.Potency;
 using FFXIVAPP.Plugin.TeastParse.Events;
 using FFXIVAPP.Plugin.TeastParse.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using NLog;
 using Sharlayan.Core;
 using static Sharlayan.Core.Enums.Actor;
 
@@ -19,6 +22,9 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
     /// </remarks>
     public class ActorModel : ViewModelBase
     {
+        private Random _rnd = new Random();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         #region Fields
         private bool _needUpdateInDatabase = false;
         private bool _isParty;
@@ -50,6 +56,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         private int _hps;
         private int _totalHPS;
         private double _percentOfTimelineHeal;
+        private ActorPotencyFacade _potencyDamage;
 
         #endregion
 
@@ -63,11 +70,6 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         [JsonConverter(typeof(StringEnumConverter))]
         public Job Job { get; }
         public Coordinate Coordinate { get; }
-
-        /// <summary>
-        /// Contains weaponskill that was used before <see cref="_weaponskill" />
-        /// </summary>
-        public string LastWeaponskill { get; private set; }
 
         /// <summary>
         /// Contains current weaponskill
@@ -177,6 +179,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
 
         internal ActorModel(string name, string server, int level, Job job, ITimelineCollection timeline, bool isParty, bool isAlliance, ActorType actorType, ITotalStats totalStats, Coordinate coordinate)
         {
+            _potencyDamage = new ActorPotencyFacade();
             Beneficials = new List<ActorStatusModel>();
             Detrimentals = new List<ActorStatusModel>();
             Name = name;
@@ -210,10 +213,12 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
                 TimelineDamage += model.Damage;
                 TotalDamage += model.Damage;
                 if (model.Action.Category == ActionCategory.Weaponskill)
-                {
-                    LastWeaponskill = Weaponskill;
                     Weaponskill = model.Action.Name;
-                }
+
+                _potencyDamage.StoreDamageDetails(model);
+
+//                if (this.IsYou)
+//                    Logging.Log(Logger, _potencyDamage.Debug());
             }
             else if (model.Target == this.Name || (this.IsYou && model.Target.IsYou()))
             {
@@ -221,10 +226,78 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
                 TotalDamageTaken += model.Damage;
             }
 
-            DPS = Convert.ToInt32(TimelineDamage / (ulong)Math.Max((DateTime.UtcNow - _timelineStart).TotalSeconds, 1));
-            TotalDPS = Convert.ToInt32(TotalDamage / (ulong)Math.Max((DateTime.UtcNow - _firstStart).TotalSeconds, 1));
-            DTPS = Convert.ToInt32(TimelineDamageTaken / (ulong)Math.Max((DateTime.UtcNow - _timelineStart).TotalSeconds, 1));
-            TotalDTPS = Convert.ToInt32(TotalDamageTaken / (ulong)Math.Max((DateTime.UtcNow - _firstStart).TotalSeconds, 1));
+            UpdateDps();
+        }
+
+        private readonly List<KeyValuePair<int, int>> _detrimentalDamage = new List<KeyValuePair<int, int>>();
+        private readonly List<KeyValuePair<int, int>> _detrimentalDamageTaken = new List<KeyValuePair<int, int>>();
+
+        /// <summary>
+        /// Should only be called with detrimentals that have an lastUtc set and is done
+        /// </summary>
+        internal void UpdateStat(DetrimentalModel model)
+        {
+            if (model.Action.Potency == 0)
+                return;
+
+            // TODO: Taking detrimental ticks every 3 seconds at the moment...
+            var ticks = (model.LastUtc.Value-model.TimeUtc).TotalSeconds / 3;
+
+            if (model.Source == this.Name || (this.IsYou && model.Source.IsYou()))
+            {
+                _detrimentalDamage.Add(new KeyValuePair<int, int>((int)ticks, model.Action.Potency));
+            }
+            else if (model.Target == this.Name || (this.IsYou && model.Target.IsYou()))
+            {
+                _detrimentalDamageTaken.Add(new KeyValuePair<int, int>((int)ticks, model.Action.Potency));
+            }
+
+            UpdateDps();
+        }
+
+        private void UpdateDps()
+        {
+            var dDmg = CalculateDetrimentalDamage();
+            var dTaken = CalculateDetrimentalDamageTaken();
+
+            DPS = Convert.ToInt32((TimelineDamage + dDmg) / (ulong)Math.Max((DateTime.UtcNow - _timelineStart).TotalSeconds, 1));
+            TotalDPS = Convert.ToInt32((TotalDamage + dDmg) / (ulong)Math.Max((DateTime.UtcNow - _firstStart).TotalSeconds, 1));
+            DTPS = Convert.ToInt32((TimelineDamageTaken + dTaken) / (ulong)Math.Max((DateTime.UtcNow - _timelineStart).TotalSeconds, 1));
+            TotalDTPS = Convert.ToInt32((TotalDamageTaken + dTaken) / (ulong)Math.Max((DateTime.UtcNow - _firstStart).TotalSeconds, 1));
+        }
+
+        private ulong CalculateDetrimentalDamage()
+        {
+            var potency = _potencyDamage.GetDetrimentalPotency();
+            var val = (ulong)_detrimentalDamage.Select(detr => {
+                var ticks = new double[detr.Key];
+
+                return ticks.Select(t => {
+                    var chance = _potencyDamage.IsCritical();
+                    var crit = chance ? 1.4 : 1.0;
+
+                    // TODO: Just a number I camed up with to get up the dot damage...
+                    //var modif = 1.0;
+                    //var modif = _rnd.Next(0, 100) < 51 ? 1.22 : 1.24;
+                    var modif = (double)1 + ((double)_rnd.Next(10, 28) / 100);
+
+                    if (!_potencyDamage.HasAutoAttack)
+                        modif = 1.0;
+
+                    var vall = detr.Value * potency * crit * modif;
+                    return vall;
+                    });
+            }).SelectMany(_ => _).Sum();
+
+            return val;
+        }
+
+        private ulong CalculateDetrimentalDamageTaken()
+        {
+            var potency = _potencyDamage.GetDetrimentalPotency();
+            var chance = _potencyDamage.IsCritical();
+            var crit = chance ? 1.4 : 1.0;
+            return (ulong)_detrimentalDamageTaken.Select(_ => _.Key * _.Value * potency * crit).Sum();
         }
 
         /// <summary>

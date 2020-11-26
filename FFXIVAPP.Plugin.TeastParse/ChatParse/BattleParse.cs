@@ -114,7 +114,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 target: target,
                 damage: string.IsNullOrWhiteSpace(amount) ? 0 : Convert.ToUInt64(amount),
                 modifier: modifier,
-                action: _actions.Factory.GetAction(action, actorSource),
+                action: _actions.Factory.GetAction(action, actor: actorSource),
                 critical: !string.IsNullOrWhiteSpace(crit),
                 directHit: !string.IsNullOrWhiteSpace(direct),
                 blocked: !string.IsNullOrWhiteSpace(block),
