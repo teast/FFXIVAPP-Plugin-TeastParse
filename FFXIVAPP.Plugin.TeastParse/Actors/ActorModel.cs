@@ -38,6 +38,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
 
         private ulong _totalDamage = 0;
         private ulong _timelineDamage = 0;
+        private ulong _totalDetrimentalDamage = 0;
         private int _dps;
         private int _totalDPS;
         private double _percentOfTimelineDamage;
@@ -107,6 +108,16 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         /// Total Damage per seconds from first seen timeline
         /// </summary>
         public int TotalDPS { get => _totalDPS; set => Set(() => _totalDPS = value); }
+
+        /// <summary>
+        /// Total damage during current timeline including total detrimental damage
+        /// </summary>
+        public ulong GrandTimelineDamage => TimelineDamage + _totalDetrimentalDamage;
+
+        /// <summary>
+        /// Total damage from first seen timeline including total detrimetnal damage
+        /// </summary>
+        public ulong GrandTotalDamage => TotalDamage + _totalDetrimentalDamage;
 
         /// <summary>
         /// Total damage during current timeline
@@ -263,8 +274,15 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
             var dDmg = CalculateDetrimentalDamage();
             var dTaken = CalculateDetrimentalDamageTaken();
 
-            DPS = Convert.ToInt32((TimelineDamage + dDmg) / (ulong)Math.Max((DateTime.UtcNow - _timelineStart).TotalSeconds, 1));
-            TotalDPS = Convert.ToInt32((TotalDamage + dDmg) / (ulong)Math.Max((DateTime.UtcNow - _firstStart).TotalSeconds, 1));
+            if (dDmg != _totalDetrimentalDamage)
+            {
+                _totalDetrimentalDamage = dDmg;
+                RaisePropertyChanged(nameof(TotalDamage));
+                RaisePropertyChanged(nameof(TimelineDamage));
+            }
+
+            DPS = Convert.ToInt32((TimelineDamage + _totalDetrimentalDamage) / (ulong)Math.Max((DateTime.UtcNow - _timelineStart).TotalSeconds, 1));
+            TotalDPS = Convert.ToInt32((TotalDamage + _totalDetrimentalDamage) / (ulong)Math.Max((DateTime.UtcNow - _firstStart).TotalSeconds, 1));
             DTPS = Convert.ToInt32((TimelineDamageTaken + dTaken) / (ulong)Math.Max((DateTime.UtcNow - _timelineStart).TotalSeconds, 1));
             TotalDTPS = Convert.ToInt32((TotalDamageTaken + dTaken) / (ulong)Math.Max((DateTime.UtcNow - _firstStart).TotalSeconds, 1));
         }

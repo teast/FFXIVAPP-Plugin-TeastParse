@@ -68,10 +68,10 @@ namespace FFXIVAPP.Plugin.TeastParse
                     Set(() => TotalDPS = actor.TotalDPS, nameof(TotalDPS));
                     break;
                 case nameof(ActorModel.TimelineDamage):
-                    Set(() => Timeline = actor.TimelineDamage, nameof(Timeline));
+                    Set(() => Timeline = actor.GrandTimelineDamage, nameof(Timeline));
                     break;
                 case nameof(ActorModel.TotalDamage):
-                    Set(() => Total = actor.TotalDamage, nameof(Total));
+                    Set(() => Total = actor.GrandTotalDamage, nameof(Total));
                     break;
                 case nameof(ActorModel.PercentOfTimelineDamage):
                     Set(() => PercentOfTimeline = actor.PercentOfTimelineDamage, nameof(PercentOfTimeline));
