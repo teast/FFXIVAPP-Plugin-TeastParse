@@ -16,7 +16,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Windows
 
             this.FindControl<Panel>("CustChrome").PointerPressed += (s, e) =>
             {
-                BeginMoveDrag(e);
+                if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+                    BeginMoveDrag(e);
             };
         }
 

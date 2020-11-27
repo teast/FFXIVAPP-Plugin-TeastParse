@@ -140,14 +140,10 @@ namespace FFXIVAPP.Plugin.TeastParse
             actor = new ActorModel(name, item.actor, item.type,
                     _timeline,
                     this,
-                    _partySubjects.Contains(subject), _allianceSubjects.Contains(subject));
+                    name == _actors.CurrentPlayer?.Name,
+                    IsPartyDirection(direction), IsAllianceDirection(direction));
 
-            if (actor.Name == _actors.CurrentPlayer?.Name)
-            {
-                actor.IsYou = true;
-                actor.IsParty = true;
-            }
-
+            Logging.Log(Logger, $"Creating1 Actor model \"{actor.Name}\" IsParty: {actor.IsParty}, IsAlliance: {actor.IsAlliance}. ChatcodeSubject: {subject.ToString()}");
             _localActors.Add(actor);
             _repository.AddActor(actor);
 
@@ -180,14 +176,10 @@ namespace FFXIVAPP.Plugin.TeastParse
             actor = new ActorModel(name, item.actor, item.type,
                     _timeline,
                     this,
-                    _partySubjects.Contains(subject), _allianceSubjects.Contains(subject));
+                    name == _actors.CurrentPlayer?.Name,
+                    IsPartySubject(subject), IsAllianceSubject(subject));
 
-            if (actor.Name == _actors.CurrentPlayer?.Name)
-            {
-                actor.IsYou = true;
-                actor.IsParty = true;
-            }
-
+            Logging.Log(Logger, $"Creating2 Actor model \"{actor.Name}\" IsParty: {actor.IsParty}, IsAlliance: {actor.IsAlliance}. ChatcodeSubject: {subject.ToString()}");
             _localActors.Add(actor);
             _repository.AddActor(actor);
 
@@ -314,33 +306,33 @@ namespace FFXIVAPP.Plugin.TeastParse
         /// <summary>
         /// All <see cref="ChatCodeSubject" /> that an party member can have
         /// </summary>
-        private readonly static ChatCodeSubject[] _partySubjects = new ChatCodeSubject[]
-        {
-            ChatCodeSubject.Party, ChatCodeSubject.PetParty, ChatCodeSubject.You, ChatCodeSubject.Pet
-        };
+        private static bool IsPartySubject(ChatCodeSubject subject) =>
+                subject.HasFlag(ChatCodeSubject.Party) ||
+                subject.HasFlag(ChatCodeSubject.PetParty) ||
+                subject.HasFlag(ChatCodeSubject.You) ||
+                subject.HasFlag(ChatCodeSubject.Pet);
 
         /// <summary>
         /// All <see cref="ChatCodeSubject" /> that an alliance member can have
         /// </summary>
-        private readonly static ChatCodeSubject[] _allianceSubjects = new ChatCodeSubject[]
-        {
-            ChatCodeSubject.Alliance, ChatCodeSubject.PetAlliance
-        };
+        private static bool IsAllianceSubject(ChatCodeSubject subject) =>
+                subject.HasFlag(ChatCodeSubject.Alliance) ||
+                subject.HasFlag(ChatCodeSubject.PetAlliance);
 
         /// <summary>
         /// All <see cref="ChatCodeDirection" /> that an party member can have
         /// </summary>
-        private readonly static ChatCodeDirection[] _partyDirection = new ChatCodeDirection[]
-        {
-            ChatCodeDirection.Party, ChatCodeDirection.PetParty, ChatCodeDirection.You, ChatCodeDirection.Pet
-        };
+        private static bool IsPartyDirection(ChatCodeDirection direction) =>
+            direction.HasFlag(ChatCodeDirection.Party) ||
+            direction.HasFlag(ChatCodeDirection.PetParty) ||
+            direction.HasFlag(ChatCodeDirection.You) ||
+            direction.HasFlag(ChatCodeDirection.Pet);
 
         /// <summary>
         /// All <see cref="ChatCodeDirection" /> that an alliance member can have
         /// </summary>
-        private readonly static ChatCodeDirection[] _allianceDirection = new ChatCodeDirection[]
-        {
-            ChatCodeDirection.Alliance, ChatCodeDirection.PetAlliance
-        };
+        private static bool IsAllianceDirection(ChatCodeDirection direction) =>
+            direction.HasFlag(ChatCodeDirection.Alliance) ||
+            direction.HasFlag(ChatCodeDirection.PetAlliance);
     }
 }

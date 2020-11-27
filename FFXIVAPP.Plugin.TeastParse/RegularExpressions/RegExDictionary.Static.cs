@@ -196,7 +196,7 @@ namespace FFXIVAPP.Plugin.TeastParse.RegularExpressions
         public readonly static RegExTypePair MiscInterruptedAction = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+)('s|rs) (?<action>.+) is interrupted\.$"));
         public readonly static RegExTypePair MiscEnmityIncrease = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^ ⇒ (?<source>You|.+)('s|rs) enmity increases\.$"));
         public readonly static RegExTypePair MiscReadyTeleport = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) ready Teleport.$"));
-        public readonly static RegExTypePair MiscMount = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) mount the (?<target>.+)\.$"));
+        public readonly static RegExTypePair MiscMount = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<source>You|.+) mount (the )?(?<target>.+)\.$"));
         public readonly static RegExTypePair MiscTargetOutOfRange = new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^Target out of range. (?<source>You|.+)'s (?<action>.+) was canceled\.$"));
         #endregion
     }

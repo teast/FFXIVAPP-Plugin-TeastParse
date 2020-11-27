@@ -25,11 +25,9 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         #region Fields
-        private bool _isParty;
         private DateTime _firstStart;
         private DateTime _timelineStart;
         private string _timeline;
-        private bool _isAlliance;
 
         /// <summary>
         /// Keep track on total dmg/heal/taken for party/alliance
@@ -91,11 +89,11 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         public List<ActorStatusModel> Beneficials { get; set; }
         public List<ActorStatusModel> Detrimentals { get; set; }
 
-        public bool IsParty { get; set; }
+        public bool IsParty { get; }
 
-        public bool IsAlliance { get; set; }
+        public bool IsAlliance { get; }
 
-        public bool IsYou { get; set; }
+        public bool IsYou { get; }
         #endregion
 
         #region Damage Made
@@ -189,7 +187,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         public double PercentOfTimelineHeal { get => _percentOfTimelineHeal; set => Set(() => _percentOfTimelineHeal = value); }
         #endregion
 
-        internal ActorModel(string name, ActorItem actorRaw, ActorType actorType, ITimelineCollection timeline, ITotalStats totalStats, bool isParty, bool isAlliance)
+        internal ActorModel(string name, ActorItem actorRaw, ActorType actorType, ITimelineCollection timeline, ITotalStats totalStats, bool isYou, bool isParty, bool isAlliance)
         {
             _actorRaw = actorRaw;
             _jobs = new Dictionary<Job, JobModel>
@@ -206,8 +204,9 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
             _timeline = timeline.Current.Name;
             _firstStart = timeline.Current.StartUtc;
             _timelineStart = timeline.Current.StartUtc;
-            _isParty = isParty;
-            _isAlliance = isAlliance;
+            IsYou = isYou;
+            IsParty = isParty;
+            IsAlliance = isAlliance;
             _totalStats = totalStats;
             timeline.CurrentTimelineChange += OnTimelineChange;
         }
@@ -339,7 +338,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
 
         internal void TotalDmgUpdated()
         {
-            if (_isParty)
+            if (IsParty)
                 PercentOfTimelineDamage = (double)TimelineDamage / _totalStats.PartyTotalDamage;
             else
                 PercentOfTimelineDamage = (double)TimelineDamage / _totalStats.AllianceTotalDamage;
@@ -347,7 +346,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
 
         internal void TotalDmgTakenUpdated()
         {
-            if (_isParty)
+            if (IsParty)
                 PercentOfTimelineDamageTaken = (double)TimelineDamageTaken / _totalStats.PartyTotalDamageTaken;
             else
                 PercentOfTimelineDamageTaken = (double)TimelineDamageTaken / _totalStats.AllianceTotalDamageTaken;
@@ -355,7 +354,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
 
         internal void TotalCureUpdated()
         {
-            if (_isParty)
+            if (IsParty)
                 PercentOfTimelineHeal = (double)TimelineHeal / _totalStats.PartyTotalHeal;
             else
                 PercentOfTimelineHeal = (double)TimelineHeal / _totalStats.AllianceTotalHeal;
