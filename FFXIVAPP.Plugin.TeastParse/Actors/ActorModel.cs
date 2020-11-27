@@ -205,7 +205,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
             _firstStart = timeline.Current.StartUtc;
             _timelineStart = timeline.Current.StartUtc;
             IsYou = isYou;
-            IsParty = isParty;
+            IsParty = isYou || isParty;
             IsAlliance = isAlliance;
             _totalStats = totalStats;
             timeline.CurrentTimelineChange += OnTimelineChange;
