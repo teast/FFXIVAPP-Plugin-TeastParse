@@ -54,7 +54,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors.Potency
                 IncCount = () => DamagePerPotencyCount++;
             }
 
-            Potency(model.Damage / (ulong)model.Potency);
+            Potency(model.Damage / (ulong)Math.Max(model.Potency, 1));
             IncCount();
         }
 

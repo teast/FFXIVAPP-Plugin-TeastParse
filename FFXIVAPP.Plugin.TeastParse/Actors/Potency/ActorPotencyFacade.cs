@@ -76,7 +76,6 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors.Potency
             var hasCache = _cache.TryGetValue(pr, out var cacheVal);
             if (hasCache && cacheVal.Requests < 5)
             {
-                Logging.Log(Logger, $"Using pre-cache version for {ticks},{potency} == {cacheVal.Value} ({cacheVal.Requests})");
                 cacheVal.Requests++;
                 _cache[pr] = cacheVal;
                 return cacheVal.Value;
@@ -87,7 +86,6 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors.Potency
             {
                 cacheVal.Requests = 0;
                 _cache[pr] = cacheVal;
-                Logging.Log(Logger, $"Using cache version for {ticks},{potency} == {cacheVal.Value}");
                 return cacheVal.Value;
             }
 
@@ -127,7 +125,6 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors.Potency
                 
             cacheVal.Requests = 0;
             _cache[pr] = cacheVal;
-            Logging.Log(Logger, $"Using no-cache version for {ticks},{potency} == {total}");
             return total;
         }
 
