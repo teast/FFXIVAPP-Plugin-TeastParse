@@ -26,7 +26,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
             {RealTimeSort.NameDesc, Tuple.Create<Func<RealTimeActorViewModel, object>, bool>((a) => a.Name, true) },
             {RealTimeSort.DpsAsc, Tuple.Create<Func<RealTimeActorViewModel, object>, bool>((a) => a.DPS, false) },
             {RealTimeSort.DpsDesc, Tuple.Create<Func<RealTimeActorViewModel, object>, bool>((a) => a.DPS, true) },
-            {RealTimeSort.PercentAsc, Tuple.Create<Func<RealTimeActorViewModel, object>, bool>((a) => a.PercentOfTimeline, true) },
+            {RealTimeSort.PercentAsc, Tuple.Create<Func<RealTimeActorViewModel, object>, bool>((a) => a.PercentOfTimeline, false) },
             {RealTimeSort.PercentDesc, Tuple.Create<Func<RealTimeActorViewModel, object>, bool>((a) => a.PercentOfTimeline, true) },
         };
 
