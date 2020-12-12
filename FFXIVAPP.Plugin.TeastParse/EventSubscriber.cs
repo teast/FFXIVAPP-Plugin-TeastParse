@@ -1,26 +1,23 @@
 using System;
 using FFXIVAPP.IPluginInterface;
 using FFXIVAPP.IPluginInterface.Events;
-using FFXIVAPP.Plugin.TeastParse.ChatParse;
 using FFXIVAPP.Plugin.TeastParse.Actors;
 using Sharlayan.Core;
 using NLog;
 using FFXIVAPP.Common.Utilities;
 using FFXIVAPP.Common.Core.Constant;
+using FFXIVAPP.Plugin.TeastParse.Models;
 
 namespace FFXIVAPP.Plugin.TeastParse
 {
     public class EventSubscriber
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        
-        private readonly IChatFacade _factory;
-        private readonly IActorItemHelper _actors;
+        private readonly ICurrentParseContext _parseContext;
 
-        public EventSubscriber(IChatFacade factory, IActorItemHelper actors)
+        public EventSubscriber(ICurrentParseContext parseContext)
         {
-            _factory = factory;
-            _actors = actors;
+            _parseContext = parseContext;
         }
 
         public void Subscribe(IPluginHost plugin)
@@ -72,7 +69,7 @@ namespace FFXIVAPP.Plugin.TeastParse
 
         private void OnCurrentPlayerUpdated(object sender, CurrentPlayerEvent currentPlayer)
         {
-            _actors.CurrentPlayer = currentPlayer.CurrentPlayer;
+            _parseContext.CurrentPlayer = currentPlayer.CurrentPlayer;
         }
 
         private void OnChatLogItemReceived(object sender, ChatLogItemEvent chatLogItemEvent)
@@ -88,7 +85,7 @@ namespace FFXIVAPP.Plugin.TeastParse
             try
             {
                 Logging.Log(Logger, $"Chat: {chatLogItem.TimeStamp} [{chatLogItem.Code}] \"{chatLogItem.Line}\"");
-                _factory.HandleLine(chatLogItem);
+                _parseContext.HandleLine(chatLogItem);
             }
             catch (Exception ex)
             {
@@ -108,7 +105,7 @@ namespace FFXIVAPP.Plugin.TeastParse
 
             try
             {
-                _actors.HandelUpdate(actorItemsEvent.ActorItems, ActorType.Monster);
+                _parseContext.ActorUpdate(actorItemsEvent.ActorItems, ActorType.Monster);
             }
             catch (Exception ex)
             {
@@ -129,7 +126,7 @@ namespace FFXIVAPP.Plugin.TeastParse
 
             try
             {
-                _actors.HandelUpdate(actorItemsEvent.ActorItems, ActorType.NPC);
+                _parseContext.ActorUpdate(actorItemsEvent.ActorItems, ActorType.NPC);
             }
             catch (Exception ex)
             {
@@ -149,7 +146,7 @@ namespace FFXIVAPP.Plugin.TeastParse
 
             try
             {
-                _actors.HandelUpdate(actorItemsEvent.ActorItems, ActorType.Player);
+                _parseContext.ActorUpdate(actorItemsEvent.ActorItems, ActorType.Player);
             }
             catch (Exception ex)
             {

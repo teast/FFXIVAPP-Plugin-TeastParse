@@ -161,6 +161,9 @@
           You obtain 4 craftsman's competence materia VII.
         </Description>
       </Code>
+      <Code Key="083E">
+        <Description>You Obtain X MGP.</Description>
+      </Code>
     </Group>
   </Group>
   <Group Name="Damage" Type="Damage">

@@ -6,6 +6,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using FFXIVAPP.Common.Helpers;
 using FFXIVAPP.Common.WPF;
 using FFXIVAPP.IPluginInterface;
+using FFXIVAPP.Plugin.TeastParse.Models;
 using FFXIVAPP.Plugin.TeastParse.ViewModels;
 using FFXIVAPP.Plugin.TeastParse.Windows;
 
@@ -47,19 +48,19 @@ namespace FFXIVAPP.Plugin.TeastParse
                 Content = content
             };
 
-            var dpsModel = new RealTimeViewModel(_ioc.Get<IAppLocalization>(), RealTimeFocus.Party, RealTimeType.DPS, _ioc.Get<IActorModelCollection>());
+            var dpsModel = new RealTimeViewModel(_ioc.Get<IAppLocalization>(), RealTimeFocus.Party, RealTimeType.DPS, _ioc.Get<ICurrentParseContext>());
             _dpsWidget = new RealTimeWidget()
             {
                 DataContext = dpsModel
             };
 
-            var dtpsModel = new RealTimeViewModel(_ioc.Get<IAppLocalization>(), RealTimeFocus.Party, RealTimeType.DTPS, _ioc.Get<IActorModelCollection>());
+            var dtpsModel = new RealTimeViewModel(_ioc.Get<IAppLocalization>(), RealTimeFocus.Party, RealTimeType.DTPS, _ioc.Get<ICurrentParseContext>());
             _dtpsWidget = new RealTimeWidget()
             {
                 DataContext = dtpsModel
             };
 
-            var hpsModel = new RealTimeViewModel(_ioc.Get<IAppLocalization>(), RealTimeFocus.Party, RealTimeType.HPS, _ioc.Get<IActorModelCollection>());
+            var hpsModel = new RealTimeViewModel(_ioc.Get<IAppLocalization>(), RealTimeFocus.Party, RealTimeType.HPS, _ioc.Get<ICurrentParseContext>());
             _hpsWidget = new RealTimeWidget()
             {
                 DataContext = hpsModel

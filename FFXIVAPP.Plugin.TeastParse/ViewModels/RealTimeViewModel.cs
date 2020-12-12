@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FFXIVAPP.Plugin.TeastParse;
 using FFXIVAPP.Plugin.TeastParse.Actors;
 using FFXIVAPP.Plugin.TeastParse.Events;
+using FFXIVAPP.Plugin.TeastParse.Models;
 
 namespace FFXIVAPP.Plugin.TeastParse.ViewModels
 {
@@ -78,7 +78,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
             Party.Sort(_sortAlgorithms[_sort].Item1, _sortAlgorithms[_sort].Item2);
         }
 
-        public RealTimeViewModel(IAppLocalization localization, RealTimeFocus focus, RealTimeType type, IActorModelCollection actors)
+        public RealTimeViewModel(IAppLocalization localization, RealTimeFocus focus, RealTimeType type, ICurrentParseContext context)
         {
             _localization = localization;
             _type = type;
@@ -87,17 +87,17 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
 
             if (focus == RealTimeFocus.Party)
             {
-                actorList = actors.GetParty();
-                actors.PartyActorAdded += OnActorAdded;
+                actorList = context.Actors.GetParty();
+                context.Actors.PartyActorAdded += OnActorAdded;
             }
             else if (focus == RealTimeFocus.Alliance)
             {
-                actorList = actors.GetAlliance();
-                actors.AllianceActorAdded += OnActorAdded;
+                actorList = context.Actors.GetAlliance();
+                context.Actors.AllianceActorAdded += OnActorAdded;
             }
             else
             {
-                actorList = actors.GetAll();
+                actorList = context.Actors.GetAll();
             }
 
             this.Party = new SortableObservableCollection<RealTimeActorViewModel>(_sortAlgorithms[_sort].Item1, _sortAlgorithms[_sort].Item2, actorList.Select(a => CreateActor(a)));

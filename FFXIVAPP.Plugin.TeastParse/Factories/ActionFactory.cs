@@ -9,7 +9,7 @@ using NLog;
 
 namespace FFXIVAPP.Plugin.TeastParse.Factories
 {
-    internal interface IActionFactory
+    public interface IActionFactory
     {
         ActionModel GetAction(string name, bool isDetrimental = false, ActorModel actor = null);
 

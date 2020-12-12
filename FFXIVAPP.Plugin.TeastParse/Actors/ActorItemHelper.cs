@@ -2,7 +2,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
-using FFXIVAPP.Common.Core;
 using FFXIVAPP.Common.Utilities;
 using Sharlayan.Core;
 
@@ -16,7 +15,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         CurrentPlayer CurrentPlayer { get; set; }
         (ActorItem item, ActorType type) this[string name] { get; }
         ActorItem this[ActorType type, string name] { get; }
-        void HandelUpdate(ConcurrentDictionary<uint, ActorItem> items, ActorType type);
+        void HandleUpdate(ConcurrentDictionary<uint, ActorItem> items, ActorType type);
     }
 
     internal class ActorItemHelper : IActorItemHelper
@@ -102,7 +101,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
             };
         }
 
-        public void HandelUpdate(ConcurrentDictionary<uint, ActorItem> items, ActorType type)
+        public void HandleUpdate(ConcurrentDictionary<uint, ActorItem> items, ActorType type)
         {
             _actors[type].HandelUpdate(items);
         }

@@ -5,7 +5,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
     /// <summary>
     /// Represents an detrimental
     /// </summary>
-    internal class DetrimentalModel : ActorStatusModel
+    public class DetrimentalModel : ActorStatusModel
     {
         public DetrimentalModel(string name, ActionModel action, int potency, string timestamp,
             DateTime timeUtc, DateTime? lastUtc, string source, string target,

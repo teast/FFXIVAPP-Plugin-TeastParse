@@ -12,5 +12,8 @@
     "HPS": "HPS",
     "Percent": "Percent",
     "DTPS": "DTPS",
-    "DPS": "DPS"
+    "DPS": "DPS",
+    "Active parser:": "Active parser:",
+    "Load": "Load",
+    "Load a previous parse.": "Load a previous parse."
 }

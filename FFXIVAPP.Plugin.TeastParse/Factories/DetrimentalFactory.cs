@@ -3,7 +3,7 @@ using FFXIVAPP.Plugin.TeastParse.Models;
 
 namespace FFXIVAPP.Plugin.TeastParse.Factories
 {
-    internal interface IDetrimentalFactory
+    public interface IDetrimentalFactory
     {
         DetrimentalModel GetModel(string name, string timestamp, DateTime timeUtc, string source, string target, string chatCode, string direction, string subject, IActionFactory actionFactory);
     }
