@@ -26,6 +26,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         /// Contains latest found actions (<see cref="ActionParse" /> for actual parsing of actions)
         /// </summary>
         private readonly IActionCollection _actions;
+        private readonly IParseClock _clock;
 
         /// <summary>
         /// Contains all chat codes that relates to action and damage
@@ -43,11 +44,12 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         /// <param name="codes">all known chat codes</param>
         /// <param name="actors">actor handler</param>
         /// <param name="repository">database repository</param>
-        public BattleParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timelines, IActionCollection actions, IRepository repository) : base(repository)
+        public BattleParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timelines, IActionCollection actions, IParseClock clock, IRepository repository) : base(repository)
         {
             _actors = actors;
             _timelines = timelines;
             _actions = actions;
+            _clock = clock;
             Codes = codes.Where(c => c.Type == ChatcodeType.Damage).ToList();
             Handlers = new Dictionary<ChatcodeType, ChatcodeTypeHandler>
             {
@@ -108,7 +110,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             var actorTarget = string.IsNullOrEmpty(target) ? null : _actors.GetModel(target, group.Direction, group.Subject);
 
             var model = new DamageModel(
-                occurredUtc: DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                occurredUtc: _clock.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
                 timestamp: item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
                 source: source,
                 target: target,

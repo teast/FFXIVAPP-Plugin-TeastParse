@@ -29,16 +29,18 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         /// Contains latest found actions (<see cref="ActionParse" /> for actual parsing of actions)
         /// </summary>
         private readonly IActionCollection _actions;
+        private readonly IParseClock _clock;
 
         protected override Dictionary<ChatcodeType, ChatcodeTypeHandler> Handlers { get; }
 
         protected override List<ChatCodes> Codes { get; }
 
-        public DetrimentalParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IDetrimentalFactory detrimentalFactory, IActionCollection actions, IRepository repository) : base(repository)
+        public DetrimentalParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IDetrimentalFactory detrimentalFactory, IActionCollection actions, IParseClock clock, IRepository repository) : base(repository)
         {
             _actors = actors;
             _timeline = timeline;
             _actions = actions;
+            _clock = clock;
             _detrimentalFactory = detrimentalFactory;
             _activeDetrimentals = new List<KeyValuePair<ActorModel, DetrimentalModel>>();
             Codes = codes.Where(c => c.Type == ChatcodeType.Detrimental).ToList();
@@ -62,7 +64,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 if (detrimentals[i].Value.LastUtc.HasValue == false)
                     continue;
 
-                if (detrimentals[i].Value.LastUtc > DateTime.UtcNow)
+                if (detrimentals[i].Value.LastUtc > _clock.UtcNow)
                 {
                     if (nextCheck == null || detrimentals[i].Value.LastUtc < nextCheck)
                         nextCheck = detrimentals[i].Value.LastUtc;
@@ -76,7 +78,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             if (nextCheck != null)
             {
                 _checkDetrimentalsNext = nextCheck;
-                _checkDetrimentals.Interval = (_checkDetrimentalsNext.Value - DateTime.UtcNow).TotalMilliseconds;
+                _checkDetrimentals.Interval = (_checkDetrimentalsNext.Value - _clock.UtcNow).TotalMilliseconds;
                 _checkDetrimentals.Start();
             }
         }
@@ -92,7 +94,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 if (model.LastUtc.HasValue && (_checkDetrimentalsNext == null || _checkDetrimentalsNext > model.LastUtc))
                 {
                     _checkDetrimentals.Stop();
-                    _checkDetrimentals.Interval = (model.LastUtc.Value - DateTime.UtcNow).TotalMilliseconds;
+                    _checkDetrimentals.Interval = (model.LastUtc.Value - _clock.UtcNow).TotalMilliseconds;
                     _checkDetrimentals.Start();
                 }
             }
@@ -124,7 +126,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             var actorSource = string.IsNullOrEmpty(source) ? null : _actors.GetModel(source, group.Subject);
             var actorTarget = string.IsNullOrEmpty(target) ? null : _actors.GetModel(target, group.Direction, group.Subject);
 
-            var model = _detrimentalFactory.GetModel(status, item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow,
+            var model = _detrimentalFactory.GetModel(status, item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"), _clock.UtcNow,
                                                     source, target, code, group.Direction.ToString(), group.Subject.ToString(),
                                                     _actions.Factory);
 

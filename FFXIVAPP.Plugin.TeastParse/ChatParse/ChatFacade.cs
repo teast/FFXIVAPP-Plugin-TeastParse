@@ -26,16 +26,18 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly List<ChatCodes> _codes;
         private readonly IRepository _repository;
+        private readonly IParseClock _clock;
         private readonly List<UInt64> _knownCodes;
 
         private readonly List<BaseParse> _parsers;
 
-        public ChatFacade(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IRepository repository, IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory, IActionFactory actionFactory)
+        public ChatFacade(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IRepository repository, IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory, IActionFactory actionFactory, IParseClock clock)
         {
             //_codes = ioc.Get<List<ChatCodes>>();
             //_repository = ioc.Get<IRepository>();
             _codes = codes;
             _repository = repository;
+            _clock = clock;
             _knownCodes = _codes
                             .SelectMany(c => c.Groups)
                             .SelectMany(g => g.Codes)
@@ -46,12 +48,12 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             {
                 //ioc.Instantiate<BattleParse>(), // new BattleParse(_codes, entities, _repository),
                 //ioc.Instantiate<Timeline>() //new Timeline(_repository)
-                new Timeline(timeline, _repository),
+                new Timeline(timeline, _clock, _repository),
                 actionParse,
-                new BattleParse(_codes, actors, timeline, actionParse, _repository),
-                new CureParse(_codes, actors, timeline, actionParse, _repository),
-                new DetrimentalParse(_codes, actors, timeline, detrimentalFactory, actionParse, _repository),
-                new BeneficialParse(_codes, actors, timeline, beneficialFactory, actionParse, _repository)
+                new BattleParse(_codes, actors, timeline, actionParse, _clock, _repository),
+                new CureParse(_codes, actors, timeline, actionParse, _clock, _repository),
+                new DetrimentalParse(_codes, actors, timeline, detrimentalFactory, actionParse, _clock, _repository),
+                new BeneficialParse(_codes, actors, timeline, beneficialFactory, actionParse, _clock, _repository)
             };
         }
 
@@ -66,7 +68,10 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
             foreach (var parser in _parsers)
                 if (parser.CanHandle(code))
+                {
+                    _repository.AddChatLog(new Models.ChatLogLine(0, _clock.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), line.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"), line.Code, line.Line));
                     parser.Handle(code, line);
+                }
         }
     }
 }

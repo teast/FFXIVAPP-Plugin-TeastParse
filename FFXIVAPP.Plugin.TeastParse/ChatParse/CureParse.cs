@@ -19,7 +19,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         /// Contains latest found actions (<see cref="ActionParse" /> for actual parsing of actions)
         /// </summary>
         private readonly IActionCollection _actions;
-
+        private readonly IParseClock _clock;
         private readonly IActorModelCollection _actors;
         private readonly ITimelineCollection _timelines;
         private readonly IRepository _repository;
@@ -28,11 +28,12 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
         protected override Dictionary<ChatcodeType, ChatcodeTypeHandler> Handlers { get; }
 
-        public CureParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timelines, IActionCollection actions, IRepository repository) : base(repository)
+        public CureParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timelines, IActionCollection actions, IParseClock clock, IRepository repository) : base(repository)
         {
             _actors = actors;
             _timelines = timelines;
             _actions = actions;
+            _clock = clock;
             _repository = repository;
 
             Codes = codes.Where(code => code.Type == ChatcodeType.Cure).ToList();
@@ -89,7 +90,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
             var model = new CureModel
             {
-                OccurredUtc = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                OccurredUtc = _clock.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
                 Timestamp = item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
                 Source = beneficial.Source,
                 Target = target,
@@ -134,7 +135,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
             var model = new CureModel
             {
-                OccurredUtc = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                OccurredUtc = _clock.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
                 Timestamp = item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
                 Source = source,
                 Target = target,

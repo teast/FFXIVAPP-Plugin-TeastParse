@@ -32,6 +32,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         /// Collection of all generated timelines
         /// </summary>
         private readonly ITimelineCollection _collection;
+        private readonly IParseClock _clock;
 
         protected override List<ChatCodes> Codes => new List<ChatCodes>
         {
@@ -42,12 +43,13 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             })
         };
 
-        public Timeline(ITimelineCollection collection, IRepository repository) : base(repository)
+        public Timeline(ITimelineCollection collection, IParseClock clock, IRepository repository) : base(repository)
         {
             _collection = collection;
+            _clock = clock;
             //_criticalEngagement = new List<string>();
             //_criticalTimer = new Timer(5*60);
-            var first = new TimelineModel("#Start", DateTime.UtcNow);
+            var first = new TimelineModel("#Start", _clock.UtcNow);
             _collection.Add(first);
             StoreTimeline(first);
         }
@@ -94,7 +96,7 @@ This is how it looks if you do not commence. it happens ~3-5minutes after the 2n
             if (string.IsNullOrWhiteSpace(dungeon))
                 return false;
 
-            var timeline = new TimelineModel(dungeon, DateTime.UtcNow);
+            var timeline = new TimelineModel(dungeon, _clock.UtcNow);
             StoreTimeline(timeline);
             _collection.Add(timeline);
             return true;

@@ -55,7 +55,7 @@ namespace Tests
             _connection = new SQLiteConnection(connectionString);
             _connection.Open();
             _repository = new Repository(connectionString);
-            factory.Setup(_ => _.Create(It.IsAny<string>())).Returns(_repository);
+            factory.Setup(_ => _.Create(It.IsAny<string>(), It.IsAny<bool>())).Returns(_repository);
 
             _ioc = new ParserIoc();
             _ioc.Singelton<IRepositoryFactory>(() => factory.Object);

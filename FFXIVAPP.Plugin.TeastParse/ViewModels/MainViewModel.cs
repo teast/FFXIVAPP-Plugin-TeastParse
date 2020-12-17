@@ -1,16 +1,39 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using FFXIVAPP.Plugin.TeastParse.Actors;
+using FFXIVAPP.Plugin.TeastParse.Factories;
 using FFXIVAPP.Plugin.TeastParse.Models;
+using FFXIVAPP.Plugin.TeastParse.Repositories;
 
 namespace FFXIVAPP.Plugin.TeastParse.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
         private readonly IAppLocalization _localization;
+        private readonly List<ChatCodes> _codes;
+        private readonly ITimelineCollection _timeline;
+        private readonly IDetrimentalFactory _detrimentalFactory;
+        private readonly IBeneficialFactory _beneficialFactory;
+        private readonly IActionFactory _actionFactory;
+        private readonly IActorItemHelper _actorItemHelper;
+        private readonly IRepositoryFactory _repositoryFactory;
         private IParseContext _active = null;
 
-        public MainViewModel(IAppLocalization localization, ICurrentParseContext current)
+        public MainViewModel(IAppLocalization localization, ICurrentParseContext current,
+            List<ChatCodes> codes, ITimelineCollection timeline,
+            IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory,
+            IActionFactory actionFactory, IActorItemHelper actorItemHelper, IRepositoryFactory repositoryFactory
+        )
         {
             _localization = localization;
             Current = current;
+            _codes = codes;
+            _timeline = timeline;
+            _detrimentalFactory = detrimentalFactory;
+            _beneficialFactory = beneficialFactory;
+            _actionFactory = actionFactory;
+            _actorItemHelper = actorItemHelper;
+            _repositoryFactory = repositoryFactory;
         }
 
         public IParseContext Current { get; }
@@ -29,15 +52,18 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
 
         public string ActiveParserName => Active.Name;
 
-        public void LoadParse(string parse)
+        public async Task LoadParse(string parse)
         {
             if (Active.IsCurrent == false)
             {
                 Active.Dispose();
             }
 
-            Active = new ParseContext(parse);
+            var context = new ParseContext(parse, _codes, _timeline, _detrimentalFactory, _beneficialFactory, _actionFactory, _actorItemHelper, _repositoryFactory);
+            Active = context;
             RaisePropertyChanged(nameof(ActiveParserName));
+
+            await context.Replay();
         }
     }
 }

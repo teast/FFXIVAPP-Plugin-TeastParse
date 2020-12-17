@@ -1,12 +1,12 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using FFXIVAPP.Plugin.TeastParse.Actors;
 using FFXIVAPP.Plugin.TeastParse.ChatParse;
 using FFXIVAPP.Plugin.TeastParse.Factories;
 using FFXIVAPP.Plugin.TeastParse.Repositories;
-using Sharlayan.Core;
 
 namespace FFXIVAPP.Plugin.TeastParse.Models
 {
@@ -18,31 +18,61 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
     {
         string Name { get; }
         bool IsCurrent { get; }
+
+        IActorModelCollection Actors { get; }
     }
 
     /// <summary>
-    /// Current parse context is the context that keeps
-    /// track of current parsing.
+    /// Parse context for "current" parser.
+    /// That is the parser that parse directly from FFXIV
     /// </summary>
     public interface ICurrentParseContext : IParseContext
     {
-        CurrentPlayer CurrentPlayer { get; set; }
-        IActorModelCollection Actors { get; }
-
-        void HandleLine(ChatLogItem line);
-        void ActorUpdate(ConcurrentDictionary<uint, ActorItem> actorItems, ActorType type);
+        IEventHandler EventHandler { get; }
     }
 
+    /// <summary>
+    /// Handles reading of old parsers
+    /// If the user wants to check statics from an old parse
+    /// </summary>
     public class ParseContext : IParseContext
     {
         private bool _isDisposed = false;
+        private readonly IRepository _repository;
+        private readonly EventHandler _handler;
+
+        public IActorModelCollection Actors { get; }
+
+        private readonly ParseClockFake _clock;
 
         public string Name { get; }
         public bool IsCurrent => false;
 
-        public ParseContext(string fullPath)
+        public ParseContext(string fullPath, List<ChatCodes> codes, ITimelineCollection timeline,
+            IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory,
+            IActionFactory actionFactory, IActorItemHelper actorItemHelper, IRepositoryFactory repositoryFactory)
         {
+            var connection = $"Data Source={fullPath};Version=3;";
             Name = Path.GetFileNameWithoutExtension(fullPath);
+            _repository = repositoryFactory.Create(connection, true);
+
+            Actors = new ActorModelCollection(timeline, actorItemHelper, actionFactory, _repository);
+
+            _clock = new ParseClockFake(DateTime.MinValue);
+            var facade = new ChatFacade(codes, Actors, timeline, _repository, detrimentalFactory, beneficialFactory, actionFactory, _clock);
+            _handler = new EventHandler(actorItemHelper, facade);
+        }
+
+        public Task Replay()
+        {
+            var task = Task.Run(() =>
+            {
+                var replay = new ParseReplay(_repository.GetChatLogs().ToList(), _clock, _handler);
+                while (!replay.EOF)
+                    replay.Tick();
+            });
+
+            return task;
         }
 
         public void Dispose()
@@ -51,9 +81,17 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
                 return;
 
             _isDisposed = true;
+            try
+            {
+                _repository.Dispose();
+            }
+            catch (Exception) { }
         }
     }
 
+    /// <summary>
+    /// Handles current parsing from an active FFXIV session
+    /// </summary>
     public class CurrentParseContext : ICurrentParseContext
     {
         private bool _isDisposed = false;
@@ -61,9 +99,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         public bool IsCurrent => true;
 
         public IActorModelCollection Actors { get; }
-
-        private readonly IChatFacade _facade;
-        private readonly IActorItemHelper _actors;
+        public IEventHandler EventHandler { get; }
         private readonly IRepository _repository;
 
         public CurrentParseContext(List<ChatCodes> codes, ITimelineCollection timeline,
@@ -72,27 +108,14 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         {
             var database = Path.Combine(Constants.PluginsParsesPath, $"parser{DateTime.Now.ToString("yyyyMMddHHmmss")}.db");
             var connection = $"Data Source={database};Version=3;";
+            var clock = new ParseClockReal();
             _repository = repositoryFactory.Create(connection);
             Actors = new ActorModelCollection(timeline, actorItemHelper, actionFactory, _repository);
 
-            _facade = new ChatFacade(codes, Actors, timeline, _repository, detrimentalFactory, beneficialFactory, actionFactory);
-            _actors = actorItemHelper;
-        }
+            var facade = new ChatFacade(codes, Actors, timeline, _repository, detrimentalFactory, beneficialFactory, actionFactory, clock);
+            var actors = actorItemHelper;
 
-        public CurrentPlayer CurrentPlayer
-        {
-            get => _actors.CurrentPlayer;
-            set => _actors.CurrentPlayer = value;
-        }
-
-        public void HandleLine(ChatLogItem line)
-        {
-            _facade.HandleLine(line);
-        }
-
-        public void ActorUpdate(ConcurrentDictionary<uint, ActorItem> actorItems, ActorType type)
-        {
-            _actors.HandleUpdate(actorItems, type);
+            EventHandler = new EventHandler(actorItemHelper, facade);
         }
 
         public void Dispose()

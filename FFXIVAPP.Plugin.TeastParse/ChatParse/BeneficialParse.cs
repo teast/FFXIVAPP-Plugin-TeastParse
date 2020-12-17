@@ -23,17 +23,19 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         /// Contains latest found actions (<see cref="ActionParse" /> for actual parsing of actions)
         /// </summary>
         private readonly IActionCollection _actions;
+        private readonly IParseClock _clock;
 
         protected override Dictionary<ChatcodeType, ChatcodeTypeHandler> Handlers { get; }
 
         protected override List<ChatCodes> Codes { get; }
 
-        public BeneficialParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IBeneficialFactory BeneficialFactory, IActionCollection actions, IRepository repository) : base(repository)
+        public BeneficialParse(List<ChatCodes> codes, IActorModelCollection actors, ITimelineCollection timeline, IBeneficialFactory BeneficialFactory, IActionCollection actions, IParseClock clock, IRepository repository) : base(repository)
         {
             _actors = actors;
             _timeline = timeline;
             _BeneficialFactory = BeneficialFactory;
             _actions = actions;
+            _clock = clock;
             Codes = codes.Where(c => c.Type == ChatcodeType.Beneficial).ToList();
             Handlers = new Dictionary<ChatcodeType, ChatcodeTypeHandler>
             {
@@ -74,7 +76,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             //var actorSource = string.IsNullOrEmpty(source) ? null : _actors.GetModel(source, group.Subject);
             var actorTarget = string.IsNullOrEmpty(target) ? null : _actors.GetModel(target, group.Direction, group.Subject);
 
-            var model = _BeneficialFactory.GetModel(status, item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow,
+            var model = _BeneficialFactory.GetModel(status, item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"), _clock.UtcNow,
                                                     source, target, code, group.Direction.ToString(), group.Subject.ToString(),
                                                     _actions.Factory);
 

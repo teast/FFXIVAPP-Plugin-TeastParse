@@ -35,7 +35,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Views
             if (file == null || file.Length != 1)
                 return;
 
-            model.LoadParse(file[0]);
+            await model.LoadParse(file[0]);
         }
     }
 }

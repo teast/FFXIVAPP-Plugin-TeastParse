@@ -1,23 +1,22 @@
-using System;
 using FFXIVAPP.IPluginInterface;
 using FFXIVAPP.IPluginInterface.Events;
-using FFXIVAPP.Plugin.TeastParse.Actors;
-using Sharlayan.Core;
-using NLog;
-using FFXIVAPP.Common.Utilities;
-using FFXIVAPP.Common.Core.Constant;
 using FFXIVAPP.Plugin.TeastParse.Models;
+using NLog;
 
 namespace FFXIVAPP.Plugin.TeastParse
 {
+    /// <summary>
+    /// Listens to actual event streams from FFXIVAPP and deligates
+    /// them to <see cref="IEventHandler" /> for <see cref="ICurrentParseContext" />.
+    /// </summary>
     public class EventSubscriber
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly ICurrentParseContext _parseContext;
+        private readonly IEventHandler _handler;
 
         public EventSubscriber(ICurrentParseContext parseContext)
         {
-            _parseContext = parseContext;
+            _handler = parseContext.EventHandler;
         }
 
         public void Subscribe(IPluginHost plugin)
@@ -46,112 +45,51 @@ namespace FFXIVAPP.Plugin.TeastParse
             plugin.CurrentPlayerUpdated -= OnCurrentPlayerUpdated;
         }
 
-        private static void OnConstantsUpdated(object sender, ConstantsEntityEvent constantsEntityEvent) {
-            // delegate event from constants, not required to subsribe, but recommended as it gives you app settings
-            if (sender == null) {
+        private void OnConstantsUpdated(object sender, ConstantsEntityEvent constantsEntityEvent) {
+            if (sender == null)
                 return;
-            }
 
-            ConstantsEntity constantsEntity = constantsEntityEvent.ConstantsEntity;
-            Constants.AutoTranslate = constantsEntity.AutoTranslate;
-
-            Constants.Colors = constantsEntity.Colors;
-            Constants.CultureInfo = constantsEntity.CultureInfo;
-            Constants.CharacterName = constantsEntity.CharacterName;
-            Constants.ServerName = constantsEntity.ServerName;
-            if (constantsEntity.GameLanguage != null && Enum.TryParse<GameLanguageEnum>(constantsEntity.GameLanguage, out var gameLanguage))
-                Constants.GameLanguage = gameLanguage;
-            else
-                Constants.GameLanguage = GameLanguageEnum.English;
-
-            Settings.Default.EnableHelpLabels = constantsEntity.EnableHelpLabels;
+            _handler.OnConstantsUpdated(constantsEntityEvent);
         }
 
         private void OnCurrentPlayerUpdated(object sender, CurrentPlayerEvent currentPlayer)
         {
-            _parseContext.CurrentPlayer = currentPlayer.CurrentPlayer;
+            if (sender == null)
+                return;
+
+            _handler.OnCurrentPlayerUpdated(currentPlayer);
         }
 
         private void OnChatLogItemReceived(object sender, ChatLogItemEvent chatLogItemEvent)
         {
-            // delegate event from chat log, not required to subsribe
-            // this updates 100 times a second and only sends a line when it gets a new one
             if (sender == null)
-            {
                 return;
-            }
-
-            ChatLogItem chatLogItem = chatLogItemEvent.ChatLogItem;
-            try
-            {
-                Logging.Log(Logger, $"Chat: {chatLogItem.TimeStamp} [{chatLogItem.Code}] \"{chatLogItem.Line}\"");
-                _parseContext.HandleLine(chatLogItem);
-            }
-            catch (Exception ex)
-            {
-                Logging.Log(Logger, $"FFXIVAPP.Plugin.TeastParse.{nameof(EventSubscriber)}.{nameof(OnChatLogItemReceived)}: Unhandled exception", ex);
-            }
+            _handler.OnChatLogItemReceived(chatLogItemEvent);
         }
 
         private void OnMonsterItemsUpdated(object sender, ActorItemsEvent actorItemsEvent)
         {
-            // delegate event from monster entities from ram, not required to subsribe
-            // this updates 10x a second and only sends data if the items are found in ram
-            // currently there no change/new/removed event handling (looking into it)
             if (sender == null)
-            {
                 return;
-            }
+            
+            _handler.OnMonsterItemsUpdated(actorItemsEvent);
 
-            try
-            {
-                _parseContext.ActorUpdate(actorItemsEvent.ActorItems, ActorType.Monster);
-            }
-            catch (Exception ex)
-            {
-                Logging.Log(Logger, $"FFXIVAPP.Plugin.TeastParse.{nameof(EventSubscriber)}.{nameof(OnMonsterItemsUpdated)}: Unhandled exception", ex);
-            }
         }
 
         private void OnNPCItemsUpdated(object sender, ActorItemsEvent actorItemsEvent)
         {
-            // delegate event from npc entities from ram, not required to subsribe
-            // this list includes anything that is not a player or monster
-            // this updates 10x a second and only sends data if the items are found in ram
-            // currently there no change/new/removed event handling (looking into it)
             if (sender == null)
-            {
                 return;
-            }
 
-            try
-            {
-                _parseContext.ActorUpdate(actorItemsEvent.ActorItems, ActorType.NPC);
-            }
-            catch (Exception ex)
-            {
-                Logging.Log(Logger, $"FFXIVAPP.Plugin.TeastParse.{nameof(EventSubscriber)}.{nameof(OnNPCItemsUpdated)}: Unhandled exception", ex);
-            }
+            _handler.OnNPCItemsUpdated(actorItemsEvent);
         }
 
         private void OnPCItemsUpdated(object sender, ActorItemsEvent actorItemsEvent)
         {
-            // delegate event from player entities from ram, not required to subsribe
-            // this updates 10x a second and only sends data if the items are found in ram
-            // currently there no change/new/removed event handling (looking into it)
             if (sender == null)
-            {
                 return;
-            }
 
-            try
-            {
-                _parseContext.ActorUpdate(actorItemsEvent.ActorItems, ActorType.Player);
-            }
-            catch (Exception ex)
-            {
-                Logging.Log(Logger, $"FFXIVAPP.Plugin.TeastParse.{nameof(EventSubscriber)}.{nameof(OnPCItemsUpdated)}: Unhandled exception", ex);
-            }
+            _handler.OnPCItemsUpdated(actorItemsEvent);
         }
     }
 }
