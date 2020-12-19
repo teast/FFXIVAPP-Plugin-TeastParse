@@ -18,13 +18,12 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
         private readonly IDetrimentalFactory _detrimentalFactory;
         private readonly IBeneficialFactory _beneficialFactory;
         private readonly IActionFactory _actionFactory;
-        private readonly IActorItemHelper _actorItemHelper;
         private readonly IRepositoryFactory _repositoryFactory;
         private IParseContext _active = null;
 
         public MainViewModel(IAppLocalization localization, ICurrentParseContext current,
             List<ChatCodes> codes, IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory,
-            IActionFactory actionFactory, IActorItemHelper actorItemHelper, IRepositoryFactory repositoryFactory
+            IActionFactory actionFactory, IRepositoryFactory repositoryFactory
         )
         {
             _localization = localization;
@@ -33,7 +32,6 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
             _detrimentalFactory = detrimentalFactory;
             _beneficialFactory = beneficialFactory;
             _actionFactory = actionFactory;
-            _actorItemHelper = actorItemHelper;
             _repositoryFactory = repositoryFactory;
             Timeline = new ObservableCollection<string>();
             Party = new SortableObservableCollection<RealTimeActorViewModel>(t => t.Name, false, Active.Actors.GetParty().Select(_ => CreateActor(_)));
@@ -109,7 +107,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
             Active.Actors.AllianceActorAdded -= OnAllianceActorAdded;
             Active.Actors.MonsterActorAdded -= OnMonsterActorAdded;
 
-            var context = new ParseContext(parse, _codes, _detrimentalFactory, _beneficialFactory, _actionFactory, _actorItemHelper, _repositoryFactory);
+            var context = new ParseContext(parse, _codes, _detrimentalFactory, _beneficialFactory, _actionFactory, _repositoryFactory);
             Active = context;
             Active.Actors.PartyActorAdded += OnPartyActorAdded;
             Active.Actors.AllianceActorAdded += OnAllianceActorAdded;

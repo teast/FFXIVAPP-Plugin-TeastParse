@@ -45,24 +45,37 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         public IActorModelCollection Actors { get; }
         public ITimelineCollection Timeline { get; }
 
+        private readonly ActorItemHelper _actorItemHelper;
         private readonly ParseClockFake _clock;
 
         public string Name { get; }
         public bool IsCurrent => false;
 
         public ParseContext(string fullPath, List<ChatCodes> codes, IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory,
-            IActionFactory actionFactory, IActorItemHelper actorItemHelper, IRepositoryFactory repositoryFactory)
+            IActionFactory actionFactory, IRepositoryFactory repositoryFactory)
         {
             var connection = $"Data Source={fullPath};Version=3;";
             Name = Path.GetFileNameWithoutExtension(fullPath);
             _repository = repositoryFactory.Create(connection, true);
             Timeline = new TimelineCollection(_repository.GetTimelines().ToList());
 
-            Actors = new ActorModelCollection(Timeline, actorItemHelper, actionFactory, _repository, _repository.GetActors(Timeline)?.ToList());
+            var actors = _repository.GetActors(Timeline)?.ToList();
+            var currentLocal = actors.FirstOrDefault(_ => _.IsYou);
+
+            _actorItemHelper = new ActorItemHelper
+            {
+                CurrentPlayer = currentLocal == null ? null : new Sharlayan.Core.CurrentPlayer
+                {
+                    Name = currentLocal.Name,
+                    Job = currentLocal.Job
+                }
+            };
+
+            Actors = new ActorModelCollection(Timeline, _actorItemHelper, actionFactory, _repository, actors);
 
             _clock = new ParseClockFake(DateTime.MinValue);
             var facade = new ChatFacade(codes, Actors, Timeline, _repository, detrimentalFactory, beneficialFactory, actionFactory, _clock);
-            _handler = new EventHandler(actorItemHelper, facade);
+            _handler = new EventHandler(_actorItemHelper, facade);
         }
 
         public Task Replay()
