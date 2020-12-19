@@ -23,10 +23,10 @@ namespace Tests.Steps
         }
 
         [When("user loads parse data `(.*)`\\.")]
-        public void WhenLoadParseData(string parseName)
+        public async void WhenLoadParseData(string parseName)
         {
             var model = ((World)_scenarioContext["World"]).MainViewModel;
-            model.LoadParse(parseName);
+            await model.LoadParse(parseName);
         }
 
         [Then("loaded parse should be current\\.")]

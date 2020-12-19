@@ -29,11 +29,6 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         private DateTime _timelineStart;
         private string _timeline;
 
-        /// <summary>
-        /// Keep track on total dmg/heal/taken for party/alliance
-        /// </summary>
-        private readonly ITotalStats _totalStats;
-
         private ulong _totalDamage = 0;
         private ulong _timelineDamage = 0;
         private ulong _totalDetrimentalDamage = 0;
@@ -187,7 +182,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         public double PercentOfTimelineHeal { get => _percentOfTimelineHeal; set => Set(() => _percentOfTimelineHeal = value); }
         #endregion
 
-        internal ActorModel(string name, ActorItem actorRaw, ActorType actorType, ITimelineCollection timeline, ITotalStats totalStats, bool isYou, bool isParty, bool isAlliance)
+        internal ActorModel(string name, ActorItem actorRaw, ActorType actorType, ITimelineCollection timeline, bool isYou, bool isParty, bool isAlliance)
         {
             _actorRaw = actorRaw;
             _jobs = new Dictionary<Job, JobModel>
@@ -207,7 +202,6 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
             IsYou = isYou;
             IsParty = isYou || isParty;
             IsAlliance = isAlliance;
-            _totalStats = totalStats;
             timeline.CurrentTimelineChange += OnTimelineChange;
         }
 
@@ -336,28 +330,28 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
             PercentOfTimelineHeal = 0;
         }
 
-        internal void TotalDmgUpdated()
+        internal void TotalDmgUpdated(ulong partyTotalDmg, ulong allianceTotalDmg)
         {
             if (IsParty)
-                PercentOfTimelineDamage = (double)TimelineDamage / _totalStats.PartyTotalDamage;
+                PercentOfTimelineDamage = (double)TimelineDamage / partyTotalDmg;
             else
-                PercentOfTimelineDamage = (double)TimelineDamage / _totalStats.AllianceTotalDamage;
+                PercentOfTimelineDamage = (double)TimelineDamage / allianceTotalDmg;
         }
 
-        internal void TotalDmgTakenUpdated()
+        internal void TotalDmgTakenUpdated(ulong partyTotalDmgTaken, ulong allianceTotalDmgTaken)
         {
             if (IsParty)
-                PercentOfTimelineDamageTaken = (double)TimelineDamageTaken / _totalStats.PartyTotalDamageTaken;
+                PercentOfTimelineDamageTaken = (double)TimelineDamageTaken / partyTotalDmgTaken;
             else
-                PercentOfTimelineDamageTaken = (double)TimelineDamageTaken / _totalStats.AllianceTotalDamageTaken;
+                PercentOfTimelineDamageTaken = (double)TimelineDamageTaken / allianceTotalDmgTaken;
         }
 
-        internal void TotalCureUpdated()
+        internal void TotalCureUpdated(ulong partyTotalHeal, ulong allianceTotalHeal)
         {
             if (IsParty)
-                PercentOfTimelineHeal = (double)TimelineHeal / _totalStats.PartyTotalHeal;
+                PercentOfTimelineHeal = (double)TimelineHeal / partyTotalHeal;
             else
-                PercentOfTimelineHeal = (double)TimelineHeal / _totalStats.AllianceTotalHeal;
+                PercentOfTimelineHeal = (double)TimelineHeal / allianceTotalHeal;
         }
 
         private string ExtractServerName(string chatName, string actorName)

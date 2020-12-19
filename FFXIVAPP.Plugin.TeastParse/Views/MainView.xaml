@@ -18,5 +18,41 @@
       <TextBlock Text="{Binding ActiveParserName}" Grid.Column="1" Classes="headline" />
       <Button Grid.Column="2" Content="{Binding LabelLoad}" ToolTip.Tip="{Binding LabelLoadHelp}" Click="LoadParse" />
     </Grid>
+    <TextBlock Text="{Binding LabelTimeline}" />
+    <ComboBox Items="{Binding Timeline}" SelectedIndex="{Binding TimelineSelected}" />
+
+    <TextBlock Text="{Binding LabelPartyList}" />
+    <ComboBox Items="{Binding Party}">
+      <ComboBox.ItemTemplate>
+        <DataTemplate>
+          <Grid>
+            <TextBlock Text="{Binding Name}" />
+          </Grid>
+        </DataTemplate>
+      </ComboBox.ItemTemplate>
+    </ComboBox>
+
+    <TextBlock Text="{Binding LabelAllianceList}" />
+    <ComboBox Items="{Binding Alliance}">
+      <ComboBox.ItemTemplate>
+        <DataTemplate>
+          <Grid>
+            <TextBlock Text="{Binding Name}" />
+          </Grid>
+        </DataTemplate>
+      </ComboBox.ItemTemplate>
+    </ComboBox>
+
+    <TextBlock Text="{Binding LabelMonsterList}" />
+    <ComboBox Items="{Binding Monster}">
+      <ComboBox.ItemTemplate>
+        <DataTemplate>
+          <Grid>
+            <TextBlock Text="{Binding Name}" />
+          </Grid>
+        </DataTemplate>
+      </ComboBox.ItemTemplate>
+    </ComboBox>
+
   </StackPanel>
 </UserControl>

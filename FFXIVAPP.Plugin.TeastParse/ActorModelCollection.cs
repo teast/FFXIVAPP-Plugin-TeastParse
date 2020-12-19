@@ -20,11 +20,13 @@ namespace FFXIVAPP.Plugin.TeastParse
     {
         event EventHandler<ActorAddedEvent> PartyActorAdded;
         event EventHandler<ActorAddedEvent> AllianceActorAdded;
+        event EventHandler<ActorAddedEvent> MonsterActorAdded;
         ulong PartyTotalDamage { get; }
         ulong AllianceTotalDamage { get; }
 
         List<ActorModel> GetParty();
         List<ActorModel> GetAlliance();
+        List<ActorModel> GetMonster();
         List<ActorModel> GetAll();
         ActorModel GetModel(string name, ChatCodeDirection direction, ChatCodeSubject subject);
         ActorModel GetModel(string name, ChatCodeSubject subject);
@@ -34,23 +36,9 @@ namespace FFXIVAPP.Plugin.TeastParse
     }
 
     /// <summary>
-    /// Keep tracks on total damage/heal/etc for party/alliance
+    /// Concrete implementation of <see cref="IActorModelCollection" />
     /// </summary>
-    internal interface ITotalStats
-    {
-        ulong PartyTotalDamage { get; }
-        ulong PartyTotalDamageTaken { get; }
-        ulong PartyTotalHeal { get; }
-        ulong AllianceTotalDamage { get; }
-        ulong AllianceTotalDamageTaken { get; }
-        ulong AllianceTotalHeal { get; }
-        IActionFactory ActionFactory { get; }
-    }
-
-    /// <summary>
-    /// Concrete implementation of <see cref="IActorModelCollection" /> and <see cref="ITotalStats" />
-    /// </summary>
-    internal class ActorModelCollection : IActorModelCollection, ITotalStats
+    internal class ActorModelCollection : IActorModelCollection
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ITimelineCollection _timeline;
@@ -71,6 +59,7 @@ namespace FFXIVAPP.Plugin.TeastParse
 
         public event EventHandler<ActorAddedEvent> PartyActorAdded;
         public event EventHandler<ActorAddedEvent> AllianceActorAdded;
+        public event EventHandler<ActorAddedEvent> MonsterActorAdded;
 
         public ulong PartyTotalDamage { get; private set; }
         public ulong AllianceTotalDamage { get; private set; }
@@ -82,6 +71,11 @@ namespace FFXIVAPP.Plugin.TeastParse
         public IActionFactory ActionFactory { get; }
 
         public ActorModelCollection(ITimelineCollection timeline, IActorItemHelper actors, IActionFactory actionFactory, IRepository repository)
+            : this(timeline, actors, actionFactory, repository, new List<ActorModel>())
+        {
+
+        }
+        public ActorModelCollection(ITimelineCollection timeline, IActorItemHelper actors, IActionFactory actionFactory, IRepository repository, List<ActorModel> localActors)
         {
             _timeline = timeline;
             _actors = actors;
@@ -93,7 +87,7 @@ namespace FFXIVAPP.Plugin.TeastParse
             PartyTotalHeal = 0;
             PartyTotalDamage = 0;
             PartyTotalDamageTaken = 0;
-            _localActors = new List<ActorModel>();
+            _localActors = localActors ?? new List<ActorModel>();
             _timeline.CurrentTimelineChange += OnTimelineChange;
         }
 
@@ -115,6 +109,11 @@ namespace FFXIVAPP.Plugin.TeastParse
         public List<ActorModel> GetAlliance()
         {
             return _localActors.Where(a => a.IsAlliance).ToList();
+        }
+
+        public List<ActorModel> GetMonster()
+        {
+            return _localActors.Where(a => a.ActorType == ActorType.Monster).ToList();
         }
 
         public List<ActorModel> GetAll()
@@ -139,7 +138,6 @@ namespace FFXIVAPP.Plugin.TeastParse
 
             actor = new ActorModel(name, item.actor, item.type,
                     _timeline,
-                    this,
                     name == _actors.CurrentPlayer?.Name,
                     IsPartyDirection(direction), IsAllianceDirection(direction));
 
@@ -151,7 +149,8 @@ namespace FFXIVAPP.Plugin.TeastParse
                 RaisePartyAdded(actor);
             if (actor.IsAlliance)
                 RaiseAllianceAdded(actor);
-
+            if (actor.ActorType == ActorType.Monster)
+                RaiseMonsterAdded(actor);
             return actor;
         }
 
@@ -175,7 +174,6 @@ namespace FFXIVAPP.Plugin.TeastParse
 
             actor = new ActorModel(name, item.actor, item.type,
                     _timeline,
-                    this,
                     name == _actors.CurrentPlayer?.Name,
                     IsPartySubject(subject), IsAllianceSubject(subject));
 
@@ -187,6 +185,8 @@ namespace FFXIVAPP.Plugin.TeastParse
                 RaisePartyAdded(actor);
             if (actor.IsAlliance)
                 RaiseAllianceAdded(actor);
+            if (actor.ActorType == ActorType.Monster)
+                RaiseMonsterAdded(actor);
 
             return actor;
         }
@@ -200,7 +200,7 @@ namespace FFXIVAPP.Plugin.TeastParse
             if (actor.IsAlliance)
                 AllianceTotalDamage += damage.Damage;
 
-            _localActors.ForEach(a => a.TotalDmgUpdated());
+            _localActors.ForEach(a => a.TotalDmgUpdated(PartyTotalDamage, AllianceTotalDamage));
         }
 
         public void AddToTotalDamageTaken(ActorModel actor, DamageModel damage)
@@ -212,7 +212,7 @@ namespace FFXIVAPP.Plugin.TeastParse
             if (actor.IsAlliance)
                 AllianceTotalDamageTaken += damage.Damage;
 
-            _localActors.ForEach(a => a.TotalDmgTakenUpdated());
+            _localActors.ForEach(a => a.TotalDmgTakenUpdated(PartyTotalDamageTaken, AllianceTotalDamageTaken));
         }
 
         public void AddToTotalCure(ActorModel actor, CureModel model)
@@ -224,7 +224,7 @@ namespace FFXIVAPP.Plugin.TeastParse
             if (actor.IsAlliance)
                 AllianceTotalHeal += model.Cure;
 
-            _localActors.ForEach(a => a.TotalCureUpdated());
+            _localActors.ForEach(a => a.TotalCureUpdated(PartyTotalHeal, AllianceTotalHeal));
         }
 
         /// <summary>
@@ -301,6 +301,12 @@ namespace FFXIVAPP.Plugin.TeastParse
         {
             var args = new ActorAddedEvent(this, actor);
             AllianceActorAdded?.Invoke(this, args);
+        }
+
+        private void RaiseMonsterAdded(ActorModel actor)
+        {
+            var args = new ActorAddedEvent(this, actor);
+            MonsterActorAdded?.Invoke(this, args);
         }
 
         /// <summary>

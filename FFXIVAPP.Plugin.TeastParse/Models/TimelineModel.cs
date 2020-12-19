@@ -8,6 +8,12 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         public DateTime StartUtc { get; }
         public DateTime? EndUtc { get; set; }
 
+        public TimelineModel(string name, string startUtc, string endUtc)
+        : this(name, DateTime.Parse(startUtc), string.IsNullOrEmpty(endUtc) ? (DateTime?)null : DateTime.Parse(endUtc))
+        {
+
+        }
+
         public TimelineModel(string name, DateTime startUtc, DateTime? endUtc = null)
         {
             Name = name;

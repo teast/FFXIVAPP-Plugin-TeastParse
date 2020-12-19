@@ -20,6 +20,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         bool IsCurrent { get; }
 
         IActorModelCollection Actors { get; }
+        ITimelineCollection Timeline { get; }
     }
 
     /// <summary>
@@ -42,24 +43,25 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         private readonly EventHandler _handler;
 
         public IActorModelCollection Actors { get; }
+        public ITimelineCollection Timeline { get; }
 
         private readonly ParseClockFake _clock;
 
         public string Name { get; }
         public bool IsCurrent => false;
 
-        public ParseContext(string fullPath, List<ChatCodes> codes, ITimelineCollection timeline,
-            IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory,
+        public ParseContext(string fullPath, List<ChatCodes> codes, IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory,
             IActionFactory actionFactory, IActorItemHelper actorItemHelper, IRepositoryFactory repositoryFactory)
         {
             var connection = $"Data Source={fullPath};Version=3;";
             Name = Path.GetFileNameWithoutExtension(fullPath);
             _repository = repositoryFactory.Create(connection, true);
+            Timeline = new TimelineCollection(_repository.GetTimelines().ToList());
 
-            Actors = new ActorModelCollection(timeline, actorItemHelper, actionFactory, _repository);
+            Actors = new ActorModelCollection(Timeline, actorItemHelper, actionFactory, _repository, _repository.GetActors(Timeline)?.ToList());
 
             _clock = new ParseClockFake(DateTime.MinValue);
-            var facade = new ChatFacade(codes, Actors, timeline, _repository, detrimentalFactory, beneficialFactory, actionFactory, _clock);
+            var facade = new ChatFacade(codes, Actors, Timeline, _repository, detrimentalFactory, beneficialFactory, actionFactory, _clock);
             _handler = new EventHandler(actorItemHelper, facade);
         }
 
@@ -100,19 +102,20 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
 
         public IActorModelCollection Actors { get; }
         public IEventHandler EventHandler { get; }
+        public ITimelineCollection Timeline { get; }
         private readonly IRepository _repository;
 
-        public CurrentParseContext(List<ChatCodes> codes, ITimelineCollection timeline,
-                                    IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory,
+        public CurrentParseContext(List<ChatCodes> codes, IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory,
                                     IActionFactory actionFactory, IActorItemHelper actorItemHelper, IRepositoryFactory repositoryFactory)
         {
             var database = Path.Combine(Constants.PluginsParsesPath, $"parser{DateTime.Now.ToString("yyyyMMddHHmmss")}.db");
             var connection = $"Data Source={database};Version=3;";
             var clock = new ParseClockReal();
+            Timeline = new TimelineCollection();
             _repository = repositoryFactory.Create(connection);
-            Actors = new ActorModelCollection(timeline, actorItemHelper, actionFactory, _repository);
+            Actors = new ActorModelCollection(Timeline, actorItemHelper, actionFactory, _repository);
 
-            var facade = new ChatFacade(codes, Actors, timeline, _repository, detrimentalFactory, beneficialFactory, actionFactory, clock);
+            var facade = new ChatFacade(codes, Actors, Timeline, _repository, detrimentalFactory, beneficialFactory, actionFactory, clock);
             var actors = actorItemHelper;
 
             EventHandler = new EventHandler(actorItemHelper, facade);

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FFXIVAPP.Plugin.TeastParse.Events;
@@ -20,6 +21,8 @@ namespace FFXIVAPP.Plugin.TeastParse
         TimelineModel this[string name] { get; }
         void Add(TimelineModel model);
         TimelineModel Close(string dungeon);
+        IEnumerator<TimelineModel> GetEnumerator();
+        List<TimelineModel> ToList();
     }
 
     internal class TimelineCollection : ITimelineCollection
@@ -33,10 +36,13 @@ namespace FFXIVAPP.Plugin.TeastParse
 
         public TimelineModel this[string name] => _timelines.FirstOrDefault(t => t.Name == name);
 
-        public TimelineCollection()
+        public TimelineCollection(List<TimelineModel> timelines = null)
         {
-            _timelines = new List<TimelineModel>();
+            _timelines = timelines ?? new List<TimelineModel>();
         }
+
+        public IEnumerator<TimelineModel> GetEnumerator() => _timelines.GetEnumerator();
+        public List<TimelineModel> ToList() => _timelines.ToList();
 
         public void Add(TimelineModel model)
         {

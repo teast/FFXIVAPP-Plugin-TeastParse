@@ -25,6 +25,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
 
         IEnumerable<ChatLogLine> GetChatLogs();
         ChatLogLine GetChatLog(int id);
+        IEnumerable<ActorModel> GetActors(ITimelineCollection timeline);
+        IEnumerable<TimelineModel> GetTimelines();
     }
 
     /// <summary>
@@ -168,14 +170,20 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     ActorType,
                     Name,
                     Level,
-                    Job
+                    Job,
+                    IsYou,
+                    IsParty,
+                    IsAlliance
                 )
                 VALUES
                 (
                     @ActorType,
                     @Name,
                     @Level,
-                    @Job
+                    @Job,
+                    @IsYou,
+                    @IsParty,
+                    @IsAlliance
                 );
             ";
 
@@ -345,7 +353,11 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     ActorType       TEXT NOT NULL,
                     Name            TEXT NOT NULL,
                     Level           INT,
-                    Job             TEXT
+                    Job             TEXT,
+                    IsYou           INT,
+                    IsParty         INT,
+                    IsAlliance      INT
+
                 );
             ";
 
@@ -451,6 +463,36 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                 return null;
 
             return _connection.Query<ChatLogLine>("SELECT * FROM ChatLog WHERE Id = @id", new { Id = id }).FirstOrDefault();
+        }
+
+        public IEnumerable<ActorModel> GetActors(ITimelineCollection timeline)
+        {
+            if (!Connect())
+                return null;
+
+            return _connection.Query<ActorModelDb>("SELECT * FROM Actor").Select(model => new ActorModel(model.Name, new Sharlayan.Core.ActorItem
+            {
+
+            }, model.ActorType, timeline, model.IsYou, model.IsParty, model.IsAlliance));
+        }
+
+        public IEnumerable<TimelineModel> GetTimelines()
+        {
+            if (!Connect())
+                return null;
+
+            return _connection.Query<TimelineModel>("SELECT * FROM Timeline");
+        }
+
+        private struct ActorModelDb
+        {
+            public ActorType ActorType { get; set; }
+            public string Name { get; set; }
+            public int Level { get; set; }
+            public Sharlayan.Core.Enums.Actor.Job Job { get; set; }
+            public bool IsYou { get; set; }
+            public bool IsParty { get; set; }
+            public bool IsAlliance { get; set; }
         }
 
         public virtual void CloseConnection()
