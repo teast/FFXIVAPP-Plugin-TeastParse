@@ -472,7 +472,9 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
 
             return _connection.Query<ActorModelDb>("SELECT * FROM Actor").Select(model => new ActorModel(model.Name, new Sharlayan.Core.ActorItem
             {
-
+                Job = model.Job,
+                JobID = (byte)model.Job,
+                Level = (byte)model.Level
             }, model.ActorType, timeline, model.IsYou, model.IsParty, model.IsAlliance));
         }
 

@@ -61,6 +61,13 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
             }
         }
 
+        private bool _loadingParse;
+        public bool LoadingParse
+        {
+            get => _loadingParse;
+            set => Set(() => _loadingParse = value);
+        }
+
         public IParseContext Current { get; }
         public IParseContext Active
         {
@@ -94,6 +101,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
 
         public async Task LoadParse(string parse)
         {
+            LoadingParse = true;
             if (Active.IsCurrent == false)
             {
                 Active.Dispose();
@@ -120,6 +128,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
             RaisePropertyChanged(nameof(ActiveParserName));
 
             await context.Replay();
+            LoadingParse = false;
         }
 
         private RealTimeActorViewModel CreateActor(ActorModel actor)

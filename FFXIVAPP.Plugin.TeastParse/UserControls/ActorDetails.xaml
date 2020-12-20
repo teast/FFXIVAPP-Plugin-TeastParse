@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:FFXIVAPP.Plugin.TeastParse.Converters"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="FFXIVAPP.Plugin.TeastParse.UserControls.ActorDetails">
+  <UserControl.Resources>
+    <converters:JobToIconConverter x:Key="JobToIconConverter" />
+  </UserControl.Resources>
+  <StackPanel>
+    <Grid ColumnDefinitions="Auto,*">
+      <TextBlock Text="Name: " Grid.Column="0" />
+      <TextBlock Text="{Binding Name}" Grid.Column="1" />
+    </Grid>
+    <Grid ColumnDefinitions="Auto,Auto">
+      <TextBlock Text="Job: " Grid.Column="0" />
+      <StackPanel Grid.Column="1" Orientation="Horizontal">
+      <Image Source="{Binding Job, Converter={StaticResource JobToIconConverter}}" />
+      <TextBlock Text="{Binding Job}" />
+      <TextBlock Text="(" />
+      <TextBlock Text="{Binding Level}" />
+      <TextBlock Text=")" />
+      </StackPanel>
+    </Grid>
+    <Grid ColumnDefinitions="Auto,*">
+      <TextBlock Text="DPS: " Grid.Column="0" />
+      <TextBlock Text="{Binding DPS}" Grid.Column="1" />
+    </Grid>
+    <Grid ColumnDefinitions="Auto,*">
+      <TextBlock Text="TotalDPS: " Grid.Column="0" />
+      <TextBlock Text="{Binding TotalDPS}" Grid.Column="1" />
+    </Grid>
+    <Grid ColumnDefinitions="Auto,*">
+      <TextBlock Text="Timeline: " Grid.Column="0" />
+      <TextBlock Text="{Binding Timeline}" Grid.Column="1" />
+    </Grid>
+    <Grid ColumnDefinitions="Auto,*">
+      <TextBlock Text="Total: " Grid.Column="0" />
+      <TextBlock Text="{Binding Total}" Grid.Column="1" />
+    </Grid>
+    <Grid ColumnDefinitions="Auto,*">
+      <TextBlock Text="Percent: " Grid.Column="0" />
+      <TextBlock Text="{Binding PercentOfTimeline}" Grid.Column="1" />
+    </Grid>
+  </StackPanel>
+</UserControl>

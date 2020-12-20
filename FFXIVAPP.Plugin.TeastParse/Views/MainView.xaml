@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FFXIVAPP.Plugin.TeastParse.Views.MainView"
+             xmlns:custom="clr-namespace:FFXIVAPP.Plugin.TeastParse.UserControls"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://raw.githubusercontent.com/rogalmic/vscode-xml-complete/master/test/Avalonia/AvaloniaXamlSchema.xsd">
   <UserControl.Styles>
@@ -18,11 +19,12 @@
       <TextBlock Text="{Binding ActiveParserName}" Grid.Column="1" Classes="headline" />
       <Button Grid.Column="2" Content="{Binding LabelLoad}" ToolTip.Tip="{Binding LabelLoadHelp}" Click="LoadParse" />
     </Grid>
+    <ProgressBar IsVisible="{Binding LoadingParse}" IsIndeterminate="True" />
     <TextBlock Text="{Binding LabelTimeline}" />
     <ComboBox Items="{Binding Timeline}" SelectedIndex="{Binding TimelineSelected}" />
 
     <TextBlock Text="{Binding LabelPartyList}" />
-    <ComboBox Items="{Binding Party}">
+    <ComboBox Items="{Binding Party}" Name="PartyList">
       <ComboBox.ItemTemplate>
         <DataTemplate>
           <Grid>
@@ -31,9 +33,10 @@
         </DataTemplate>
       </ComboBox.ItemTemplate>
     </ComboBox>
+    <custom:ActorDetails DataContext="{Binding #PartyList.SelectedItem}" />
 
     <TextBlock Text="{Binding LabelAllianceList}" />
-    <ComboBox Items="{Binding Alliance}">
+    <ComboBox Items="{Binding Alliance}" Name="AllianceList">
       <ComboBox.ItemTemplate>
         <DataTemplate>
           <Grid>
@@ -42,9 +45,10 @@
         </DataTemplate>
       </ComboBox.ItemTemplate>
     </ComboBox>
+    <custom:ActorDetails DataContext="{Binding #AllianceList.SelectedItem}" />
 
     <TextBlock Text="{Binding LabelMonsterList}" />
-    <ComboBox Items="{Binding Monster}">
+    <ComboBox Items="{Binding Monster}" Name="MonsterList">
       <ComboBox.ItemTemplate>
         <DataTemplate>
           <Grid>
@@ -53,6 +57,6 @@
         </DataTemplate>
       </ComboBox.ItemTemplate>
     </ComboBox>
-
+    <custom:ActorDetails DataContext="{Binding #MonsterList.SelectedItem}" />
   </StackPanel>
 </UserControl>
