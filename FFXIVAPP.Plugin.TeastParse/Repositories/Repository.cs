@@ -22,6 +22,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
         void AddTimeline(TimelineModel model);
         void CloseTimeline(string name, DateTime endUtc);
         void AddChatLog(ChatLogLine line);
+        void UpdateActor(ActorModel actor);
 
         IEnumerable<ChatLogLine> GetChatLogs();
         ChatLogLine GetChatLog(int id);
@@ -173,7 +174,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     Job,
                     IsYou,
                     IsParty,
-                    IsAlliance
+                    IsAlliance,
+                    IsFromMemory
                 )
                 VALUES
                 (
@@ -183,7 +185,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     @Job,
                     @IsYou,
                     @IsParty,
-                    @IsAlliance
+                    @IsAlliance,
+                    @IsFromMemory
                 );
             ";
 
@@ -191,6 +194,36 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
             {
                 if (_connection.Execute(query, model) != 1)
                     Logging.Log(Logger, $"Problem storing actor information in database.");
+                _addedActors.Add(model.Name);
+            }
+            catch (Exception ex)
+            {
+                Logging.Log(Logger, $"{nameof(Repository)}.{nameof(AddActor)}: Unhandled exception", ex);
+            }
+        }
+
+        public override void UpdateActor(ActorModel model)
+        {
+            if (!Connect())
+                return;
+
+            const string query = @"
+                UPDATE Actor
+                SET
+                    ActorType = @ActorType,
+                    Level = @Level,
+                    Job = @Job,
+                    IsYou = @IsYou,
+                    IsParty = @IsParty,
+                    IsAlliance = @IsAlliance,
+                    IsFromMemory = @IsFromMemory
+                WHERE Name = @Name;
+            ";
+
+            try
+            {
+                if (_connection.Execute(query, model) != 1)
+                    Logging.Log(Logger, $"Problem updating actor information in database.");
                 _addedActors.Add(model.Name);
             }
             catch (Exception ex)
@@ -356,7 +389,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
                     Job             TEXT,
                     IsYou           INT,
                     IsParty         INT,
-                    IsAlliance      INT
+                    IsAlliance      INT,
+                    IsFromMemory    INT
 
                 );
             ";
@@ -429,6 +463,10 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
         {
         }
 
+        public virtual void UpdateActor(ActorModel actor)
+        {
+        }
+
         public virtual void AddChatLog(ChatLogLine line)
         {
         }
@@ -470,12 +508,14 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
             if (!Connect())
                 return null;
 
-            return _connection.Query<ActorModelDb>("SELECT * FROM Actor").Select(model => new ActorModel(model.Name, new Sharlayan.Core.ActorItem
+            var data = _connection.Query<ActorModelDb>("SELECT * FROM Actor").ToList();
+            return data.Select(model => new ActorModel(model.Name, model.IsFromMemory ? new Sharlayan.Core.ActorItem
             {
+                Name = model.Name,
                 Job = model.Job,
                 JobID = (byte)model.Job,
                 Level = (byte)model.Level
-            }, model.ActorType, timeline, model.IsYou, model.IsParty, model.IsAlliance));
+            } : null, model.ActorType, timeline, model.IsYou, model.IsParty, model.IsAlliance));
         }
 
         public IEnumerable<TimelineModel> GetTimelines()
@@ -495,6 +535,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
             public bool IsYou { get; set; }
             public bool IsParty { get; set; }
             public bool IsAlliance { get; set; }
+            public bool IsFromMemory { get; set; }
         }
 
         public virtual void CloseConnection()

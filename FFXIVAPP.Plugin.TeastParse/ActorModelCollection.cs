@@ -28,8 +28,7 @@ namespace FFXIVAPP.Plugin.TeastParse
         List<ActorModel> GetAlliance();
         List<ActorModel> GetMonster();
         List<ActorModel> GetAll();
-        ActorModel GetModel(string name, ChatCodeDirection direction, ChatCodeSubject subject);
-        ActorModel GetModel(string name, ChatCodeSubject subject);
+        ActorModel GetModel(string name, ChatCodeSubject subject, ChatCodeDirection? direction = null);
         void AddToTotalDamage(ActorModel actor, DamageModel damage);
         void AddToTotalDamageTaken(ActorModel actor, DamageModel damage);
         void AddToTotalCure(ActorModel source, CureModel model);
@@ -121,72 +120,53 @@ namespace FFXIVAPP.Plugin.TeastParse
             return _localActors.ToList();
         }
 
-        public ActorModel GetModel(string name, ChatCodeDirection direction, ChatCodeSubject subject)
+        public ActorModel GetModel(string name, ChatCodeSubject subject, ChatCodeDirection? direction = null)
         {
+            ActorItem actorItem;
+            ActorType actorType;
+
             // TODO: Now we got this on multiple places...
             if (name == "You" || name == "you")
                 name = _actors.CurrentPlayer?.Name ?? name;
 
             var actor = _localActors.FirstOrDefault(a => a.Name == name);
             if (actor != null)
-                return actor;
-
-            var item = FindActor(name, direction, subject);
-
-            if (item.actor == null)
-                return null;
-
-            actor = new ActorModel(name, item.actor, item.type,
-                    _timeline,
-                    name == _actors.CurrentPlayer?.Name,
-                    IsPartyDirection(direction), IsAllianceDirection(direction));
-
-            Logging.Log(Logger, $"Creating1 Actor model \"{actor.Name}\" IsParty: {actor.IsParty}, IsAlliance: {actor.IsAlliance}. ChatcodeSubject: {subject.ToString()}");
-            _localActors.Add(actor);
-            _repository.AddActor(actor);
-
-            if (actor.IsParty)
-                RaisePartyAdded(actor);
-            if (actor.IsAlliance)
-                RaiseAllianceAdded(actor);
-            if (actor.ActorType == ActorType.Monster)
-                RaiseMonsterAdded(actor);
-            return actor;
-        }
-
-        public ActorModel GetModel(string name, ChatCodeSubject subject)
-        {
-            // TODO: Now we got this on multiple places...
-            if (name == "You" || name == "you")
-                name = _actors.CurrentPlayer?.Name ?? name;
-
-            var actor = _localActors.FirstOrDefault(a => a.Name == name);
-            if (actor != null)
-                return actor;
-
-            var item = FindActor(name, subject);
-
-            if (item.actor == null)
             {
-                Logging.Log(Logger, $"Could not find \"{name}\" subject: {subject}");
-                return null;
+                if (actor.IsFromMemory)
+                    return actor;
+
+                // The actor was previous not found in FFXIV memory, so lets try and find it again
+                if (direction != null)
+                    (actorItem, actorType) = FindActor(name, direction.Value, subject);
+                else
+                    (actorItem, actorType) = FindActor(name, subject);
+
+                if (actorItem == null)
+                    return actor;
+
+                actor.UpdateFromMemory(actorItem, actorType);
+                _repository.UpdateActor(actor);
+                return actor;
             }
 
-            actor = new ActorModel(name, item.actor, item.type,
+            if (direction != null)
+                (actorItem, actorType) = FindActor(name, direction.Value, subject);
+            else
+                (actorItem, actorType) = FindActor(name, subject);
+
+            if (actorItem == null)
+            {
+                actorType = TranslateSubject(subject);
+                Logging.Log(Logger, $"Could not find \"{name}\" subject: {subject}. Creating an placeholder for it with type {actorType.ToString()}");
+            }
+
+            actor = new ActorModel(name, actorItem, actorType,
                     _timeline,
                     name == _actors.CurrentPlayer?.Name,
                     IsPartySubject(subject), IsAllianceSubject(subject));
 
-            Logging.Log(Logger, $"Creating2 Actor model \"{actor.Name}\" IsParty: {actor.IsParty}, IsAlliance: {actor.IsAlliance}. ChatcodeSubject: {subject.ToString()}");
-            _localActors.Add(actor);
-            _repository.AddActor(actor);
-
-            if (actor.IsParty)
-                RaisePartyAdded(actor);
-            if (actor.IsAlliance)
-                RaiseAllianceAdded(actor);
-            if (actor.ActorType == ActorType.Monster)
-                RaiseMonsterAdded(actor);
+            Logging.Log(Logger, $"Creating1 Actor model \"{actor.Name}\" IsParty: {actor.IsParty}, IsAlliance: {actor.IsAlliance}. ChatcodeSubject: {subject.ToString()}");
+            AddActorToLocal(actor);
 
             return actor;
         }
@@ -227,6 +207,19 @@ namespace FFXIVAPP.Plugin.TeastParse
             _localActors.ForEach(a => a.TotalCureUpdated(PartyTotalHeal, AllianceTotalHeal));
         }
 
+        private void AddActorToLocal(ActorModel actor)
+        {
+            _localActors.Add(actor);
+            _repository.AddActor(actor);
+
+            if (actor.IsParty)
+                RaisePartyAdded(actor);
+            if (actor.IsAlliance)
+                RaiseAllianceAdded(actor);
+            if (actor.ActorType == ActorType.Monster)
+                RaiseMonsterAdded(actor);
+        }
+
         /// <summary>
         /// Helper method for selecting actor based on subject and name
         /// </summary>
@@ -235,30 +228,11 @@ namespace FFXIVAPP.Plugin.TeastParse
         /// <returns>an actor if found, else null</returns>
         private (ActorItem actor, ActorType type) FindActor(string name, ChatCodeSubject subject)
         {
-            switch (subject)
-            {
-                case ChatCodeSubject.Alliance:
-                case ChatCodeSubject.Party:
-                case ChatCodeSubject.You:
-                    if (_actors[ActorType.Player, name] != null)
-                        return (_actors[ActorType.Player, name], ActorType.Player);
-                    return _actors[name];
-                case ChatCodeSubject.NPC:
-                case ChatCodeSubject.Pet:
-                case ChatCodeSubject.PetAlliance:
-                case ChatCodeSubject.PetOther:
-                case ChatCodeSubject.PetParty:
-                    if (_actors[ActorType.Monster, name] != null)
-                        return (_actors[ActorType.Monster, name], ActorType.Player);
-                    return _actors[name];
-                case ChatCodeSubject.Engaged:
-                case ChatCodeSubject.UnEngaged:
-                    if (_actors[ActorType.Monster, name] != null)
-                        return (_actors[ActorType.Monster, name], ActorType.Player);
-                    return _actors[name];
-                default:
-                    return _actors[name];
-            }
+            var type = TranslateSubject(subject);
+            var actor = _actors[type, name];
+            if (actor != null)
+                return (actor, type);
+            return _actors[name];
         }
 
         /// <summary>
@@ -270,24 +244,54 @@ namespace FFXIVAPP.Plugin.TeastParse
         /// <returns>an actor if found, else null</returns>
         private (ActorItem actor, ActorType type) FindActor(string name, ChatCodeDirection direction, ChatCodeSubject subject)
         {
+            var type = TranslateDirection(direction, subject);
+            var actor = _actors[type, name];
+            if (actor != null)
+                return (actor, type);
+            return _actors[name];
+        }
+
+        private ActorType TranslateDirection(ChatCodeDirection direction, ChatCodeSubject subject)
+        {
             switch (direction)
             {
                 case ChatCodeDirection.Alliance:
                 case ChatCodeDirection.Party:
-                    if (_actors[ActorType.Player, name] != null)
-                        return (_actors[ActorType.Player, name], ActorType.Player);
-                    return _actors[name];
+                    return ActorType.Player;
                 case ChatCodeDirection.Pet:
                 case ChatCodeDirection.PetAlliance:
                 case ChatCodeDirection.PetOther:
                 case ChatCodeDirection.PetParty:
-                    if (_actors[ActorType.Monster, name] != null)
-                        return (_actors[ActorType.Monster, name], ActorType.Player);
-                    return _actors[name];
+                    return ActorType.Player;
                 case ChatCodeDirection.Self:
-                    return FindActor(name, subject);
+                    return TranslateSubject(subject);
+                case ChatCodeDirection.Engaged:
+                case ChatCodeDirection.UnEngaged:
+                    return ActorType.Monster;
                 default:
-                    return _actors[name];
+                    return ActorType.NPC;
+            }
+        }
+
+        private ActorType TranslateSubject(ChatCodeSubject subject)
+        {
+            switch (subject)
+            {
+                case ChatCodeSubject.Alliance:
+                case ChatCodeSubject.Party:
+                case ChatCodeSubject.You:
+                    return ActorType.Player;
+                case ChatCodeSubject.NPC:
+                case ChatCodeSubject.Pet:
+                case ChatCodeSubject.PetAlliance:
+                case ChatCodeSubject.PetOther:
+                case ChatCodeSubject.PetParty:
+                    return ActorType.Player;
+                case ChatCodeSubject.Engaged:
+                case ChatCodeSubject.UnEngaged:
+                    return ActorType.Monster;
+                default:
+                    return ActorType.NPC;
             }
         }
 

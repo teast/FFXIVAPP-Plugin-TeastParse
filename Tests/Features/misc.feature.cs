@@ -114,20 +114,20 @@ this.ScenarioInitialize(scenarioInfo);
 #line 5
     testRunner.And("Player One is you", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table17.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "08AB",
                             "\"You ready Teleport.\""});
-                table17.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "082B",
                             "\"You use Teleport.\""});
-                table17.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "08A9",
                             "\" ⇒ You take 137 damage.\""});
 #line 6
-    testRunner.When("multiple chat lines", ((string)(null)), table17, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table25, "When ");
 #line hidden
 #line 11
     testRunner.Then("No damage made by You.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

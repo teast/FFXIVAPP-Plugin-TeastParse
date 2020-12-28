@@ -7,6 +7,7 @@ using Dapper;
 using FFXIVAPP.IPluginInterface;
 using FFXIVAPP.IPluginInterface.Events;
 using FFXIVAPP.Plugin.TeastParse;
+using FFXIVAPP.Plugin.TeastParse.Actors;
 using FFXIVAPP.Plugin.TeastParse.Models;
 using FFXIVAPP.Plugin.TeastParse.Repositories;
 using FFXIVAPP.Plugin.TeastParse.ViewModels;
@@ -75,6 +76,11 @@ namespace Tests
             _repository.Dispose();
             _connection.Close();
             _connection.Dispose();
+        }
+
+        public void ClearActorList()
+        {
+            _players.Clear();
         }
 
         public void CreatePlayer(string name)
@@ -161,6 +167,12 @@ namespace Tests
         {
             var data = _connection.Query<DamageModel>("SELECT * FROM Damage");
             data.Should().NotContain(expression);
+        }
+
+        public void ContainActor(Expression<Func<ActorModel, bool>> expression)
+        {
+            var data = _repository.GetActors(_ioc.Get<ICurrentParseContext>().Timeline);
+            data.Should().Contain(expression);
         }
     }
 }

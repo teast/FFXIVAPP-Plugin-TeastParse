@@ -71,7 +71,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             var target = CleanName(match.Groups["target"].Value);
             var amount = match.Groups["amount"].Value;
             var code = item.Code;
-            var actorTarget = _actors.GetModel(target, group.Direction, group.Subject);
+            var actorTarget = _actors.GetModel(target, group.Subject, group.Direction);
             if (actorTarget == null)
             {
                 Logging.Log(Logger, $"Could not find actor for target \"{target}\" so cannot get who casted the beneficial status for: [{code}] \"{item.Line}\"");
@@ -131,7 +131,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             target = CleanName(target);
 
             var actorSource = _actors.GetModel(source, group.Subject);
-            var actorTarget = _actors.GetModel(target, group.Direction, group.Subject);
+            var actorTarget = _actors.GetModel(target, group.Subject, group.Direction);
 
             var model = new CureModel
             {

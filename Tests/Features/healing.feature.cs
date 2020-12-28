@@ -117,20 +117,20 @@ this.ScenarioInitialize(scenarioInfo);
 #line 6
     testRunner.And("Monster with name Spirulina", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table14.AddRow(new string[] {
+                table22.AddRow(new string[] {
                             "082B",
                             "\"You use Souleater.\""});
-                table14.AddRow(new string[] {
+                table22.AddRow(new string[] {
                             "0AA9",
                             "\" ⇒ The spirulina takes 8175 (+75%) damage.\""});
-                table14.AddRow(new string[] {
+                table22.AddRow(new string[] {
                             "08AD",
                             "\" ⇒ You recover 5405 HP.\""});
 #line 7
-    testRunner.When("multiple chat lines", ((string)(null)), table14, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table22, "When ");
 #line hidden
 #line 12
     testRunner.Then("Cure of 5405 should be stored for You on You.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -185,32 +185,32 @@ this.ScenarioInitialize(scenarioInfo);
 #line 20
     testRunner.And("Player Brd2 is she", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table15.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "082B",
                             "\"You uses Plenary Indulgence.\""});
-                table15.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "08AE",
                             "\" ⇒ You gains the effect of Confession.\""});
-                table15.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "092E",
                             "\" ⇒ Player Brd1 gains the effect of Confession.\""});
-                table15.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "092E",
                             "\" ⇒ Player Brd2 gains the effect of Confession.\""});
-                table15.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "19AD",
                             "\"Your Plenary Indulgence restores 11400 of your HP.\""});
-                table15.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "19AD",
                             "\"Player Brd1\'s Plenary Indulgence restores 11422 of his HP.\""});
-                table15.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "19AD",
                             "\"Player Brd2\'s Plenary Indulgence restores 11433 of her HP.\""});
 #line 21
-    testRunner.When("multiple chat lines", ((string)(null)), table15, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table23, "When ");
 #line hidden
 #line 30
     testRunner.Then("Cure of 11400 should be stored for You on You.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -271,32 +271,32 @@ this.ScenarioInitialize(scenarioInfo);
 #line 40
     testRunner.And("Player Brd2 is she", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table16.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "082B",
                             "\"You uses Horoscope.\""});
-                table16.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "08AE",
                             "\" ⇒ You gains the effect of Horoscope.\""});
-                table16.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "092E",
                             "\" ⇒ Player Brd1 gains the effect of Horoscope.\""});
-                table16.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "092E",
                             "\" ⇒ Player Brd2 gains the effect of Horoscope.\""});
-                table16.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "19AD",
                             "\"Your Horoscope restores 11400 of your HP.\""});
-                table16.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "19AD",
                             "\"Player Brd1\'s Horoscope restores 11422 of his HP.\""});
-                table16.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "19AD",
                             "\"Player Brd2\'s Horoscope restores 11433 of her HP.\""});
 #line 41
-    testRunner.When("multiple chat lines", ((string)(null)), table16, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table24, "When ");
 #line hidden
 #line 50
     testRunner.Then("Cure of 11400 should be stored for You on You.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

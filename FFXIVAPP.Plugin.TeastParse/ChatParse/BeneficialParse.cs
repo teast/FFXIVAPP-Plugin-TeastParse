@@ -74,7 +74,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             target = CleanName(target);
 
             //var actorSource = string.IsNullOrEmpty(source) ? null : _actors.GetModel(source, group.Subject);
-            var actorTarget = string.IsNullOrEmpty(target) ? null : _actors.GetModel(target, group.Direction, group.Subject);
+            var actorTarget = string.IsNullOrEmpty(target) ? null : _actors.GetModel(target, group.Subject, group.Direction);
 
             var model = _BeneficialFactory.GetModel(status, item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"), _clock.UtcNow,
                                                     source, target, code, group.Direction.ToString(), group.Subject.ToString(),

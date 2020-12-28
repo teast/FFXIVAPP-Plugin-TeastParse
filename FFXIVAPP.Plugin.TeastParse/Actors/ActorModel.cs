@@ -60,7 +60,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
             }
         }
 
-        private readonly ActorItem _actorRaw;
+        private ActorItem _actorRaw;
         #endregion
 
         #region Read-only Properties
@@ -89,6 +89,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         public bool IsAlliance { get; }
 
         public bool IsYou { get; }
+
+        public bool IsFromMemory { get; private set; }
         #endregion
 
         #region Damage Made
@@ -177,6 +179,29 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
         public ulong TotalHeal { get => _totalHeal; set => Set(() => _totalHeal = value); }
 
         /// <summary>
+        /// Will update information and mark itself as based on memory object
+        /// </summary>
+        /// <param name="actorItem"></param>
+        /// <param name="actorType"></param>
+        /// <remarks>
+        /// If <see cref="IsFromMemory"/> is <c>True</c> then this method will do nothing
+        /// </remarks>
+        public void UpdateFromMemory(ActorItem actorItem, ActorType actorType)
+        {
+            if (IsFromMemory)
+                return;
+
+            _actorRaw = actorItem;
+            IsFromMemory = true;
+
+            if (_actorRaw.Job != Job.Unknown && _jobs.ContainsKey(Job.Unknown))
+            {
+                _jobs[_actorRaw.Job] = _jobs[Job.Unknown];
+                _jobs.Remove(Job.Unknown);
+            }
+        }
+
+        /// <summary>
         /// Percent of total Heal made by this actor from current timeline for given party/alliance
         /// </summary>
         public double PercentOfTimelineHeal { get => _percentOfTimelineHeal; set => Set(() => _percentOfTimelineHeal = value); }
@@ -184,18 +209,25 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
 
         internal ActorModel(string name, ActorItem actorRaw, ActorType actorType, ITimelineCollection timeline, bool isYou, bool isParty, bool isAlliance)
         {
-            _actorRaw = actorRaw;
+            _actorRaw = actorRaw ?? new ActorItem
+            {
+                Job = Job.Unknown,
+                Level = 0,
+                Name = name,
+                Coordinate = new Coordinate()
+            };
+            IsFromMemory = actorRaw != null && !string.IsNullOrEmpty(actorRaw.Name);
             _jobs = new Dictionary<Job, JobModel>
             {
-                { Job, new JobModel(Job, actorRaw.Level) }
+                { Job, new JobModel(Job, _actorRaw.Level) }
             };
 
             Beneficials = new List<ActorStatusModel>();
             Detrimentals = new List<ActorStatusModel>();
             Name = name;
-            Server = ExtractServerName(name, actorRaw.Name);
+            Server = ExtractServerName(name, _actorRaw.Name);
             ActorType = actorType;
-            Coordinate = actorRaw.Coordinate;
+            Coordinate = _actorRaw.Coordinate;
             _timeline = timeline.Current.Name;
             _firstStart = timeline.Current.StartUtc;
             _timelineStart = timeline.Current.StartUtc;

@@ -26,9 +26,16 @@ namespace Tests.Steps
         }
 
         [Given("Player with name (.*)")]
+        [When("Player with name (.*)")]
         public void GivenPlayerWithName(string name)
         {
             ((World)_scenarioContext["World"]).CreatePlayer(name);
+        }
+
+        [Given("empty actor memory list")]
+        public void GivenEmptyActorList()
+        {
+            ((World)_scenarioContext["World"]).ClearActorList();
         }
 
         [Given("(.*) is you")]

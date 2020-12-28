@@ -189,17 +189,17 @@ this.ScenarioInitialize(scenarioInfo);
 #line 25
     testRunner.And("English chat", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table1.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "102B",
                             "\"Player One cast Fire III.\""});
-                table1.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Azure takes 1024 damage.\""});
 #line 26
-    testRunner.When("multiple chat lines", ((string)(null)), table1, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table9, "When ");
 #line hidden
 #line 30
     testRunner.Then("Action Fire III with damage 1024, critical hit: False, blocked: False, parry: Fal" +
@@ -247,17 +247,17 @@ this.ScenarioInitialize(scenarioInfo);
 #line 35
     testRunner.And("English chat", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table2.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "102B",
                             "\"Player One cast Fire III.\""});
-                table2.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Critical! Azure takes 1024 damage.\""});
 #line 36
-    testRunner.When("multiple chat lines", ((string)(null)), table2, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table10, "When ");
 #line hidden
 #line 40
     testRunner.Then("Action Fire III with damage 1024, critical hit: True, blocked: False, parry: Fals" +
@@ -305,17 +305,17 @@ this.ScenarioInitialize(scenarioInfo);
 #line 45
     testRunner.And("English chat", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table3.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "102B",
                             "\"Player One cast Fire III.\""});
-                table3.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Direct hit! Azure takes 1024 damage.\""});
 #line 46
-    testRunner.When("multiple chat lines", ((string)(null)), table3, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table11, "When ");
 #line hidden
 #line 50
     testRunner.Then("Action Fire III with damage 1024, critical hit: False, blocked: False, parry: Fal" +
@@ -363,17 +363,17 @@ this.ScenarioInitialize(scenarioInfo);
 #line 55
     testRunner.And("English chat", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table4.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "102B",
                             "\"Player One cast Fire III.\""});
-                table4.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Critical direct hit! Azure takes 1024 damage.\""});
 #line 56
-    testRunner.When("multiple chat lines", ((string)(null)), table4, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table12, "When ");
 #line hidden
 #line 60
     testRunner.Then("Action Fire III with damage 1024, critical hit: True, blocked: False, parry: Fals" +
@@ -421,17 +421,17 @@ this.ScenarioInitialize(scenarioInfo);
 #line 65
     testRunner.And("English chat", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table5.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "102B",
                             "\"Player One cast Fire III.\""});
-                table5.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Azure takes 1024 (+68%) damage.\""});
 #line 66
-    testRunner.When("multiple chat lines", ((string)(null)), table5, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table13, "When ");
 #line hidden
 #line 70
     testRunner.Then("Action Fire III with damage 1024, critical hit: False, blocked: False, parry: Fal" +
@@ -479,17 +479,17 @@ this.ScenarioInitialize(scenarioInfo);
 #line 75
     testRunner.And("English chat", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table6.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "102B",
                             "\"Player One uses Bootshine.\""});
-                table6.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Parried! Azure takes 1024 (-68%) damage.\""});
 #line 76
-    testRunner.When("multiple chat lines", ((string)(null)), table6, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table14, "When ");
 #line hidden
 #line 80
     testRunner.Then("Action Bootshine with damage 1024, critical hit: False, blocked: False, parry: Tr" +
@@ -537,17 +537,17 @@ this.ScenarioInitialize(scenarioInfo);
 #line 85
     testRunner.And("English chat", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table7.AddRow(new string[] {
+                table15.AddRow(new string[] {
                             "102B",
                             "\"Player One uses Bootshine.\""});
-                table7.AddRow(new string[] {
+                table15.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Blocked! Azure takes 1024 (-68%) damage.\""});
 #line 86
-    testRunner.When("multiple chat lines", ((string)(null)), table7, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table15, "When ");
 #line hidden
 #line 90
     testRunner.Then("Action Bootshine with damage 1024, critical hit: False, blocked: True, parry: Fal" +
@@ -595,23 +595,23 @@ this.ScenarioInitialize(scenarioInfo);
 #line 95
     testRunner.And("English chat", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table8.AddRow(new string[] {
+                table16.AddRow(new string[] {
                             "102B",
                             "\"Player One uses Bootshine.\""});
-                table8.AddRow(new string[] {
+                table16.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Azure takes 1024 damage.\""});
-                table8.AddRow(new string[] {
+                table16.AddRow(new string[] {
                             "102B",
                             "\"Player One uses True Strike.\""});
-                table8.AddRow(new string[] {
+                table16.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Azure takes 1030 damage.\""});
 #line 96
-    testRunner.When("multiple chat lines", ((string)(null)), table8, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table16, "When ");
 #line hidden
 #line 102
     testRunner.Then("Action Bootshine with damage 1024, critical hit: False, blocked: False, parry: Fa" +
@@ -667,26 +667,26 @@ this.ScenarioInitialize(scenarioInfo);
 #line 109
     testRunner.And("English chat", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table9.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "102B",
                             "\"Player One uses Fist of Fire.\""});
-                table9.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "102B",
                             "\"Player Two uses Bootshine.\""});
-                table9.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Azure takes 1024 damage.\""});
-                table9.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "102B",
                             "\"Player One uses True Strike.\""});
-                table9.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Azure takes 1030 damage.\""});
 #line 110
-    testRunner.When("multiple chat lines", ((string)(null)), table9, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table17, "When ");
 #line hidden
 #line 117
     testRunner.Then("Action Bootshine with damage 1024, critical hit: False, blocked: False, parry: Fa" +
@@ -786,29 +786,29 @@ this.ScenarioInitialize(scenarioInfo);
 #line 130
     testRunner.And("Player with name Mark Kero", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table10.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "282B",
                             "\"Ifrit uses Eruption.\""});
-                table10.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "102B",
                             "\"Hessa AdnOmega casts Malefic.\""});
-                table10.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Ifrit takes 588 damage.\""});
-                table10.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "12A9",
                             "\"Ryu YunRagnarok hits Ifrit for 173 damage.\""});
-                table10.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "102B",
                             "\"Dylune EclipseMoogle begins casting Verfire.\""});
-                table10.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "3129",
                             "\" ⇒ Mark KeroRagnarok takes 1537 damage.\""});
 #line 131
-    testRunner.When("multiple chat lines", ((string)(null)), table10, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table18, "When ");
 #line hidden
 #line 139
     testRunner.Then("Damage of 1537 should be stored for Ifrit against Mark KeroRagnarok.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -851,20 +851,20 @@ this.ScenarioInitialize(scenarioInfo);
 #line 143
     testRunner.And("Monster with name 4th Legion signifer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table11.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "102B",
                             "\"Player One uses Energy Drain.\""});
-                table11.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Critical! The 4th Legion signifer takes 7701 damage.\""});
-                table11.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "112D",
                             "\" ⇒ Player One absorbs 2609 HP.\""});
 #line 144
-    testRunner.When("multiple chat lines", ((string)(null)), table11, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table19, "When ");
 #line hidden
 #line 149
     testRunner.Then("Cure of 2609 should be stored for Player One on Player One.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -907,23 +907,23 @@ this.ScenarioInitialize(scenarioInfo);
 #line 153
     testRunner.And("Monster with name Ifrit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "line"});
-                table12.AddRow(new string[] {
+                table20.AddRow(new string[] {
                             "102B",
                             "\"Player One uses Spinning Edge.\""});
-                table12.AddRow(new string[] {
+                table20.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Ifrit takes 1024 damage.\""});
-                table12.AddRow(new string[] {
+                table20.AddRow(new string[] {
                             "102B",
                             "\"Player One uses Gust Slash.\""});
-                table12.AddRow(new string[] {
+                table20.AddRow(new string[] {
                             "12A9",
                             "\" ⇒ Ifrit takes 1084 damage.\""});
 #line 154
-    testRunner.When("multiple chat lines", ((string)(null)), table12, "When ");
+    testRunner.When("multiple chat lines", ((string)(null)), table20, "When ");
 #line hidden
 #line 160
     testRunner.Then("Combo action Gust Slash with damage 1084 should be stored for Player One against " +
