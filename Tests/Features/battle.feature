@@ -7,7 +7,7 @@ Scenario: One Auto-attack single monster
     Given Player with name <player>
     And Monster with name <monster>
     And <language> chat
-    When chat with code: <code> and line: <line>
+    When chat with code: <code> and line: "<line>"
     Then Damage of <damage> with critical hit: <crit>, blocked: <blocked>, parry: <parry>, direct hit: <direct>, modifier: <modifier>, should be stored for player <player> against <monster>
 
 Examples:
@@ -119,7 +119,7 @@ Scenario: Two party members doing an action each on single monster [English]
 
 Scenario: Monster has an "The" in the chat log. Make sure to handle it correctly
     Given Monster with name Zonure
-    When chat with code: 28A9 and line: The zonure hits you for 1241 damage.
+    When chat with code: 28A9 and line: "The zonure hits you for 1241 damage."
     Then Damage of 1241 should be stored for Zonure against You.
 
 Scenario: Monster do an delayed action attack. Make sure to bind the damage to that action

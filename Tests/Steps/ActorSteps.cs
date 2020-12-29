@@ -1,4 +1,4 @@
-using FluentAssertions;
+using FFXIVAPP.Plugin.TeastParse.Actors;
 using TechTalk.SpecFlow;
 
 namespace Tests.Steps
@@ -20,31 +20,52 @@ namespace Tests.Steps
         [Then("actor with name (.*) that is you exists in database")]
         public void ActorIsYou(string name)
         {
-            ((World)_scenarioContext["World"]).ContainActor(actor => actor.Name == name && actor.IsYou == true && actor.IsFromMemory);
+            ((World)_scenarioContext["World"]).ContainActor(actor => 
+                actor.ActorType == ActorType.Player &&
+                actor.Name == name &&
+                actor.IsYou == true &&
+                actor.IsFromMemory);
         }
 
         [Then("actor with name (.*) that is party exists in database")]
         public void ActorIsParty(string name)
         {
-            ((World)_scenarioContext["World"]).ContainActor(actor => actor.Name == name && actor.IsParty == true && actor.IsFromMemory);
+            ((World)_scenarioContext["World"]).ContainActor(actor => 
+                actor.ActorType == ActorType.Player &&
+                actor.Name == name &&
+                actor.IsParty == true &&
+                actor.IsFromMemory);
         }
 
         [Then("actor with name (.*) that is alliance exists in database")]
         public void ActorIsAlliance(string name)
         {
-            ((World)_scenarioContext["World"]).ContainActor(actor => actor.Name == name && actor.IsAlliance == true && actor.IsFromMemory);
+            ((World)_scenarioContext["World"]).ContainActor(actor => 
+                actor.Name == name &&
+                actor.IsAlliance == true &&
+                actor.IsFromMemory);
         }
 
         [Then("actor with name (.*) that is monster exists in database")]
         public void ActorIsMonster(string name)
         {
-            ((World)_scenarioContext["World"]).ContainActor(actor => actor.Name == name && actor.IsAlliance == false && actor.IsYou == false && actor.IsParty == false && actor.IsFromMemory);
+            ((World)_scenarioContext["World"]).ContainActor(actor =>
+                actor.ActorType == ActorType.Monster &&
+                actor.Name == name &&
+                actor.IsAlliance == false &&
+                actor.IsYou == false &&
+                actor.IsParty == false &&
+                actor.IsFromMemory);
         }
 
         [Then("actor with name (.*) that is not from memory and is party exists in database")]
         public void ActorIsPartyNotMemory(string name)
         {
-            ((World)_scenarioContext["World"]).ContainActor(actor => actor.Name == name && actor.IsParty == true && actor.IsFromMemory == false);
+            ((World)_scenarioContext["World"]).ContainActor(actor => 
+                    actor.ActorType == ActorType.Player &&
+                    actor.Name == name &&
+                    actor.IsParty == true &&
+                    actor.IsFromMemory == false);
         }
     }
 }

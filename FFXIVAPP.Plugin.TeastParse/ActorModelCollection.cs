@@ -160,10 +160,13 @@ namespace FFXIVAPP.Plugin.TeastParse
                 Logging.Log(Logger, $"Could not find \"{name}\" subject: {subject}. Creating an placeholder for it with type {actorType.ToString()}");
             }
 
+            var isParty = direction != null ? IsPartyDirection(direction.Value, subject) : IsPartySubject(subject);
+            var isAlliance = direction != null ? IsAllianceDirection(direction.Value, subject) : IsAllianceSubject(subject);
+
             actor = new ActorModel(name, actorItem, actorType,
                     _timeline,
                     name == _actors.CurrentPlayer?.Name,
-                    IsPartySubject(subject), IsAllianceSubject(subject));
+                    isParty, isAlliance);
 
             Logging.Log(Logger, $"Creating1 Actor model \"{actor.Name}\" IsParty: {actor.IsParty}, IsAlliance: {actor.IsAlliance}. ChatcodeSubject: {subject.ToString()}");
             AddActorToLocal(actor);
@@ -332,17 +335,36 @@ namespace FFXIVAPP.Plugin.TeastParse
         /// <summary>
         /// All <see cref="ChatCodeDirection" /> that an party member can have
         /// </summary>
-        private static bool IsPartyDirection(ChatCodeDirection direction) =>
-            direction.HasFlag(ChatCodeDirection.Party) ||
+        private static bool IsPartyDirection(ChatCodeDirection direction, ChatCodeSubject subject) =>
+            (direction.HasFlag(ChatCodeDirection.Party) ||
             direction.HasFlag(ChatCodeDirection.PetParty) ||
             direction.HasFlag(ChatCodeDirection.You) ||
-            direction.HasFlag(ChatCodeDirection.Pet);
+            direction.HasFlag(ChatCodeDirection.Pet)
+            )
+            || (
+                direction.HasFlag(ChatCodeDirection.Self) &&
+                (
+                    subject.HasFlag(ChatCodeSubject.Party) ||
+                    subject.HasFlag(ChatCodeSubject.You) ||
+                    subject.HasFlag(ChatCodeSubject.PetParty) ||
+                    subject.HasFlag(ChatCodeSubject.Pet)
+                )
+            );
 
         /// <summary>
         /// All <see cref="ChatCodeDirection" /> that an alliance member can have
         /// </summary>
-        private static bool IsAllianceDirection(ChatCodeDirection direction) =>
+        private static bool IsAllianceDirection(ChatCodeDirection direction, ChatCodeSubject subject) =>
+            (
             direction.HasFlag(ChatCodeDirection.Alliance) ||
-            direction.HasFlag(ChatCodeDirection.PetAlliance);
+            direction.HasFlag(ChatCodeDirection.PetAlliance)
+            )
+            || (
+                direction.HasFlag(ChatCodeDirection.Self) &&
+                (
+                    subject.HasFlag(ChatCodeSubject.Alliance) ||
+                    subject.HasFlag(ChatCodeSubject.PetAlliance)
+                )
+            );
     }
 }

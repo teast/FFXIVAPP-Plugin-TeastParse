@@ -64,3 +64,10 @@ Scenario: Player that starts to exist in memory list should have their "not in m
         | 102B | "Gudrun Arneson use Devilment."                   |
         | 102E | " ⇒ Gudrun Arneson gain the effect of Devilment." |
     Then actor with name Gudrun Arneson that is party exists in database
+
+Scenario: CurrentPlayer attacks an monster. Then monster should not be marked as party member.
+    Given Monster with name Cliffkite
+    And Player with name Gudrun Arneson
+    And Gudrun Arneson is you
+    When chat with code: 0B29 and line: "Critical! You hit the cliffkite for 5851 damage."
+    Then actor with name Cliffkite that is monster exists in database

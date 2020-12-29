@@ -68,7 +68,7 @@ namespace Tests.Steps
             ((World)_scenarioContext["World"]).SetLanguage(language);
         }
 
-        [When("chat with code: (.*) and line: (.*)")]
+        [When("chat with code: (.*) and line: \"(.*)\"")]
         public void WhenAutoAttack(string code, string line)
         {
             ((World)_scenarioContext["World"]).RaiseChatLog(code, line);
