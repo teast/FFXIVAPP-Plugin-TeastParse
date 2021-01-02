@@ -67,5 +67,29 @@ namespace Tests.Steps
                     actor.IsParty == true &&
                     actor.IsFromMemory == false);
         }
+
+        [Given("time is \"(.*)\" UTC")]
+        public void MoveTimeForward(string time)
+        {
+            ((World)_scenarioContext["World"]).SetTimeUtc(time);
+        }
+
+        [When("move time forward (.*) seconds")]
+        public void MoveTimeForward(int seconds)
+        {
+            ((World)_scenarioContext["World"]).MoveTimeForward(seconds);
+        }
+
+        [Then("player with name (.*) should have detrimental (.*) with start \"(.*)\" and end \"(.*)\"")]
+        public void PlayerDetrimental(string playerName, string detrimentalName, string start, string end)
+        {
+            ((World)_scenarioContext["World"]).PlayerDetrimental(playerName, detrimentalName, start, end);
+        }
+
+        [Then("monster with name (.*) should have detrimental (.*) with start \"(.*)\" and end \"(.*)\"")]
+        public void MonsterDetrimental(string playerName, string detrimentalName, string start, string end)
+        {
+            ((World)_scenarioContext["World"]).MonsterDetrimental(playerName, detrimentalName, start, end);
+        }
     }
 }

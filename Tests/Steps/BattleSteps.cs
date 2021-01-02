@@ -8,7 +8,6 @@ namespace Tests.Steps
     public sealed class BattleSteps
     {
         private readonly ScenarioContext _scenarioContext;
-        private readonly World _world;
 
         public BattleSteps(ScenarioContext scenarioContext)
         {
@@ -68,7 +67,7 @@ namespace Tests.Steps
             ((World)_scenarioContext["World"]).SetLanguage(language);
         }
 
-        [When("chat with code: (.*) and line: \"(.*)\"")]
+        [When("chat with code \"(.*)\" and line \"(.*)\"")]
         public void WhenAutoAttack(string code, string line)
         {
             ((World)_scenarioContext["World"]).RaiseChatLog(code, line);

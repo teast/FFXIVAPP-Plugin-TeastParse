@@ -142,7 +142,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.And(string.Format("{0} chat", language), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 10
-    testRunner.When(string.Format("chat with code: {0} and line: \"{1}\"", code, line), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When(string.Format("chat with code \"{0}\" and line \"{1}\"", code, line), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 11
     testRunner.Then(string.Format("Damage of {0} with critical hit: {1}, blocked: {2}, parry: {3}, direct hit: {4}, " +
@@ -734,7 +734,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("Monster with name Zonure", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 122
-    testRunner.When("chat with code: 28A9 and line: \"The zonure hits you for 1241 damage.\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When("chat with code \"28A9\" and line \"The zonure hits you for 1241 damage.\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 123
     testRunner.Then("Damage of 1241 should be stored for Zonure against You.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

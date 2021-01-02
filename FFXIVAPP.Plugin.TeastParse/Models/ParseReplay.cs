@@ -59,6 +59,10 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
                 Code = line.ChatCode,
                 Line = line.ChatLine
             }));
+
+            // Make sure to run all timers to the end...
+            if (EOF)
+                _clock.UtcNow = DateTime.SpecifyKind(DateTime.MaxValue, DateTimeKind.Utc);
         }
     }
 }

@@ -4497,11 +4497,6 @@
         <Description>??? loses the effect of ???.</Description>
       </Code>
     </Group>
-    <Group Name="2AB1" Subject="Engaged" Direction="Self">
-      <Code Key="2AB1">
-        <Description>Effect wears</Description>
-      </Code>
-    </Group>
     <Group Name="3BB0" Subject="UnEngaged" Direction="Self">
       <Code Key="3BB0">
         <Description>Effect wears</Description>
@@ -5387,6 +5382,11 @@
     <Group Name="3BB1" Subject="UnEngaged" Direction="Self">
       <Code Key="3BB1">
         <Description>Recover from effect</Description>
+      </Code>
+    </Group>
+    <Group Name="2AB1" Subject="Engaged" Direction="Self">
+      <Code Key="2AB1">
+        <Description>Effect wears</Description>
       </Code>
     </Group>
     <Group Name="0429" Subject="You" Direction="Self">

@@ -506,7 +506,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.And("Gudrun Arneson is you", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 72
-    testRunner.When("chat with code: 0B29 and line: \"Critical! You hit the cliffkite for 5851 damage.\"" +
+    testRunner.When("chat with code \"0B29\" and line \"Critical! You hit the cliffkite for 5851 damage.\"" +
                         "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 73

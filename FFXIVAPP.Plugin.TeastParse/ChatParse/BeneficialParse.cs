@@ -45,8 +45,27 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
         private void HandleBeneficial(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
         {
+            if (match.Groups["loses"].Success)
+            {
+                HandleBeneficialLose(activeCode, group, match, item);
+                return;
+            }
+
             var (model, target) = ToModel(match, item, group);
             target?.Beneficials?.Add(model);
+        }
+
+        private void HandleBeneficialLose(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
+        {
+            var (model, target) = ToModel(match, item, group);
+            if (target?.Beneficials == null || target.Beneficials.Count == 0)
+                return;
+            var exist = target.Beneficials.FirstOrDefault(_ => _.Name == model.Name);
+            if (exist == null)
+                return;
+
+            exist.IsActive = false;
+            //target.Beneficials.Remove(exist);
         }
 
         /// <summary>
@@ -87,7 +106,9 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             ChatcodeType.Beneficial,
             new RegExDictionary(
                 RegExDictionary.DamagePlayerAction,
-                RegExDictionary.BeneficialPlayer
+                RegExDictionary.BeneficialPlayer,
+                RegExDictionary.BeneficialLosePlayer,
+                RegExDictionary.BeneficialLoseMonster
             ),
             HandleBeneficial,
             new RegExDictionary(

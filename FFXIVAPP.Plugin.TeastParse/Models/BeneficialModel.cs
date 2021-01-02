@@ -14,5 +14,24 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         {
 
         }
+
+        public static implicit operator DetrimentalModel(BeneficialModel model)
+        {
+            if (model == null)
+                return null;
+            return new DetrimentalModel(
+                model.Name,
+                model.Action,
+                model.Potency,
+                model.Timestamp,
+                model.TimeUtc,
+                model.LastUtc,
+                model.Source,
+                model.Target,
+                model.ChatCode,
+                model.Direction,
+                model.Subject
+            );
+        }
     }
 }

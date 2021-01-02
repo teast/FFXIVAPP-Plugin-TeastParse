@@ -32,6 +32,8 @@ namespace Tests
 
         private readonly Random _random = new Random();
         private readonly ParserIoc _ioc;
+        private readonly ParseClockFake _clock;
+
         private readonly SQLiteConnection _connection;
 
         public MainViewModel MainViewModel => _ioc.Get<MainViewModel>();
@@ -58,8 +60,11 @@ namespace Tests
             _repository = new Repository(connectionString);
             factory.Setup(_ => _.Create(It.IsAny<string>(), It.IsAny<bool>())).Returns(_repository);
 
+            _clock = new ParseClockFake(DateTime.UtcNow);
             _ioc = new ParserIoc();
             _ioc.Singelton<IRepositoryFactory>(() => factory.Object);
+            _ioc.Singelton<IParseClock>(() => _clock);
+
             _pluginHost = new Mock<IPluginHost>();
             _event = new EventSubscriber(_ioc.Get<ICurrentParseContext>());
             _event.Subscribe(_pluginHost.Object);
@@ -68,6 +73,30 @@ namespace Tests
             _pluginHost.Raise(_ => _.PCItemsUpdated += null, new ActorItemsEvent(this, _players));
             _pluginHost.Raise(_ => _.NPCItemsUpdated += null, new ActorItemsEvent(this, _npc));
             _pluginHost.Raise(_ => _.MonsterItemsUpdated += null, new ActorItemsEvent(this, _monsters));
+        }
+
+        internal void PlayerDetrimental(string playerName, string detrimentalName, string start, string end)
+        {
+            var startDate = DateTime.SpecifyKind(DateTime.Parse(start), DateTimeKind.Utc);
+            var endDate = DateTime.SpecifyKind(DateTime.Parse(end), DateTimeKind.Utc);
+            var context = _ioc.Get<ICurrentParseContext>();
+            var all = context.Actors.GetAll();
+            var player = all.FirstOrDefault(_ => _.Name == playerName);
+
+            player.Should().NotBeNull();
+            player.Detrimentals.Should().NotBeNullOrEmpty().And.ContainSingle(_ => _.Name == detrimentalName && _.TimeUtc == startDate && _.LastUtc == endDate);
+        }
+
+        internal void MonsterDetrimental(string playerName, string detrimentalName, string start, string end)
+        {
+            var startDate = DateTime.SpecifyKind(DateTime.Parse(start), DateTimeKind.Utc);
+            var endDate = DateTime.SpecifyKind(DateTime.Parse(end), DateTimeKind.Utc);
+            var context = _ioc.Get<ICurrentParseContext>();
+            var all = context.Actors.GetMonster();
+            var player = all.FirstOrDefault(_ => _.Name == playerName);
+
+            player.Should().NotBeNull();
+            player.Detrimentals.Should().NotBeNullOrEmpty().And.ContainSingle(_ => _.Name == detrimentalName && _.TimeUtc == startDate && _.LastUtc == endDate);
         }
 
         public void AfterScenario()
@@ -173,6 +202,16 @@ namespace Tests
         {
             var data = _repository.GetActors(_ioc.Get<ICurrentParseContext>().Timeline);
             data.Should().Contain(expression);
+        }
+
+        public void SetTimeUtc(string time)
+        {
+            _clock.UtcNow = DateTime.SpecifyKind(DateTime.Parse(time), DateTimeKind.Utc);
+        }
+
+        public void MoveTimeForward(int seconds)
+        {
+            _clock.UtcNow = _clock.UtcNow.AddSeconds(seconds);
         }
     }
 }

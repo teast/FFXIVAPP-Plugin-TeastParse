@@ -15,6 +15,7 @@ namespace FFXIVAPP.Plugin.TeastParse
             this.Singelton<List<ChatCodes>>(() => ResourceReader.ChatCodes());
             this.Singelton<IAppLocalization>(() => new AppLocalization());
             this.Singelton<IRepositoryFactory, RepositoryFactory>();
+            this.Singelton<IParseClock, ParseClockReal>();
             this.Singelton<ICurrentParseContext, CurrentParseContext>();
             this.Singelton<IActorItemHelper, ActorItemHelper>();
             this.Singelton<ITimelineCollection, TimelineCollection>();

@@ -56,17 +56,17 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
 
         public override void Handle(ulong code, ChatLogItem item)
         {
-/*
-TODO: The new Critical engagement has following two interesting lines to follow when you start it:
-        The second like is that the user have registered and can press commense.
+            /*
+            TODO: The new Critical engagement has following two interesting lines to follow when you start it:
+                    The second like is that the user have registered and can press commense.
 
 
-[0839] "You have registered to join the following duty:Kill It with Fire"
-2020-10-17 12:40:26.977 +02:00 [INF] Chat: 2020-10-17 12:40:48 [0039] "You have joined the critical engagement, Kill It with Fire. Access the Resistance Recruitment menu to join the fray!"
+            [0839] "You have registered to join the following duty:Kill It with Fire"
+            2020-10-17 12:40:26.977 +02:00 [INF] Chat: 2020-10-17 12:40:48 [0039] "You have joined the critical engagement, Kill It with Fire. Access the Resistance Recruitment menu to join the fray!"
 
-This is how it looks if you do not commence. it happens ~3-5minutes after the 2nd line above...:
-2020-10-17 13:09:24.513 +02:00 [INF] Chat: 2020-10-17 13:09:36 [08B0] "You lose the effect of Marching Orders: Kill It with Fire."
-*/
+            This is how it looks if you do not commence. it happens ~3-5minutes after the 2nd line above...:
+            2020-10-17 13:09:24.513 +02:00 [INF] Chat: 2020-10-17 13:09:36 [08B0] "You lose the effect of Marching Orders: Kill It with Fire."
+            */
 
             if (!HandleStart(code, item))
                 HandleEnd(code, item);
@@ -125,7 +125,8 @@ This is how it looks if you do not commence. it happens ~3-5minutes after the 2n
                 return false;
 
             var timeline = _collection.Close(dungeon);
-            CloseTimeline(dungeon, timeline.EndUtc.Value);
+            if (timeline.EndUtc.HasValue)
+                CloseTimeline(dungeon, timeline.EndUtc.Value);
             return true;
         }
     }

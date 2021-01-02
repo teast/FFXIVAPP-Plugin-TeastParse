@@ -165,7 +165,15 @@ namespace FFXIVAPP.Plugin.TeastParse.RegularExpressions
 
         public readonly static RegExTypePair DetrimentalPlayerRecovers = new RegExTypePair(SubjectPlayer, null,
             // TODO: Find german translation Tuple.Create(GameLanguageEnum.German, @"^\.$"),
-            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?((T|t)he )?(?<target>You|.+) recovers? from the effect of (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?((T|t)he )?(?<target>You|.+) (?<loses>(recovers?)?) from the effect of (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.France, @"^( ⇒ )?(?<target>Vous|.+) (perd(ez?)?|ne subi(t|ssez?)) plus l'effet (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.Japanese, @"^( ⇒ )?(?<target>.+)((に|は)、?)「(?<status>.+)」が切れた。$"),
+            Tuple.Create(GameLanguageEnum.Chinese, @"^:( ⇒ )?(?<target>.+)的“(?<status>.+)”状态效果消失了。$")
+        );
+
+        public readonly static RegExTypePair DetrimentalMonsterRecovers = new RegExTypePair(SubjectMonster, null,
+            // TODO: Find german translation Tuple.Create(GameLanguageEnum.German, @"^\.$"),
+            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?((T|t)he )?(?<target>You|.+) (?<loses>(recovers?)?) from the effect of (?<status>.+)\.$"),
             Tuple.Create(GameLanguageEnum.France, @"^( ⇒ )?(?<target>Vous|.+) (perd(ez?)?|ne subi(t|ssez?)) plus l'effet (?<status>.+)\.$"),
             Tuple.Create(GameLanguageEnum.Japanese, @"^( ⇒ )?(?<target>.+)((に|は)、?)「(?<status>.+)」が切れた。$"),
             Tuple.Create(GameLanguageEnum.Chinese, @"^:( ⇒ )?(?<target>.+)的“(?<status>.+)”状态效果消失了。$")
@@ -181,7 +189,15 @@ namespace FFXIVAPP.Plugin.TeastParse.RegularExpressions
 
         public readonly static RegExTypePair BeneficialLosePlayer = new RegExTypePair(SubjectPlayer, null,
             // TODO: Find german translation for this, Tuple.Create(GameLanguageEnum.German, @"^\.$"),
-            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?(?<target>You|.+) lose(s)? the effect of (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?(?<target>You|.+) (?<loses>(loses?)?) the effect of (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.France, @"^( ⇒ )?(?<target>Vous|.+) perd(ez?)? l'effet (?<status>.+)\.$"),
+            Tuple.Create(GameLanguageEnum.Japanese, @"^( ⇒ )?(?<target>.+)((に|は)、?)「(?<status>.+)」が切れた。$"),
+            Tuple.Create(GameLanguageEnum.Chinese, @"^:( ⇒ )?(?<target>You|.+)的“(?<status>.+)”状态效果消失了。$")
+        );
+
+        public readonly static RegExTypePair BeneficialLoseMonster = new RegExTypePair(SubjectMonster, null,
+            // TODO: Find german translation for this, Tuple.Create(GameLanguageEnum.German, @"^\.$"),
+            Tuple.Create(GameLanguageEnum.English, @"^( ⇒ )?((T|t)he )?(?<target>You|.+) (?<loses>(loses?)?) the effect of (?<status>.+)\.$"),
             Tuple.Create(GameLanguageEnum.France, @"^( ⇒ )?(?<target>Vous|.+) perd(ez?)? l'effet (?<status>.+)\.$"),
             Tuple.Create(GameLanguageEnum.Japanese, @"^( ⇒ )?(?<target>.+)((に|は)、?)「(?<status>.+)」が切れた。$"),
             Tuple.Create(GameLanguageEnum.Chinese, @"^:( ⇒ )?(?<target>You|.+)的“(?<status>.+)”状态效果消失了。$")

@@ -78,6 +78,9 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
 
         public Job Job => _actorRaw.Job;
         public int Level => _actorRaw.Level;
+
+        public List<DetrimentalDamageInfo> DetrimentalDamage => _detrimentalDamage.ToList();
+        public List<DetrimentalDamageInfo> DetrimentalDamageTaken => _detrimentalDamageTaken.ToList();
         #endregion
 
         #region Properties
@@ -395,7 +398,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Actors
             return chatName.Substring(actorName.Length);
         }
 
-        private struct DetrimentalDamageInfo
+        public struct DetrimentalDamageInfo
         {
             public int Ticks { get; }
             public int Potency { get; }

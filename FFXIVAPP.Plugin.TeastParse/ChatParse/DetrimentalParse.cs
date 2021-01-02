@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Timers;
 using FFXIVAPP.Plugin.TeastParse.Actors;
 using FFXIVAPP.Plugin.TeastParse.Factories;
 using FFXIVAPP.Plugin.TeastParse.Models;
@@ -20,7 +19,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         private readonly ITimelineCollection _timeline;
         private readonly IDetrimentalFactory _detrimentalFactory;
 
-        private readonly Timer _checkDetrimentals;
+        private readonly IParseTimer _checkDetrimentals;
         private DateTime? _checkDetrimentalsNext;
 
         private readonly List<KeyValuePair<ActorModel, DetrimentalModel>> _activeDetrimentals;
@@ -49,29 +48,36 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
                 {ChatcodeType.Detrimental, _handleDetrimental}
             };
 
-            _checkDetrimentals = new Timer();
+            _checkDetrimentals = _clock.CreateTimer();
             _checkDetrimentals.Elapsed += CheckDetrimentals;
         }
 
-        private void CheckDetrimentals(object sender, ElapsedEventArgs args)
+        /// <summary>
+        /// Timer event that updates all detrimentals that is done
+        /// </summary>
+        private void CheckDetrimentals()
         {
             _checkDetrimentals.Stop();
             _checkDetrimentalsNext = null;
             DateTime? nextCheck = null;
             var detrimentals = _activeDetrimentals.ToList();
-            for(var i = 0; i < detrimentals.Count; i++)
+            for (var i = 0; i < detrimentals.Count; i++)
             {
+                // Ignore detrimentals that do not have last utc set
                 if (detrimentals[i].Value.LastUtc.HasValue == false)
                     continue;
 
+                // Detrimentals that has yet to be done
                 if (detrimentals[i].Value.LastUtc > _clock.UtcNow)
                 {
                     if (nextCheck == null || detrimentals[i].Value.LastUtc < nextCheck)
                         nextCheck = detrimentals[i].Value.LastUtc;
                     continue;
                 }
-                
-                detrimentals[i].Key.UpdateStat((DetrimentalModel)detrimentals[i].Value);
+
+                // Detrimentals that is done
+                detrimentals[i].Value.IsActive = false;
+                detrimentals[i].Key.UpdateStat(detrimentals[i].Value);
                 _activeDetrimentals.Remove(detrimentals[i]);
             }
 
@@ -83,20 +89,56 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             }
         }
 
+        /// <summary>
+        /// Detrimental lose is marked as "Beneficial" in chat codes. so this method can be called from <see cref="BeneficialParse" />
+        /// </summary>
+        /// <param name="model">Containing information about detrimental</param>
+        /// <param name="target">Information about the one who loses the effect</param>
+        private void HandleDetrimentalLose(DetrimentalModel model, ActorModel target)
+        {
+            if (target == null || model == null)
+                return;
+
+            var active = _activeDetrimentals.FirstOrDefault(k => k.Value.Target == target.Name && k.Value.Name == model.Name && k.Value.IsActive);
+            if (active.Key == null || active.Value == null)
+                return;
+
+            active.Value.LastUtc = model.TimeUtc;
+            active.Value.IsActive = false;
+
+            UpdateDetrimetnalTimer(model.TimeUtc);
+        }
+
+        /// <summary>
+        /// If given time is before next detrimental check, then reset the timer so we check when <see ref="timeUtc" /> is up
+        /// </summary>
+        /// <param name="timeUtc">given time in utc</param>
+        private void UpdateDetrimetnalTimer(DateTime timeUtc)
+        {
+            if (_checkDetrimentalsNext == null || _checkDetrimentalsNext > timeUtc)
+            {
+                _checkDetrimentals.Stop();
+                _checkDetrimentals.Interval = Math.Min(1, (timeUtc - _clock.UtcNow).TotalMilliseconds);
+                _checkDetrimentals.Start();
+            }
+        }
+
         private void HandleDetrimental(ChatCodes activeCode, Group group, Match match, ChatLogItem item)
         {
             var (model, source, target) = ToModel(match, item, group);
+            if (match.Groups["loses"].Success)
+            {
+                HandleDetrimentalLose(model, target);
+                return;
+            }
+
             target?.Detrimentals?.Add(model);
             StoreDamage(model);
             if (source != null)
             {
                 _activeDetrimentals.Add(new KeyValuePair<ActorModel, DetrimentalModel>(source, model));
-                if (model.LastUtc.HasValue && (_checkDetrimentalsNext == null || _checkDetrimentalsNext > model.LastUtc))
-                {
-                    _checkDetrimentals.Stop();
-                    _checkDetrimentals.Interval = (model.LastUtc.Value - _clock.UtcNow).TotalMilliseconds;
-                    _checkDetrimentals.Start();
-                }
+                if (model.LastUtc.HasValue)
+                    UpdateDetrimetnalTimer(model.LastUtc.Value);
             }
         }
 
@@ -137,7 +179,9 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             ChatcodeType.Detrimental,
             new RegExDictionary(
                 RegExDictionary.DamagePlayerAction,
-                RegExDictionary.DetrimentalPlayer
+                RegExDictionary.DetrimentalPlayer,
+                RegExDictionary.DetrimentalPlayerRecovers,
+                RegExDictionary.DetrimentalMonsterRecovers
             ),
             HandleDetrimental
         );

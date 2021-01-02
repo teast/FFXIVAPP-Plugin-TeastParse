@@ -119,11 +119,11 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         private readonly IRepository _repository;
 
         public CurrentParseContext(List<ChatCodes> codes, IDetrimentalFactory detrimentalFactory, IBeneficialFactory beneficialFactory,
-                                    IActionFactory actionFactory, IActorItemHelper actorItemHelper, IRepositoryFactory repositoryFactory)
+                                    IActionFactory actionFactory, IActorItemHelper actorItemHelper, IRepositoryFactory repositoryFactory,
+                                    IParseClock clock)
         {
             var database = Path.Combine(Constants.PluginsParsesPath, $"parser{DateTime.Now.ToString("yyyyMMddHHmmss")}.db");
             var connection = $"Data Source={database};Version=3;";
-            var clock = new ParseClockReal();
             Timeline = new TimelineCollection();
             _repository = repositoryFactory.Create(connection);
             Actors = new ActorModelCollection(Timeline, actorItemHelper, actionFactory, _repository);

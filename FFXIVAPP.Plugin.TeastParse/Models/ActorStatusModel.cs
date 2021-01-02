@@ -30,7 +30,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         /// <summary>
         /// If the detrimental/beneficial has a fix time, then this should contain when it ends.
         /// </summary>
-        public DateTime? LastUtc { get; }
+        public DateTime? LastUtc { get; set; }
 
         /// <summary>
         /// who casted/created the detrimetnal
@@ -65,6 +65,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         /// </summary>
         public string Subject { get; set; }
 
+        public bool IsActive { get; set; }
+
         public ActorStatusModel(string name, ActionModel action, int potency, string timestamp,
             DateTime timeUtc, DateTime? lastUtc, string source, string target,
             string chatCode, string direction, string subject)
@@ -77,6 +79,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
             Action = action;
             LastUtc = lastUtc;
             Potency = potency;
+            IsActive = true;
         }
     }
 }

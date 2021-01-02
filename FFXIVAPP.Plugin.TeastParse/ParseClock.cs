@@ -5,9 +5,10 @@ namespace FFXIVAPP.Plugin.TeastParse
     /// <summary>
     /// Represents current "real time"
     /// </summary>
-    internal interface IParseClock
+    public interface IParseClock
     {
         DateTime UtcNow { get; }
+        IParseTimer CreateTimer();
     }
 
     /// <summary>
@@ -16,13 +17,17 @@ namespace FFXIVAPP.Plugin.TeastParse
     internal class ParseClockReal : IParseClock
     {
         public DateTime UtcNow => DateTime.UtcNow;
+
+        public IParseTimer CreateTimer() => new ParseTimerReal();
     }
 
     /// <summary>
     /// Will use whatever time is set as current time
     /// </summary>
-    internal class ParseClockFake : IParseClock
+    public class ParseClockFake : IParseClock
     {
+        public event EventHandler<ParseClockFake> OnTimeChanged;
+
         private DateTime _now;
 
         public ParseClockFake(DateTime now)
@@ -33,7 +38,13 @@ namespace FFXIVAPP.Plugin.TeastParse
         public DateTime UtcNow
         {
             get => _now;
-            set => _now = value;
+            set
+            {
+                _now = value;
+                OnTimeChanged?.Invoke(this, this);
+            }
         }
+
+        public IParseTimer CreateTimer() => new ParseTimerFake(this);
     }
 }
