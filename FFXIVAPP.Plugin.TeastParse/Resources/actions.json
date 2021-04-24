@@ -1027,16 +1027,16 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 150,
+        "Value": 200,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 150.",
+        "Raw": "Delivers an attack with a potency of 200.",
         "IsDetrimental": false
       },
       {
         "Text": "Potency: ",
-        "Value": 300,
+        "Value": 370,
         "Combo": false,
-        "Raw": "  Leaden Fist Potency: 300",
+        "Raw": "  Leaden Fist Potency: 370",
         "IsDetrimental": false
       }
     ],
@@ -1072,9 +1072,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 220,
+        "Value": 270,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 220.",
+        "Raw": "Delivers an attack with a potency of 270.",
         "IsDetrimental": false
       }
     ],
@@ -1110,9 +1110,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 210,
+        "Value": 270,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 210.",
+        "Raw": "Delivers an attack with a potency of 270.",
         "IsDetrimental": false
       }
     ],
@@ -1122,13 +1122,6 @@
         "Value": 15,
         "Combo": false,
         "Raw": "Duration: 15s",
-        "IsDetrimental": false
-      },
-      {
-        "Text": "Duration: ",
-        "Value": 16,
-        "Combo": false,
-        "Raw": "Duration: 16s",
         "IsDetrimental": false
       }
     ]
@@ -1177,9 +1170,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 150,
+        "Value": 230,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 150.",
+        "Raw": "Delivers an attack with a potency of 230.",
         "IsDetrimental": false
       }
     ],
@@ -1222,16 +1215,16 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 80,
+        "Value": 110,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 80 to all nearby targets.",
+        "Raw": "Delivers an attack with a potency of 110 to all nearby targets.",
         "IsDetrimental": false
       },
       {
         "Text": "Potency: ",
-        "Value": 110,
+        "Value": 140,
         "Combo": false,
-        "Raw": "Opo-opo Form Potency: 110",
+        "Raw": "Opo-opo Form Potency: 140",
         "IsDetrimental": false
       }
     ],
@@ -1319,16 +1312,16 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 70,
+        "Value": 80,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 70.",
+        "Raw": "Delivers an attack with a potency of 80.",
         "IsDetrimental": false
       },
       {
         "Text": "Potency: ",
-        "Value": 65,
+        "Value": 80,
         "Combo": false,
-        "Raw": "Potency: 65",
+        "Raw": "Potency: 80",
         "IsDetrimental": false
       }
     ],
@@ -1345,13 +1338,6 @@
         "Value": 15,
         "Combo": false,
         "Raw": "Duration: 15s",
-        "IsDetrimental": false
-      },
-      {
-        "Text": "Duration: ",
-        "Value": 16,
-        "Combo": false,
-        "Raw": "Duration: 16s",
         "IsDetrimental": false
       }
     ]
@@ -1379,9 +1365,9 @@
     "Duration": [
       {
         "Text": "Duration: ",
-        "Value": 10,
+        "Value": 15,
         "Combo": false,
-        "Raw": "Duration: 10s",
+        "Raw": "Duration: 15s",
         "IsDetrimental": false
       }
     ]
@@ -1408,9 +1394,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 120,
+        "Value": 150,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 120 to all nearby enemies.",
+        "Raw": "Delivers an attack with a potency of 150 to all nearby enemies.",
         "IsDetrimental": false
       }
     ],
@@ -1420,13 +1406,6 @@
         "Value": 15,
         "Combo": false,
         "Raw": "Duration: 15s",
-        "IsDetrimental": false
-      },
-      {
-        "Text": "Duration: ",
-        "Value": 16,
-        "Combo": false,
-        "Raw": "Duration: 16s",
         "IsDetrimental": false
       }
     ]
@@ -1505,9 +1484,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 180,
+        "Value": 230,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 180.",
+        "Raw": "Delivers an attack with a potency of 230.",
         "IsDetrimental": false
       }
     ],
@@ -1818,9 +1797,9 @@
       },
       {
         "Text": "Potency: ",
-        "Value": 45,
+        "Value": 50,
         "Combo": false,
-        "Raw": "Potency: 45",
+        "Raw": "Potency: 50",
         "IsDetrimental": false
       }
     ],
@@ -3677,9 +3656,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 150,
+        "Value": 100,
         "Combo": false,
-        "Raw": "Deals unaspected damage with a potency of 150.",
+        "Raw": "Deals unaspected damage with a potency of 100.",
         "IsDetrimental": false
       }
     ],
@@ -4942,6 +4921,28 @@
     "Duration": []
   },
   {
+    "Id": 240,
+    "Names": {
+      "English": "Collect",
+      "German": "Sammeln",
+      "France": "Récolte",
+      "Japan": "収集品採集"
+    },
+    "Category": "DoLAbility",
+    "PrimaryCostType": 0,
+    "PrimaryValue": 0,
+    "SecondaryCostType": 0,
+    "SecondaryValue": "",
+    "Combo": "",
+    "CastTime": 0,
+    "RecastTime": 0,
+    "IsPvp": false,
+    "Jobs": "MIN",
+    "IsPlayer": true,
+    "Potency": [],
+    "Duration": []
+  },
+  {
     "Id": 241,
     "Names": {
       "English": "King's Yield II",
@@ -5824,50 +5825,6 @@
     "Duration": []
   },
   {
-    "Id": 301,
-    "Names": {
-      "English": "Impulsive Appraisal II",
-      "German": "Spontane Begutachtung II",
-      "France": "Évaluation impulsive II",
-      "Japan": "直感選別II"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 0,
-    "PrimaryValue": 0,
-    "SecondaryCostType": 0,
-    "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "MIN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 302,
-    "Names": {
-      "English": "Impulsive Appraisal II",
-      "German": "Spontane Begutachtung II",
-      "France": "Évaluation impulsive II",
-      "Japan": "直感選別II"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 0,
-    "PrimaryValue": 0,
-    "SecondaryCostType": 0,
-    "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "BTN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
     "Id": 303,
     "Names": {
       "English": "Sneak",
@@ -6490,6 +6447,28 @@
     ]
   },
   {
+    "Id": 815,
+    "Names": {
+      "English": "Collect",
+      "German": "Sammeln",
+      "France": "Récolte",
+      "Japan": "収集品採集"
+    },
+    "Category": "DoLAbility",
+    "PrimaryCostType": 0,
+    "PrimaryValue": 0,
+    "SecondaryCostType": 0,
+    "SecondaryValue": "",
+    "Combo": "",
+    "CastTime": 0,
+    "RecastTime": 0,
+    "IsPvp": false,
+    "Jobs": "BTN",
+    "IsPlayer": true,
+    "Potency": [],
+    "Duration": []
+  },
+  {
     "Id": 850,
     "Names": {
       "English": "Unpacking Minion",
@@ -6857,9 +6836,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 220,
+        "Value": 230,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 220.  ",
+        "Raw": "Delivers an attack with a potency of 230.  ",
         "IsDetrimental": false
       }
     ],
@@ -6924,9 +6903,9 @@
       },
       {
         "Text": "Combo Potency: ",
-        "Value": 330,
+        "Value": 340,
         "Combo": true,
-        "Raw": "Combo Potency: 330  ",
+        "Raw": "Combo Potency: 340  ",
         "IsDetrimental": false
       }
     ],
@@ -8626,22 +8605,22 @@
       "Japan": "闘魂旋風脚"
     },
     "Category": "Ability",
-    "PrimaryCostType": 49,
+    "PrimaryCostType": 0,
     "PrimaryValue": 0,
     "SecondaryCostType": 0,
     "SecondaryValue": "",
     "Combo": "",
     "CastTime": 0,
-    "RecastTime": 100,
+    "RecastTime": 450,
     "IsPvp": false,
     "Jobs": "MNK",
     "IsPlayer": true,
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 430,
+        "Value": 400,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 430.",
+        "Raw": "Delivers an attack with a potency of 400.",
         "IsDetrimental": false
       }
     ],
@@ -8669,9 +8648,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 200,
+        "Value": 250,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 200 to all nearby enemies.",
+        "Raw": "Delivers an attack with a potency of 250 to all nearby enemies.",
         "IsDetrimental": false
       }
     ],
@@ -8692,7 +8671,7 @@
     "SecondaryValue": "",
     "Combo": "",
     "CastTime": 0,
-    "RecastTime": 12,
+    "RecastTime": 10,
     "IsPvp": false,
     "Jobs": "MNK",
     "IsPlayer": true,
@@ -8721,9 +8700,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 370,
+        "Value": 340,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 370.",
+        "Raw": "Delivers an attack with a potency of 340.",
         "IsDetrimental": false
       }
     ],
@@ -8951,9 +8930,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 320,
+        "Value": 330,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 320.",
+        "Raw": "Delivers an attack with a potency of 330.",
         "IsDetrimental": false
       }
     ],
@@ -9011,9 +8990,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 320,
+        "Value": 330,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 320.",
+        "Raw": "Delivers an attack with a potency of 330.",
         "IsDetrimental": false
       }
     ],
@@ -11162,138 +11141,6 @@
     "Duration": []
   },
   {
-    "Id": 4074,
-    "Names": {
-      "English": "Collector's Glove",
-      "German": "Sammlergespür",
-      "France": "Gant de collectionneur",
-      "Japan": "収集品採集"
-    },
-    "Category": "Ability",
-    "PrimaryCostType": 0,
-    "PrimaryValue": 0,
-    "SecondaryCostType": 44,
-    "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "MIN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4075,
-    "Names": {
-      "English": "Methodical Appraisal",
-      "German": "Fachkundige Begutachtung",
-      "France": "Évaluation méthodique",
-      "Japan": "慎重選別"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 0,
-    "PrimaryValue": 0,
-    "SecondaryCostType": 0,
-    "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "MIN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4076,
-    "Names": {
-      "English": "Instinctual Appraisal",
-      "German": "Intuitive Begutachtung",
-      "France": "Évaluation instinctive",
-      "Japan": "大胆選別"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 0,
-    "PrimaryValue": 0,
-    "SecondaryCostType": 0,
-    "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "MIN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4077,
-    "Names": {
-      "English": "Impulsive Appraisal",
-      "German": "Spontane Begutachtung",
-      "France": "Évaluation impulsive",
-      "Japan": "直感選別"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 0,
-    "PrimaryValue": 0,
-    "SecondaryCostType": 0,
-    "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "MIN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4078,
-    "Names": {
-      "English": "Discerning Eye",
-      "German": "Kennerblick",
-      "France": "Œil perspicace",
-      "Japan": "審美眼"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 7,
-    "PrimaryValue": 200,
-    "SecondaryCostType": 46,
-    "SecondaryValue": "Discerning Eye",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "MIN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4079,
-    "Names": {
-      "English": "Utmost Caution",
-      "German": "Äußerste Sorgfalt",
-      "France": "Attention maximale",
-      "Japan": "コーション"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 7,
-    "PrimaryValue": 200,
-    "SecondaryCostType": 46,
-    "SecondaryValue": "Utmost Caution",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "MIN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
     "Id": 4081,
     "Names": {
       "English": "Luck of the Mountaineer",
@@ -11360,28 +11207,6 @@
     "Duration": []
   },
   {
-    "Id": 4084,
-    "Names": {
-      "English": "Single Mind",
-      "German": "Fünf Sinne",
-      "France": "Esprit résolu",
-      "Japan": "シングルマインド"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 7,
-    "PrimaryValue": 200,
-    "SecondaryCostType": 46,
-    "SecondaryValue": "Single Mind",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "MIN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
     "Id": 4086,
     "Names": {
       "English": "Flora Mastery",
@@ -11416,138 +11241,6 @@
     "PrimaryValue": 100,
     "SecondaryCostType": 0,
     "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "BTN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4088,
-    "Names": {
-      "English": "Collector's Glove",
-      "German": "Sammlergespür",
-      "France": "Gant de collectionneur",
-      "Japan": "収集品採集"
-    },
-    "Category": "Ability",
-    "PrimaryCostType": 0,
-    "PrimaryValue": 0,
-    "SecondaryCostType": 44,
-    "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "BTN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4089,
-    "Names": {
-      "English": "Methodical Appraisal",
-      "German": "Fachkundige Begutachtung",
-      "France": "Évaluation méthodique",
-      "Japan": "慎重選別"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 0,
-    "PrimaryValue": 0,
-    "SecondaryCostType": 0,
-    "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "BTN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4090,
-    "Names": {
-      "English": "Instinctual Appraisal",
-      "German": "Intuitive Begutachtung",
-      "France": "Évaluation instinctive",
-      "Japan": "大胆選別"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 0,
-    "PrimaryValue": 0,
-    "SecondaryCostType": 0,
-    "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "BTN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4091,
-    "Names": {
-      "English": "Impulsive Appraisal",
-      "German": "Spontane Begutachtung",
-      "France": "Évaluation impulsive",
-      "Japan": "直感選別"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 0,
-    "PrimaryValue": 0,
-    "SecondaryCostType": 0,
-    "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "BTN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4092,
-    "Names": {
-      "English": "Discerning Eye",
-      "German": "Kennerblick",
-      "France": "Œil perspicace",
-      "Japan": "審美眼"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 7,
-    "PrimaryValue": 200,
-    "SecondaryCostType": 46,
-    "SecondaryValue": "Discerning Eye",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "BTN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4093,
-    "Names": {
-      "English": "Utmost Caution",
-      "German": "Äußerste Sorgfalt",
-      "France": "Attention maximale",
-      "Japan": "コーション"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 7,
-    "PrimaryValue": 200,
-    "SecondaryCostType": 46,
-    "SecondaryValue": "Utmost Caution",
     "Combo": "",
     "CastTime": 0,
     "RecastTime": 0,
@@ -11614,28 +11307,6 @@
     "PrimaryValue": 200,
     "SecondaryCostType": 0,
     "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "BTN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4098,
-    "Names": {
-      "English": "Single Mind",
-      "German": "Fünf Sinne",
-      "France": "Esprit résolu",
-      "Japan": "シングルマインド"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 7,
-    "PrimaryValue": 200,
-    "SecondaryCostType": 46,
-    "SecondaryValue": "Single Mind",
     "Combo": "",
     "CastTime": 0,
     "RecastTime": 0,
@@ -11773,7 +11444,7 @@
     },
     "Category": "DoLAbility",
     "PrimaryCostType": 7,
-    "PrimaryValue": 350,
+    "PrimaryValue": 550,
     "SecondaryCostType": 50,
     "SecondaryValue": "",
     "Combo": "",
@@ -11783,7 +11454,15 @@
     "Jobs": "FSH",
     "IsPlayer": true,
     "Potency": [],
-    "Duration": []
+    "Duration": [
+      {
+        "Text": "Duration: ",
+        "Value": 60,
+        "Combo": false,
+        "Raw": "Duration: 60s",
+        "IsDetrimental": false
+      }
+    ]
   },
   {
     "Id": 4106,
@@ -12159,7 +11838,15 @@
     "Jobs": "MNK",
     "IsPlayer": true,
     "Potency": [],
-    "Duration": []
+    "Duration": [
+      {
+        "Text": "Duration: ",
+        "Value": 15,
+        "Combo": false,
+        "Raw": "Duration: 15s",
+        "IsDetrimental": false
+      }
+    ]
   },
   {
     "Id": 4401,
@@ -12733,50 +12420,6 @@
     "RecastTime": 35,
     "IsPvp": false,
     "Jobs": "All Classes",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4593,
-    "Names": {
-      "English": "Stickler",
-      "German": "Strenge Auslese",
-      "France": "Tatillon",
-      "Japan": "厳選"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 0,
-    "PrimaryValue": 0,
-    "SecondaryCostType": 78,
-    "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "MIN",
-    "IsPlayer": true,
-    "Potency": [],
-    "Duration": []
-  },
-  {
-    "Id": 4594,
-    "Names": {
-      "English": "Stickler",
-      "German": "Strenge Auslese",
-      "France": "Tatillon",
-      "Japan": "厳選"
-    },
-    "Category": "DoLAbility",
-    "PrimaryCostType": 0,
-    "PrimaryValue": 0,
-    "SecondaryCostType": 78,
-    "SecondaryValue": "",
-    "Combo": "",
-    "CastTime": 0,
-    "RecastTime": 0,
-    "IsPvp": false,
-    "Jobs": "BTN",
     "IsPlayer": true,
     "Potency": [],
     "Duration": []
@@ -14361,7 +14004,7 @@
     "SecondaryValue": "",
     "Combo": "",
     "CastTime": 0,
-    "RecastTime": 600,
+    "RecastTime": 300,
     "IsPvp": false,
     "Jobs": "MNK",
     "IsPlayer": true,
@@ -14369,16 +14012,9 @@
     "Duration": [
       {
         "Text": "Duration: ",
-        "Value": 30,
+        "Value": 6,
         "Combo": false,
-        "Raw": "Duration: 30s",
-        "IsDetrimental": false
-      },
-      {
-        "Text": "Duration: ",
-        "Value": 30,
-        "Combo": false,
-        "Raw": "Duration: 30s",
+        "Raw": "Duration: 6s",
         "IsDetrimental": false
       }
     ]
@@ -17216,9 +16852,9 @@
     "Potency": [
       {
         "Text": "potency of   ",
-        "Value": 300,
+        "Value": 310,
         "Combo": false,
-        "Raw": "Deals fire damage with a potency of   300 270 270.",
+        "Raw": "Deals fire damage with a potency of   310 270 270.",
         "IsDetrimental": false
       }
     ],
@@ -17246,9 +16882,9 @@
     "Potency": [
       {
         "Text": "potency of   ",
-        "Value": 300,
+        "Value": 310,
         "Combo": false,
-        "Raw": "Deals earth damage with a potency of   300 270 270.",
+        "Raw": "Deals earth damage with a potency of   310 270 270.",
         "IsDetrimental": false
       }
     ],
@@ -17612,9 +17248,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 280,
+        "Value": 290,
         "Combo": false,
-        "Raw": "Deals unaspected damage with a potency of 280.",
+        "Raw": "Deals unaspected damage with a potency of 290.",
         "IsDetrimental": false
       }
     ],
@@ -17718,9 +17354,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 210,
+        "Value": 220,
         "Combo": false,
-        "Raw": "Deals unaspected damage with a potency of 210.",
+        "Raw": "Deals unaspected damage with a potency of 220.",
         "IsDetrimental": false
       }
     ],
@@ -19854,7 +19490,7 @@
     "SecondaryValue": "",
     "Combo": "",
     "CastTime": 0,
-    "RecastTime": 24,
+    "RecastTime": 20,
     "IsPvp": true,
     "Jobs": "MNK",
     "IsPlayer": true,
@@ -19884,7 +19520,7 @@
     "SecondaryValue": "",
     "Combo": "Bootshine",
     "CastTime": 0,
-    "RecastTime": 24,
+    "RecastTime": 20,
     "IsPvp": true,
     "Jobs": "MNK",
     "IsPlayer": true,
@@ -19914,7 +19550,7 @@
     "SecondaryValue": "",
     "Combo": "True Strike",
     "CastTime": 0,
-    "RecastTime": 24,
+    "RecastTime": 20,
     "IsPvp": true,
     "Jobs": "MNK",
     "IsPlayer": true,
@@ -19927,15 +19563,7 @@
         "IsDetrimental": false
       }
     ],
-    "Duration": [
-      {
-        "Text": "Duration: ",
-        "Value": 15,
-        "Combo": false,
-        "Raw": "Duration: 15s",
-        "IsDetrimental": false
-      }
-    ]
+    "Duration": []
   },
   {
     "Id": 8787,
@@ -19959,21 +19587,13 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 600,
+        "Value": 800,
         "Combo": false,
-        "Raw": "Rushes target and delivers an attack with a potency of 600.",
+        "Raw": "Rushes target and delivers an attack with a potency of 800.",
         "IsDetrimental": false
       }
     ],
-    "Duration": [
-      {
-        "Text": "Duration: ",
-        "Value": 15,
-        "Combo": false,
-        "Raw": "Duration: 15s",
-        "IsDetrimental": false
-      }
-    ]
+    "Duration": []
   },
   {
     "Id": 8788,
@@ -20021,22 +19641,22 @@
       "Japan": "闘魂旋風脚"
     },
     "Category": "Ability",
-    "PrimaryCostType": 49,
+    "PrimaryCostType": 0,
     "PrimaryValue": 0,
     "SecondaryCostType": 0,
     "SecondaryValue": "",
     "Combo": "",
     "CastTime": 0,
-    "RecastTime": 10,
+    "RecastTime": 150,
     "IsPvp": true,
     "Jobs": "MNK",
     "IsPlayer": true,
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 2000,
+        "Value": 1600,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 2,000.",
+        "Raw": "Delivers an attack with a potency of 1,600.",
         "IsDetrimental": false
       }
     ],
@@ -20760,9 +20380,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 2400,
+        "Value": 2600,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 2,400.",
+        "Raw": "Delivers an attack with a potency of 2,600.",
         "IsDetrimental": false
       }
     ],
@@ -23155,9 +22775,9 @@
     "Duration": [
       {
         "Text": "Duration: ",
-        "Value": 30,
+        "Value": 10,
         "Combo": false,
-        "Raw": "Duration: 30s",
+        "Raw": "Duration: 10s",
         "IsDetrimental": false
       }
     ]
@@ -23185,9 +22805,9 @@
     "Duration": [
       {
         "Text": "Duration: ",
-        "Value": 30,
+        "Value": 10,
         "Combo": false,
-        "Raw": "Duration: 30s",
+        "Raw": "Duration: 10s",
         "IsDetrimental": false
       }
     ]
@@ -27233,7 +26853,7 @@
     "PrimaryCostType": 20,
     "PrimaryValue": 1,
     "SecondaryCostType": 46,
-    "SecondaryValue": "Doom",
+    "SecondaryValue": "Sacrifice",
     "Combo": "",
     "CastTime": 30,
     "RecastTime": 25,
@@ -29168,9 +28788,9 @@
       },
       {
         "Text": "Duration: ",
-        "Value": 10,
+        "Value": 30,
         "Combo": false,
-        "Raw": "Duration: 10s",
+        "Raw": "Duration: 30s",
         "IsDetrimental": false
       }
     ]
@@ -30284,9 +29904,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 120,
+        "Value": 140,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 120 to all nearby enemies.",
+        "Raw": "Delivers an attack with a potency of 140 to all nearby enemies.",
         "IsDetrimental": false
       }
     ],
@@ -30382,13 +30002,21 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 400,
+        "Value": 540,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 400.",
+        "Raw": "Delivers an attack with a potency of 540.",
         "IsDetrimental": false
       }
     ],
-    "Duration": []
+    "Duration": [
+      {
+        "Text": "Duration: ",
+        "Value": 5,
+        "Combo": false,
+        "Raw": "Duration: 5s",
+        "IsDetrimental": false
+      }
+    ]
   },
   {
     "Id": 16477,
@@ -30964,9 +30592,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 240,
+        "Value": 250,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 240.",
+        "Raw": "Delivers an attack with a potency of 250.",
         "IsDetrimental": false
       }
     ],
@@ -32405,9 +32033,9 @@
     "Potency": [
       {
         "Text": "Potency: ",
-        "Value": 60,
+        "Value": 70,
         "Combo": false,
-        "Raw": "Potency: 60",
+        "Raw": "Potency: 70",
         "IsDetrimental": false
       }
     ],
@@ -32443,9 +32071,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 280,
+        "Value": 290,
         "Combo": false,
-        "Raw": "Deals unaspected damage with a potency of 280.",
+        "Raw": "Deals unaspected damage with a potency of 290.",
         "IsDetrimental": false
       }
     ],
@@ -34853,15 +34481,7 @@
         "IsDetrimental": false
       }
     ],
-    "Duration": [
-      {
-        "Text": "Duration: ",
-        "Value": 15,
-        "Combo": false,
-        "Raw": "Duration: 15s",
-        "IsDetrimental": false
-      }
-    ]
+    "Duration": []
   },
   {
     "Id": 17671,
@@ -36328,28 +35948,20 @@
     "SecondaryValue": "",
     "Combo": "",
     "CastTime": 0,
-    "RecastTime": 48,
+    "RecastTime": 40,
     "IsPvp": true,
     "Jobs": "MNK",
     "IsPlayer": true,
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 1600,
+        "Value": 2400,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 1,600.",
+        "Raw": "Delivers an attack with a potency of 2,400.",
         "IsDetrimental": false
       }
     ],
-    "Duration": [
-      {
-        "Text": "Duration: ",
-        "Value": 15,
-        "Combo": false,
-        "Raw": "Duration: 15s",
-        "IsDetrimental": false
-      }
-    ]
+    "Duration": []
   },
   {
     "Id": 17720,
@@ -36845,9 +36457,9 @@
     "Potency": [
       {
         "Text": "potency of ",
-        "Value": 2400,
+        "Value": 2600,
         "Combo": false,
-        "Raw": "Delivers an attack with a potency of 2,400.",
+        "Raw": "Delivers an attack with a potency of 2,600.",
         "IsDetrimental": false
       }
     ],
@@ -41370,7 +40982,7 @@
     "SecondaryValue": "",
     "Combo": "Four-point Fury",
     "CastTime": 0,
-    "RecastTime": 24,
+    "RecastTime": 20,
     "IsPvp": true,
     "Jobs": "MNK",
     "IsPlayer": true,
@@ -41383,15 +40995,7 @@
         "IsDetrimental": false
       }
     ],
-    "Duration": [
-      {
-        "Text": "Duration: ",
-        "Value": 15,
-        "Combo": false,
-        "Raw": "Duration: 15s",
-        "IsDetrimental": false
-      }
-    ]
+    "Duration": []
   },
   {
     "Id": 18914,
@@ -41408,7 +41012,7 @@
     "SecondaryValue": "",
     "Combo": "",
     "CastTime": 0,
-    "RecastTime": 24,
+    "RecastTime": 20,
     "IsPvp": true,
     "Jobs": "MNK",
     "IsPlayer": true,
@@ -42560,9 +42164,9 @@
     "Potency": [
       {
         "Text": "Potency: ",
-        "Value": 3000,
+        "Value": 4000,
         "Combo": false,
-        "Raw": "Cure Potency: 3,000",
+        "Raw": "Cure Potency: 4,000",
         "IsDetrimental": false
       }
     ],
@@ -46714,6 +46318,204 @@
     "SecondaryValue": "",
     "Combo": "",
     "CastTime": 30,
+    "RecastTime": 30,
+    "IsPvp": false,
+    "Jobs": "All Classes",
+    "IsPlayer": true,
+    "Potency": [],
+    "Duration": []
+  },
+  {
+    "Id": 22182,
+    "Names": {
+      "English": "Scour",
+      "German": "Lese",
+      "France": "Sélection",
+      "Japan": "純化"
+    },
+    "Category": "DoLAbility",
+    "PrimaryCostType": 0,
+    "PrimaryValue": 0,
+    "SecondaryCostType": 0,
+    "SecondaryValue": "",
+    "Combo": "",
+    "CastTime": 0,
+    "RecastTime": 0,
+    "IsPvp": false,
+    "Jobs": "MIN",
+    "IsPlayer": true,
+    "Potency": [],
+    "Duration": []
+  },
+  {
+    "Id": 22183,
+    "Names": {
+      "English": "Brazen Prospector",
+      "German": "Intuitive Lese",
+      "France": "Sélection instinctive",
+      "Japan": "大胆純化"
+    },
+    "Category": "DoLAbility",
+    "PrimaryCostType": 0,
+    "PrimaryValue": 0,
+    "SecondaryCostType": 0,
+    "SecondaryValue": "",
+    "Combo": "",
+    "CastTime": 0,
+    "RecastTime": 0,
+    "IsPvp": false,
+    "Jobs": "MIN",
+    "IsPlayer": true,
+    "Potency": [],
+    "Duration": []
+  },
+  {
+    "Id": 22184,
+    "Names": {
+      "English": "Meticulous Prospector",
+      "German": "Fachkundige Lese",
+      "France": "Sélection méthodique",
+      "Japan": "慎重純化"
+    },
+    "Category": "DoLAbility",
+    "PrimaryCostType": 0,
+    "PrimaryValue": 0,
+    "SecondaryCostType": 0,
+    "SecondaryValue": "",
+    "Combo": "",
+    "CastTime": 0,
+    "RecastTime": 0,
+    "IsPvp": false,
+    "Jobs": "MIN",
+    "IsPlayer": true,
+    "Potency": [],
+    "Duration": []
+  },
+  {
+    "Id": 22185,
+    "Names": {
+      "English": "Scrutiny",
+      "German": "Prüfender Blick",
+      "France": "Inspection rigoureuse",
+      "Japan": "集中検分"
+    },
+    "Category": "DoLAbility",
+    "PrimaryCostType": 7,
+    "PrimaryValue": 200,
+    "SecondaryCostType": 46,
+    "SecondaryValue": "Scrutiny",
+    "Combo": "",
+    "CastTime": 0,
+    "RecastTime": 0,
+    "IsPvp": false,
+    "Jobs": "MIN",
+    "IsPlayer": true,
+    "Potency": [],
+    "Duration": []
+  },
+  {
+    "Id": 22186,
+    "Names": {
+      "English": "Scour",
+      "German": "Lese",
+      "France": "Sélection",
+      "Japan": "純化"
+    },
+    "Category": "DoLAbility",
+    "PrimaryCostType": 0,
+    "PrimaryValue": 0,
+    "SecondaryCostType": 0,
+    "SecondaryValue": "",
+    "Combo": "",
+    "CastTime": 0,
+    "RecastTime": 0,
+    "IsPvp": false,
+    "Jobs": "BTN",
+    "IsPlayer": true,
+    "Potency": [],
+    "Duration": []
+  },
+  {
+    "Id": 22187,
+    "Names": {
+      "English": "Brazen Woodsman",
+      "German": "Intuitive Lese",
+      "France": "Sélection instinctive",
+      "Japan": "大胆純化"
+    },
+    "Category": "DoLAbility",
+    "PrimaryCostType": 0,
+    "PrimaryValue": 0,
+    "SecondaryCostType": 0,
+    "SecondaryValue": "",
+    "Combo": "",
+    "CastTime": 0,
+    "RecastTime": 0,
+    "IsPvp": false,
+    "Jobs": "BTN",
+    "IsPlayer": true,
+    "Potency": [],
+    "Duration": []
+  },
+  {
+    "Id": 22188,
+    "Names": {
+      "English": "Meticulous Woodsman",
+      "German": "Fachkundige Lese",
+      "France": "Sélection méthodique",
+      "Japan": "慎重純化"
+    },
+    "Category": "DoLAbility",
+    "PrimaryCostType": 0,
+    "PrimaryValue": 0,
+    "SecondaryCostType": 0,
+    "SecondaryValue": "",
+    "Combo": "",
+    "CastTime": 0,
+    "RecastTime": 0,
+    "IsPvp": false,
+    "Jobs": "BTN",
+    "IsPlayer": true,
+    "Potency": [],
+    "Duration": []
+  },
+  {
+    "Id": 22189,
+    "Names": {
+      "English": "Scrutiny",
+      "German": "Prüfender Blick",
+      "France": "Inspection rigoureuse",
+      "Japan": "集中検分"
+    },
+    "Category": "DoLAbility",
+    "PrimaryCostType": 7,
+    "PrimaryValue": 200,
+    "SecondaryCostType": 46,
+    "SecondaryValue": "Scrutiny",
+    "Combo": "",
+    "CastTime": 0,
+    "RecastTime": 0,
+    "IsPvp": false,
+    "Jobs": "BTN",
+    "IsPlayer": true,
+    "Potency": [],
+    "Duration": []
+  },
+  {
+    "Id": 23345,
+    "Names": {
+      "English": "Semi-eternal Breath",
+      "German": "Vorletzter Hauch",
+      "France": "Petit souffle de l'éternel",
+      "Japan": "デミ・エターナルブレス"
+    },
+    "Category": "Mount",
+    "PrimaryCostType": 0,
+    "PrimaryValue": 0,
+    "SecondaryCostType": 25,
+    "SecondaryValue": "",
+    "Combo": "",
+    "CastTime": 0,
     "RecastTime": 30,
     "IsPvp": false,
     "Jobs": "All Classes",

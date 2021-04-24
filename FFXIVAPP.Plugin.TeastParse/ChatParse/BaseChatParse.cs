@@ -158,7 +158,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         {
             var isMatch = false;
             Match match = null;
-            foreach (var regex in Handlers[activeCode.Type].RegEx[group.Subject])
+            foreach (var regex in Handlers[activeCode.Type].RegEx[group.SubjectActorType])
             {
                 match = regex[Constants.GameLanguage].Match(item.Line);
                 if (!match.Success)

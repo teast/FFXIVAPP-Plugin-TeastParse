@@ -22,10 +22,10 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
         //private readonly Timer _criticalTimer;
 
         private readonly RegExDictionary _matcherStart = new RegExDictionary(
-                new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<dungeon>.+) has begun\.$"))
+                new RegExTypePair(Tuple.Create(GameLanguageEnum.English, @"^(?<dungeon>.+) has begun\.$"))
         );
         private readonly RegExDictionary _matcherEnd = new RegExDictionary(
-                new RegExTypePair(null, null, Tuple.Create(GameLanguageEnum.English, @"^(?<dungeon>.+) has ended\.$"))
+                new RegExTypePair(Tuple.Create(GameLanguageEnum.English, @"^(?<dungeon>.+) has ended\.$"))
         );
 
         /// <summary>

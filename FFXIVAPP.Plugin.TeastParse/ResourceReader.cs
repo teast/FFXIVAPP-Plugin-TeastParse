@@ -11,7 +11,7 @@ namespace FFXIVAPP.Plugin.TeastParse
     {
         public static List<ChatCodesClass> ChatCodes()
         {
-            using (var stream = typeof(Plugin).GetTypeInfo().Assembly.GetManifestResourceStream("FFXIVAPP.Plugin.TeastParse.Resources.ChatCodes.xml"))
+            using (var stream = typeof(Plugin).GetTypeInfo().Assembly.GetManifestResourceStream("FFXIVAPP.Plugin.TeastParse.ChatCodes.xml"))
             {
                 var xdoc = new XmlDocument();
                 xdoc.Load(stream);
@@ -21,7 +21,7 @@ namespace FFXIVAPP.Plugin.TeastParse
 
         public static string Actions()
         {
-            using (var sr = new StreamReader(typeof(Plugin).GetTypeInfo().Assembly.GetManifestResourceStream("FFXIVAPP.Plugin.TeastParse.Resources.actions.json")))
+            using (var sr = new StreamReader(typeof(Plugin).GetTypeInfo().Assembly.GetManifestResourceStream("FFXIVAPP.Plugin.TeastParse.actions.json")))
             {
                 return sr.ReadToEnd();
             }
@@ -31,7 +31,8 @@ namespace FFXIVAPP.Plugin.TeastParse
         public static IEnumerable<FileWithContent> AllTranslations => _allTranslationsCache ?? (_allTranslationsCache = FetchAllTranslations());
         private static IEnumerable<FileWithContent> FetchAllTranslations()
         {
-            var path = "FFXIVAPP.Plugin.TeastParse.Resources.i18n.";
+            //var path = "FFXIVAPP.Plugin.TeastParse.Resources.i18n.";
+            var path = "FFXIVAPP.Plugin.TeastParse.";
             var assembly = typeof(Plugin).GetTypeInfo().Assembly;
             var resources = assembly.GetManifestResourceNames();
             foreach(var resource in resources.Where(name => name.StartsWith(path)))

@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using System.Xml.Serialization;
+using FFXIVAPP.Plugin.TeastParse.Actors;
+using FFXIVAPP.Plugin.TeastParse.Extensions;
 
 namespace FFXIVAPP.Plugin.TeastParse
 {
@@ -43,6 +44,8 @@ namespace FFXIVAPP.Plugin.TeastParse
         public string Name { get; }
         public ChatCodeSubject Subject { get; }
         public ChatCodeDirection Direction { get; }
+        public ActorType SubjectActorType { get; }
+        public ActorType DirectionActorType { get; }
 
         public Group(string name, ChatCodeSubject subject, ChatCodeDirection direction, IEnumerable<Code> codes)
         {
@@ -50,6 +53,8 @@ namespace FFXIVAPP.Plugin.TeastParse
             Subject = subject;
             Direction = direction;
             Codes = codes.ToArray();
+            SubjectActorType = Subject.ToActorType();
+            DirectionActorType = Direction.ToActorType(Subject);
         }
 
         internal static IEnumerable<Group> FromXmlList(XmlNodeList groups)
