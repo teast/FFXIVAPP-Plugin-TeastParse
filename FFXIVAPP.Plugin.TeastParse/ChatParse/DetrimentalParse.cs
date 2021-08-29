@@ -84,7 +84,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ChatParse
             if (nextCheck != null)
             {
                 _checkDetrimentalsNext = nextCheck;
-                _checkDetrimentals.Interval = (_checkDetrimentalsNext.Value - _clock.UtcNow).TotalMilliseconds;
+                _checkDetrimentals.Interval = Math.Max(1, (_checkDetrimentalsNext.Value - _clock.UtcNow).TotalMilliseconds);
                 _checkDetrimentals.Start();
             }
         }
