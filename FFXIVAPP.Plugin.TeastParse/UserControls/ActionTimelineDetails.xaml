@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:FFXIVAPP.Plugin.TeastParse.Converters"
+             xmlns:rs="clr-namespace:FFXIVAPP.Plugin.TeastParse.Resources.actions;assembly=FFXIVAPP.Plugin.TeastParse"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="FFXIVAPP.Plugin.TeastParse.UserControls.ActionTimelineDetails">
+
+  <UserControl.Resources>
+    <converters:ActionToIconConverter x:Key="ActionToIconConverter" />
+  </UserControl.Resources>
+  <ScrollViewer x:Name="ScrollViewer" HorizontalScrollBarVisibility="Visible" AllowAutoHide="false">
+    <Canvas Width="1920" Height="50" x:Name="Canvas" />
+  </ScrollViewer>
+  <!--
+    <StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+    <ItemsRepeater Items="{Binding .}">
+        <ItemsRepeater.Layout>
+        <StackLayout Orientation="Horizontal" />
+        </ItemsRepeater.Layout>
+        <ItemsRepeater.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name}"/>
+            </DataTemplate>
+        </ItemsRepeater.ItemTemplate>
+    </ItemsRepeater>
+    </ScrollViewer>
+
+    <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+    <ItemsRepeater Items="{Binding .}">
+        <ItemsRepeater.Layout>
+        <StackLayout Orientation="Horizontal" />
+        </ItemsRepeater.Layout>
+        <ItemsRepeater.ItemTemplate>
+            <DataTemplate>
+              <Image Source="{Binding Icon, Converter={StaticResource ActionToIconConverter}}" />
+            </DataTemplate>
+        </ItemsRepeater.ItemTemplate>
+    </ItemsRepeater>
+    </ScrollViewer>
+    </StackPanel>
+    -->
+</UserControl>

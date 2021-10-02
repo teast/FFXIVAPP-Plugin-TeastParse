@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BIN=../FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.0
+BIN=../FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.1
 DEST=../../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/FFXIVAPP.Plugin.TeastParse
 
 

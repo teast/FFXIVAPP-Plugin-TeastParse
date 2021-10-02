@@ -17,7 +17,9 @@ namespace FFXIVAPP.Plugin.TeastParse
     public interface ITimelineCollection
     {
         event EventHandler<TimelineChangeEvent> CurrentTimelineChange;
+        int Count { get; }
         TimelineModel Current { get; }
+        TimelineModel this[int index] { get; }
         TimelineModel this[string name] { get; }
         void Add(TimelineModel model);
         TimelineModel Close(string dungeon);
@@ -32,8 +34,11 @@ namespace FFXIVAPP.Plugin.TeastParse
 
         public event EventHandler<TimelineChangeEvent> CurrentTimelineChange;
 
+        public int Count => _timelines.Count;
+
         public TimelineModel Current => GetOrUpdateCurrent();
 
+        public TimelineModel this[int index] => _timelines[index];
         public TimelineModel this[string name] => _timelines.FirstOrDefault(t => t.Name == name);
 
         public TimelineCollection(List<TimelineModel> timelines = null)

@@ -32,6 +32,7 @@ namespace FFXIVAPP.Plugin.TeastParse
         void AddToTotalDamage(ActorModel actor, DamageModel damage);
         void AddToTotalDamageTaken(ActorModel actor, DamageModel damage);
         void AddToTotalCure(ActorModel source, CureModel model);
+        IEnumerable<ActorActionModel> GetAllActions(ActorModel actor);
     }
 
     /// <summary>
@@ -98,6 +99,11 @@ namespace FFXIVAPP.Plugin.TeastParse
             PartyTotalHeal = 0;
             PartyTotalDamage = 0;
             PartyTotalDamageTaken = 0;
+        }
+
+        public IEnumerable<ActorActionModel> GetAllActions(ActorModel actor)
+        {
+            return _repository.GetActorActions(actor.Name, actor.IsYou);
         }
 
         public List<ActorModel> GetParty()

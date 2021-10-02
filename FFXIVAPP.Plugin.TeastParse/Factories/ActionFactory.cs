@@ -54,7 +54,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
                 var isCombo = !string.IsNullOrEmpty(action.Combo) && MatchComboName(action.Combo, actor?.Weaponskill);
                 var potency = GetPotency(action, isCombo, isDetrimental);
                 var duration = action.Duration.FirstOrDefault().Value;
-                return new ActionModel(name, action.Names["English"], (ActionCategory)Enum.Parse(typeof(ActionCategory), action.Category), potency, isCombo, duration);
+                return new ActionModel(name, action.Names["English"], (ActionCategory)Enum.Parse(typeof(ActionCategory), action.Category), potency, isCombo, duration, action.Icon);
             }
             catch (Exception ex)
             {
@@ -92,6 +92,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
         {
             public int Id { get; }
             public Dictionary<string, string> Names { get; }
+            public string Icon { get; }
             public string Category { get; }
             public int PrimaryCostType { get; }
             public int PrimaryValue { get; }
@@ -110,6 +111,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
             public ActionRaw(
                 int id,
                 string category,
+                string icon,
                 int primaryCostType,
                 int primaryValue,
                 int secondaryCostType,
@@ -127,6 +129,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Factories
             )
             {
                 Id = id;
+                Icon = icon;
                 Category = category;
                 PrimaryCostType = primaryCostType;
                 PrimaryValue = primaryValue;

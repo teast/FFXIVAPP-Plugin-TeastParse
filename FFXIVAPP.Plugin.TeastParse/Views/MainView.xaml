@@ -5,6 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FFXIVAPP.Plugin.TeastParse.Views.MainView"
              xmlns:custom="clr-namespace:FFXIVAPP.Plugin.TeastParse.UserControls"
+             xmlns:converters="clr-namespace:FFXIVAPP.Plugin.TeastParse.Converters"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://raw.githubusercontent.com/rogalmic/vscode-xml-complete/master/test/Avalonia/AvaloniaXamlSchema.xsd">
   <UserControl.Styles>
@@ -13,6 +14,9 @@
         <Setter Property="Margin" Value="0,0,5,0" />
     </Style>
   </UserControl.Styles>
+  <UserControl.Resources>
+    <converters:StringFormatConverter x:Key="StringFormatConverter" />
+  </UserControl.Resources>
   <StackPanel>
     <Grid ColumnDefinitions="Auto,Auto,Auto">
       <TextBlock Text="{Binding LabelActiveParse}" Grid.Column="0" Classes="headline" />
@@ -21,7 +25,15 @@
     </Grid>
     <ProgressBar IsVisible="{Binding LoadingParse}" IsIndeterminate="True" />
     <TextBlock Text="{Binding LabelTimeline}" />
-    <ComboBox Items="{Binding Timeline}" SelectedIndex="{Binding TimelineSelected}" />
+    <ComboBox Items="{Binding Timeline}" SelectedIndex="{Binding TimelineSelected}">
+      <ComboBox.ItemTemplate>
+        <DataTemplate>
+          <TextBlock Text="{Binding, Converter={StaticResource StringFormatConverter}, ConverterParameter='\{Name\} (\{StartUtc\} => \{EndUtc\})'}" />
+        </DataTemplate>
+      </ComboBox.ItemTemplate>
+    </ComboBox>
+
+    <custom:ActionTimelineDetails DataContext="{Binding . }" />
 
     <TextBlock Text="{Binding LabelPartyList}" />
     <ComboBox Items="{Binding Party}" Name="PartyList">

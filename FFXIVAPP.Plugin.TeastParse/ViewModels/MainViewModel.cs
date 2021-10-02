@@ -33,7 +33,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
             _beneficialFactory = beneficialFactory;
             _actionFactory = actionFactory;
             _repositoryFactory = repositoryFactory;
-            Timeline = new ObservableCollection<string>();
+            Timeline = new SortableObservableCollection<TimelineViewModel>(sort => sort.StartUtc);
             Party = new SortableObservableCollection<RealTimeActorViewModel>(t => t.Name, false, Active.Actors.GetParty().Select(_ => CreateActor(_)));
             Alliance = new SortableObservableCollection<RealTimeActorViewModel>(t => t.Name, false, Active.Actors.GetAlliance().Select(_ => CreateActor(_)));
             Monster = new SortableObservableCollection<RealTimeActorViewModel>(t => t.Name, false, Active.Actors.GetMonster().Select(_ => CreateActor(_)));
@@ -48,16 +48,18 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
         private void OnCurrentTimelineChange(object sender, TimelineChangeEvent e)
         {
             Timeline.Clear();
-            var selected = $"{Active.Timeline.Current.Name} ({Active.Timeline.Current.StartUtc} to {Active.Timeline.Current.EndUtc})";
-            int index = 0;
-            foreach (var item in Active.Timeline.ToList().OrderBy(_ => _.StartUtc))
+            foreach (var item in Active.Timeline)
             {
-                var text = $"{item.Name} ({item.StartUtc} to {item.EndUtc})";
-                Timeline.Add(text);
-
-                if (text == selected)
-                    TimelineSelected = index;
-                index++;
+                var timeline = Timeline.FirstOrDefault(x => x.Index == item.Index);
+                if (timeline == null)
+                {
+                    timeline = new TimelineViewModel(item);
+                    Timeline.Add(timeline);
+                }
+                else
+                {
+                    timeline.UpdateValues();
+                }
             }
         }
 
@@ -88,7 +90,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
 
         public string ActiveParserName => Active.Name;
 
-        public ObservableCollection<string> Timeline { get; }
+        public SortableObservableCollection<TimelineViewModel> Timeline { get; }
         public SortableObservableCollection<RealTimeActorViewModel> Party { get; }
         public SortableObservableCollection<RealTimeActorViewModel> Alliance { get; }
         public SortableObservableCollection<RealTimeActorViewModel> Monster { get; }
@@ -133,7 +135,7 @@ namespace FFXIVAPP.Plugin.TeastParse.ViewModels
 
         private RealTimeActorViewModel CreateActor(ActorModel actor)
         {
-            var model = new RealTimeActorViewModel(actor, RealTimeType.DPS);
+            var model = new RealTimeActorViewModel(actor, RealTimeType.DPS, () => Active.Actors.GetAllActions(actor));
             //model.PropertyChanged += (s, e) =>
             //{
             //};

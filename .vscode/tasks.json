@@ -72,7 +72,7 @@
                 "command": "${workspaceFolder}/scripts/install.sh"
                 },
             "args": [
-                "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.0/FFXIVAPP.Plugin.TeastParse.dll",
+                "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.1/FFXIVAPP.Plugin.TeastParse.dll",
                 "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/FFXIVAPP.Plugin.TeastParse"
             ],
             "problemMatcher": []
@@ -84,7 +84,7 @@
                 "command": "${workspaceFolder}/scripts/install.sh"
                 },
             "args": [
-                "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.0/FFXIVAPP.Plugin.TeastParse.pdb",
+                "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.1/FFXIVAPP.Plugin.TeastParse.pdb",
                 "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/FFXIVAPP.Plugin.TeastParse"
             ],
             "problemMatcher": []
@@ -108,7 +108,7 @@
                 "command": "${workspaceFolder}/scripts/install.sh",
             },
             "args": [
-                "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.0/PluginInfo.xml",
+                "${workspaceFolder}/FFXIVAPP.Plugin.TeastParse/bin/Debug/netstandard2.1/PluginInfo.xml",
                 "${workspaceFolder}/../ffxivapp/FFXIVAPP.Client/bin/Debug/netcoreapp3.0/Plugins/FFXIVAPP.Plugin.TeastParse"
             ],
             "problemMatcher": []

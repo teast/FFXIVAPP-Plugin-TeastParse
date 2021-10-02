@@ -1,5 +1,6 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using FFXIVAPP.Plugin.TeastParse;
 using FFXIVAPP.Plugin.TeastParse.Actors;
 using static Sharlayan.Core.Enums.Actor;
 
@@ -20,9 +21,15 @@ namespace FFXIVAPP.Plugin.TeastParse
         public string Name { get; private set; }
         public Job Job { get; private set; }
 
-        public RealTimeActorViewModel(ActorModel actor, RealTimeType type)
+        public IEnumerable<ActorActionModel> AllActions => _allActions ?? (_allActions = _allActionsFunc());
+
+        private IEnumerable<ActorActionModel> _allActions;
+        private Func<IEnumerable<ActorActionModel>> _allActionsFunc;
+
+        public RealTimeActorViewModel(ActorModel actor, RealTimeType type, Func<IEnumerable<ActorActionModel>> allActions = null)
         {
             _type = type;
+            _allActionsFunc = allActions ?? (() => new List<ActorActionModel>());
 
             Name = actor.Name;
             Job = actor.Job;

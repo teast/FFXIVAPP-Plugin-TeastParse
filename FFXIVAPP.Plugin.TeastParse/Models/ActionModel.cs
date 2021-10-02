@@ -11,7 +11,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
         public bool IsCombo { get; }
         public ActionCategory Category { get; }
         public int Duration { get; }
-        public ActionModel(string name, string englishName, ActionCategory category, int potency = 0, bool isCombo = false, int duration = 0)
+        public string Icon { get; }
+        public ActionModel(string name, string englishName, ActionCategory category, int potency = 0, bool isCombo = false, int duration = 0, string icon = "")
         {
             Name = name;
             EnglishName = englishName;
@@ -19,6 +20,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Models
             IsCombo = isCombo;
             Category = category;
             Duration = duration;
+            Icon = icon;
         }
 
         public override string ToString()

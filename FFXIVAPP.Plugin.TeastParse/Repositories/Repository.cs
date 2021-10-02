@@ -6,6 +6,7 @@ using System.Linq;
 using Dapper;
 using FFXIVAPP.Common.Utilities;
 using FFXIVAPP.Plugin.TeastParse.Actors;
+using FFXIVAPP.Plugin.TeastParse.Factories;
 using FFXIVAPP.Plugin.TeastParse.Models;
 using NLog;
 
@@ -28,6 +29,8 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
         ChatLogLine GetChatLog(int id);
         IEnumerable<ActorModel> GetActors(ITimelineCollection timeline);
         IEnumerable<TimelineModel> GetTimelines();
+
+        IEnumerable<ActorActionModel> GetActorActions(string actor, bool isYou);
     }
 
     /// <summary>
@@ -39,7 +42,7 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
         private readonly List<string> _addedActors;
         private bool _disposed;
 
-        public Repository(string connectionString) : base(connectionString)
+        public Repository(string connectionString, IActionFactory actionFactory) : base(connectionString, actionFactory)
         {
             _disposed = false;
             _addedActors = new List<string>();
@@ -453,10 +456,13 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
         protected readonly string _connectionString;
         protected SQLiteConnection _connection;
 
-        public RepositoryReadOnly(string connectionString)
+        protected readonly IActionFactory _actionFactory;
+
+        public RepositoryReadOnly(string connectionString, IActionFactory actionFactory)
         {
             _disposed = false;
             _connectionString = connectionString;
+            _actionFactory = actionFactory;
         }
 
         public virtual void AddActor(ActorModel model)
@@ -525,6 +531,30 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
 
             return _connection.Query<TimelineModel>("SELECT * FROM Timeline");
         }
+
+        public IEnumerable<ActorActionModel> GetActorActions(string actorName, bool isYou)
+        {
+            if (!Connect())
+                return null;
+            var result = new List<ActorActionModel>();
+
+            var dmgs = _connection.Query<ActorActionModel>("SELECT OccurredUtc, Timestamp, Action, Damage FROM Damage WHERE (Source = @source OR Source = @source2) AND Action <> ''", param: new { Source = actorName, Source2 = isYou ? "You" : actorName });
+            var heals = _connection.Query<ActorActionModel>("SELECT OccurredUtc, Timestamp, Action, Cure as Damage FROM Cure WHERE (Source = @source OR Source = @source2) AND Action <> ''", param: new { Source = actorName, Source2 = isYou ? "You" : actorName });
+            result.AddRange(dmgs.Select(dmg => {
+                var action = _actionFactory.GetAction(dmg.Name);
+
+                return new ActorActionModel(dmg.OccurredUtc.ToString(), dmg.Timestamp, dmg.Name, dmg.Damage, action);
+            }));
+
+            result.AddRange(heals.Select(cure => {
+                var action = _actionFactory.GetAction(cure.Name);
+
+                return new ActorActionModel(cure.OccurredUtc.ToString(), cure.Timestamp, cure.Name, cure.Damage, action);
+            }));
+
+            return result.OrderBy(x => x.OccurredUtc);
+        }
+
 
         private struct ActorModelDb
         {

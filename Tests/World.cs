@@ -8,6 +8,7 @@ using FFXIVAPP.IPluginInterface;
 using FFXIVAPP.IPluginInterface.Events;
 using FFXIVAPP.Plugin.TeastParse;
 using FFXIVAPP.Plugin.TeastParse.Actors;
+using FFXIVAPP.Plugin.TeastParse.Factories;
 using FFXIVAPP.Plugin.TeastParse.Models;
 using FFXIVAPP.Plugin.TeastParse.Repositories;
 using FFXIVAPP.Plugin.TeastParse.ViewModels;
@@ -57,13 +58,15 @@ namespace Tests
             var connectionString = string.Format("FullUri=file:{0}?mode=memory&cache=shared", Guid.NewGuid().ToString("N"));
             _connection = new SQLiteConnection(connectionString);
             _connection.Open();
-            _repository = new Repository(connectionString);
-            factory.Setup(_ => _.Create(It.IsAny<string>(), It.IsAny<bool>())).Returns(_repository);
 
             _clock = new ParseClockFake(DateTime.UtcNow);
             _ioc = new ParserIoc();
             _ioc.Singelton<IRepositoryFactory>(() => factory.Object);
             _ioc.Singelton<IParseClock>(() => _clock);
+
+            _repository = new Repository(connectionString, _ioc.Get<IActionFactory>());
+            factory.Setup(_ => _.Create(It.IsAny<string>(), It.IsAny<bool>())).Returns(_repository);
+
 
             _pluginHost = new Mock<IPluginHost>();
             _event = new EventSubscriber(_ioc.Get<ICurrentParseContext>());
