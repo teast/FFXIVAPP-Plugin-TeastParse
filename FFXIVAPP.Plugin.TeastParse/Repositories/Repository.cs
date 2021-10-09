@@ -38,6 +38,12 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
     /// </summary>
     public class Repository : RepositoryReadOnly, IRepository
     {
+        /// <summary>
+        /// We do not want to create the databse file when we writes timelines. so lets cache them and 
+        /// then write them at first connection
+        /// </summary>
+        private readonly List<TimelineModel> _cachedTimelines = new List<TimelineModel>();
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly List<string> _addedActors;
         private bool _disposed;
@@ -235,10 +241,14 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
             }
         }
 
+
         public override void AddTimeline(TimelineModel model)
         {
-            if (!Connect())
+            if (!IsConnected())
+            {
+                _cachedTimelines.Add(model);
                 return;
+            }
 
             const string query = @"
                 INSERT INTO Timeline
@@ -344,10 +354,18 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
             if (_connection == null)
                 _connection = new SQLiteConnection(_connectionString);
 
-            if (_connection.State == ConnectionState.Open)
-                return true;
-            _connection.Open();
-            CreateDatabase();
+            if (_connection.State != ConnectionState.Open)
+            {
+                _connection.Open();
+                CreateDatabase();
+            }
+
+            while(_cachedTimelines.Any())
+            {
+                var model = _cachedTimelines[0];
+                _cachedTimelines.Remove(model);
+                AddTimeline(model);
+            }
 
             return true;
         }
@@ -584,6 +602,17 @@ namespace FFXIVAPP.Plugin.TeastParse.Repositories
             if (_connection != null && _connection.State == ConnectionState.Open)
                 _connection.Close();
             _connection = null;
+        }
+
+        protected virtual bool IsConnected()
+        {
+            if (_disposed)
+                return false;
+
+            if (_connection == null)
+                return false;
+
+            return _connection.State == ConnectionState.Open;
         }
 
         protected virtual bool Connect()
